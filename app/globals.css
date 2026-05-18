@@ -42,3 +42,61 @@ button {
   background-color: #0a0a0a;
   color: #ffffff;
 }
+
+/* Monochrome hairline range slider. */
+input[type='range'].brut-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type='range'].brut-slider::-webkit-slider-runnable-track {
+  height: 1px;
+  background: #0a0a0a;
+}
+input[type='range'].brut-slider::-moz-range-track {
+  height: 1px;
+  background: #0a0a0a;
+}
+input[type='range'].brut-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #0a0a0a;
+  border: 0;
+  border-radius: 0;
+  margin-top: -7px;
+  cursor: pointer;
+}
+input[type='range'].brut-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: #0a0a0a;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+input[type='range'].brut-slider:focus {
+  outline: none;
+}
+input[type='range'].brut-slider:focus::-webkit-slider-thumb {
+  outline: 2px solid #0a0a0a;
+  outline-offset: 2px;
+}
+input[type='range'].brut-slider:focus::-moz-range-thumb {
+  outline: 2px solid #0a0a0a;
+  outline-offset: 2px;
+}
+
+/* Number input: remove native spinners for a cleaner editorial look. */
+input.brut-number::-webkit-outer-spin-button,
+input.brut-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input.brut-number {
+  -moz-appearance: textfield;
+}

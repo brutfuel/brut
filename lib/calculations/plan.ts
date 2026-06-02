@@ -2,7 +2,6 @@ import type { PaceInfo, SessionInput, SessionPlan } from './types';
 import { calculateReplacementLevel, calculateSweat } from './sweat';
 import {
   buildSchedule,
-  capsulesPerHour,
   carbsPerHour,
   postSession,
   preSession,
@@ -33,7 +32,6 @@ export function buildPlan(input: SessionInput): SessionPlan {
   const replacement = calculateReplacementLevel(input, metrics);
 
   const carbsH = carbsPerHour(input);
-  const capsH = capsulesPerHour(metrics);
   const schedule = buildSchedule(input, metrics);
 
   // Totals computed from the schedule itself so the visible plan and the
@@ -46,6 +44,13 @@ export function buildPlan(input: SessionInput): SessionPlan {
     }),
     { capsules: 0, waterMl: 0, carbsG: 0 }
   );
+
+  // Capsule rate displayed in the header is derived from the actual
+  // schedule so it always matches the per-row counts.
+  const capsH =
+    input.duration > 0
+      ? Math.round(totals.capsules / input.duration)
+      : 0;
 
   return {
     sweatRate: metrics.sweatRate,
@@ -84,4 +89,5 @@ export const DEFAULT_INPUT: SessionInput = {
   humidity: 50,
   heatAcclimated: false,
   sodiumDiet: 'normal',
+  knownSweatRate: null,
 };

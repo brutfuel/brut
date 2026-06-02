@@ -297,6 +297,39 @@ export default function SessionForm({ value, onChange, onSubmit }: Props) {
                 onChange={(v) => patch({ sodiumDiet: v })}
               />
             </div>
+
+            <div>
+              <div className="flex items-baseline justify-between mb-5">
+                <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
+                  Known sweat rate
+                  <span className="ml-2 text-brut-muted normal-case font-normal tracking-normal">
+                    optional override
+                  </span>
+                </span>
+              </div>
+              <div className="flex items-baseline gap-3">
+                <input
+                  type="number"
+                  min={0.2}
+                  max={4}
+                  step={0.05}
+                  placeholder="—"
+                  value={value.knownSweatRate ?? ''}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    patch({ knownSweatRate: v === '' ? null : Number(v) });
+                  }}
+                  className="brut-number w-32 bg-transparent border-b border-brut-line py-2 text-3xl md:text-4xl font-thin tracking-brut text-brut-black focus:outline-none focus:border-brut-black transition-colors tabular-nums"
+                  aria-label="Known sweat rate override"
+                />
+                <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
+                  L / h
+                </span>
+              </div>
+              <p className="mt-2 text-xs font-normal text-brut-muted">
+                If set, overrides the calculated sweat rate for this session.
+              </p>
+            </div>
           </div>
         ) : null}
       </section>

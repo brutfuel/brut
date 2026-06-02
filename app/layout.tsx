@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Montserrat } from 'next/font/google';
+import CookieBanner from '@/components/CookieBanner';
+import FeedbackButton from '@/components/FeedbackButton';
 import './globals.css';
 
 // Single typeface across the app — only the weights we actually use.
@@ -22,10 +25,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
+
   return (
     <html lang="en-GB" className={montserrat.variable}>
       <body className="bg-white text-brut-black font-sans antialiased">
         {children}
+        <FeedbackButton />
+        <CookieBanner />
+        {plausibleDomain ? (
+          <Script
+            src="https://plausible.io/js/script.js"
+            data-domain={plausibleDomain}
+            strategy="afterInteractive"
+          />
+        ) : null}
       </body>
     </html>
   );

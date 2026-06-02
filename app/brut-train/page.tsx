@@ -1,18 +1,73 @@
-'use client';
-
-import { useMemo, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import SessionForm from '@/components/brut-train/SessionForm';
-import SessionResult from '@/components/brut-train/SessionResult';
-import { DEFAULT_INPUT, buildPlan } from '@/lib/calculations/plan';
-import type { SessionInput } from '@/lib/calculations/types';
+import BrutTrainClient from '@/components/brut-train/BrutTrainClient';
+import { createClient } from '@/lib/supabase/server';
+import { DEFAULT_INPUT } from '@/lib/calculations/plan';
+import type { SessionInput, SodiumDiet, TimeOfDay } from '@/lib/calculations/types';
+import type { Profile } from '@/lib/types/db';
 
-export default function BrutTrainPage() {
-  const [input, setInput] = useState<SessionInput>(DEFAULT_INPUT);
+/** Profile stores training time with underscores; SessionInput uses hyphens. */
+const TIME_OF_DAY_FROM_PROFILE: Record<string, TimeOfDay> = {
+  early_morning: 'early-morning',
+  morning: 'morning',
+  afternoon: 'afternoon',
+  evening: 'evening',
+  night: 'night',
+};
 
-  // Plan is fully deterministic — memo by input identity.
-  const plan = useMemo(() => buildPlan(input), [input]);
+const VALID_SODIUM_DIETS = new Set<SodiumDiet>(['low', 'normal', 'high']);
+
+/** Merge the user's profile into the default session input. */
+function buildInitialInput(
+  profile: Pick<
+    Profile,
+    'weight_kg' | 'acclimated' | 'sodium_diet' | 'known_sweat_rate_lh' | 'typical_training_time'
+  > | null,
+): SessionInput {
+  if (!profile) return DEFAULT_INPUT;
+
+  const sodiumDiet =
+    profile.sodium_diet && VALID_SODIUM_DIETS.has(profile.sodium_diet as SodiumDiet)
+      ? (profile.sodium_diet as SodiumDiet)
+      : DEFAULT_INPUT.sodiumDiet;
+
+  const timeOfDay = profile.typical_training_time
+    ? TIME_OF_DAY_FROM_PROFILE[profile.typical_training_time] ?? DEFAULT_INPUT.timeOfDay
+    : DEFAULT_INPUT.timeOfDay;
+
+  return {
+    ...DEFAULT_INPUT,
+    weight: profile.weight_kg ?? DEFAULT_INPUT.weight,
+    heatAcclimated: profile.acclimated ?? DEFAULT_INPUT.heatAcclimated,
+    sodiumDiet,
+    knownSweatRate: profile.known_sweat_rate_lh ?? null,
+    timeOfDay,
+  };
+}
+
+export default async function BrutTrainPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let profile: Pick<
+    Profile,
+    'weight_kg' | 'acclimated' | 'sodium_diet' | 'known_sweat_rate_lh' | 'typical_training_time'
+  > | null = null;
+
+  if (user) {
+    const { data } = await supabase
+      .from('profiles')
+      .select(
+        'weight_kg, acclimated, sodium_diet, known_sweat_rate_lh, typical_training_time',
+      )
+      .eq('id', user.id)
+      .single();
+    profile = data as typeof profile;
+  }
+
+  const initialInput = buildInitialInput(profile);
 
   return (
     <>
@@ -34,15 +89,7 @@ export default function BrutTrainPage() {
         </section>
 
         {/* Form (1fr) + Results (380 px sticky) */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-16">
-          <div>
-            <SessionForm value={input} onChange={setInput} />
-          </div>
-
-          <aside className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:pl-1 lg:pr-1">
-            <SessionResult plan={plan} />
-          </aside>
-        </div>
+        <BrutTrainClient initialInput={initialInput} />
       </main>
 
       <Footer />

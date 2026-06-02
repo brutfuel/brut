@@ -53,6 +53,11 @@ export interface SessionInput {
   humidity: number; // %
   heatAcclimated: boolean;
   sodiumDiet: SodiumDiet;
+  /**
+   * User-measured sweat rate in L/h. When set, overrides the
+   * physiological formula used by `calculateSweat`.
+   */
+  knownSweatRate: number | null;
 }
 
 export type ReplacementLevel =

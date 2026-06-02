@@ -31,7 +31,9 @@ export function carbsPerHour(input: SessionInput): number {
   return easy ? 70 : 90;
 }
 
-// Hourly capsule target derived from sodium loss minus ~25% lower bound.
+// Hourly sodium-based capsule rate. Kept as the baseline used by the
+// schedule once a session is long enough that loss outpaces the
+// duration-based protocol below.
 export function capsulesPerHour(metrics: SweatMetrics): number {
   const sodiumLow = metrics.sweatRate * metrics.sodiumConcentration * 0.75;
   return Math.max(0, Math.ceil(sodiumLow / BRUT_CAPSULE_SODIUM_MG));
@@ -43,17 +45,61 @@ function formatTime(hours: number): string {
   return `${h}:${String(m).padStart(2, '0')}`;
 }
 
-// Build a 30-minute schedule of water / carbs / capsules to take.
-// Capsules are distributed evenly using a cumulative rounding scheme.
+/**
+ * Intake times (in hours from start) following the BRUT protocol:
+ *   - < 1 h          → none
+ *   - 1 – 1.5 h      → 1 at 1:00
+ *   - 1.5 – 2 h      → 1 at 0:45, 1 at 1:30
+ *   - ≥ 2 h          → one every 45 min from 0:45 onward
+ *   - ≥ 3 h          → if the sodium-based total exceeds the 45-min count,
+ *                      use the larger total, spread evenly from 0:45.
+ */
+function capsuleTimes(
+  durationHours: number,
+  sodiumHourly: number,
+): number[] {
+  if (durationHours < 1) return [];
+  if (durationHours < 1.5) return [1.0];
+  if (durationHours < 2) return [0.75, 1.5];
+
+  const baseline: number[] = [];
+  for (let t = 0.75; t <= durationHours + 1e-9; t += 0.75) {
+    baseline.push(Math.round(t * 100) / 100);
+  }
+
+  if (durationHours < 3) return baseline;
+
+  // ≥ 3 h: scale with sodium loss but never more than twice the every-45-min
+  // baseline. Keeps the count realistic when sweat rates are high without a
+  // jarring discontinuity at the 3 h boundary.
+  const sodiumTotal = Math.max(0, Math.round(sodiumHourly * durationHours));
+  const target = Math.min(sodiumTotal, baseline.length * 2);
+  if (target <= baseline.length) return baseline;
+
+  // Spread `target` capsules evenly between 0:45 and the session end.
+  const span = durationHours - 0.75;
+  const times: number[] = [];
+  for (let i = 0; i < target; i += 1) {
+    const t =
+      target === 1 ? 0.75 + span / 2 : 0.75 + (i * span) / (target - 1);
+    times.push(Math.round(t * 100) / 100);
+  }
+  return times;
+}
+
+/**
+ * Build a 30-minute schedule of water / carbs / capsules to take.
+ * Water and carbs are constant per row; capsule slots are derived from
+ * `capsuleTimes` and snapped to the row that ends just after each time.
+ */
 export function buildSchedule(
   input: SessionInput,
-  metrics: SweatMetrics
+  metrics: SweatMetrics,
 ): ScheduleRow[] {
   if (input.duration <= 0) return [];
 
   const intervals = Math.max(1, Math.round(input.duration * 2));
   const carbsH = carbsPerHour(input);
-  const capsH = capsulesPerHour(metrics);
 
   // Replace ~80% of sweat per hour; round to nearest 50 ml per 30-min row.
   const mlPerInterval =
@@ -61,21 +107,23 @@ export function buildSchedule(
   const carbsPerInterval =
     carbsH > 0 ? Math.max(5, Math.round((carbsH * 0.5) / 5) * 5) : 0;
 
-  const totalCaps = Math.max(0, Math.round(capsH * input.duration));
+  // Distribute capsules into 30-minute slots. A capsule taken at e.g.
+  // 0:45 lives in the 1:00 row (intake during the previous 30 min).
+  const capsPerRow = new Array<number>(intervals).fill(0);
+  const sodiumHourly = capsulesPerHour(metrics);
+  const times = capsuleTimes(input.duration, sodiumHourly);
+  for (const t of times) {
+    const idx = Math.min(intervals - 1, Math.max(0, Math.ceil(t * 2) - 1));
+    capsPerRow[idx] = (capsPerRow[idx] ?? 0) + 1;
+  }
+
   const rows: ScheduleRow[] = [];
-  let cumulative = 0;
-
-  for (let i = 1; i <= intervals; i++) {
-    const t = i * 0.5;
-    const target = Math.round((totalCaps * i) / intervals);
-    const caps = Math.max(0, target - cumulative);
-    cumulative = target;
-
+  for (let i = 1; i <= intervals; i += 1) {
     rows.push({
-      time: formatTime(t),
+      time: formatTime(i * 0.5),
       waterMl: mlPerInterval,
       carbsG: carbsPerInterval,
-      capsules: caps,
+      capsules: capsPerRow[i - 1] ?? 0,
     });
   }
   return rows;

@@ -85,15 +85,18 @@ export interface SweatMetrics {
 }
 
 export function calculateSweat(input: SessionInput): SweatMetrics {
+  // A user-measured sweat rate overrides the physiological formula.
   const raw =
-    SPORT_BASE[input.sport] *
-    input.weight *
-    surfaceModifier(input) *
-    INTENSITY[input.sessionType] *
-    temperatureFactor(input.temperature) *
-    humidityFactor(input.temperature, input.humidity) *
-    elevationFactor(input) *
-    acclimationFactor(input.heatAcclimated);
+    input.knownSweatRate !== null && input.knownSweatRate > 0
+      ? input.knownSweatRate
+      : SPORT_BASE[input.sport] *
+        input.weight *
+        surfaceModifier(input) *
+        INTENSITY[input.sessionType] *
+        temperatureFactor(input.temperature) *
+        humidityFactor(input.temperature, input.humidity) *
+        elevationFactor(input) *
+        acclimationFactor(input.heatAcclimated);
 
   // Physiological clamp — Baker 2017 reports extremes between 0.3 and 3.5 L/h.
   const sweatRate = Math.min(3.5, Math.max(0.3, raw));
@@ -149,7 +152,7 @@ export function calculateReplacementLevel(
       score,
       level: 'not-necessary',
       message:
-        'Short, low-intensity session. Body reserves are sufficient — drink to thirst.',
+        'Body reserves are sufficient for this session. Drink to thirst, no supplementation needed.',
     };
   }
   if (score <= 5) {
@@ -157,7 +160,7 @@ export function calculateReplacementLevel(
       score,
       level: 'optional',
       message:
-        'Moderate loss. Light hydration improves comfort and supports recovery.',
+        'Light hydration improves comfort. You can finish without electrolytes if you’ve eaten well today.',
     };
   }
   if (score <= 8) {
@@ -165,13 +168,13 @@ export function calculateReplacementLevel(
       score,
       level: 'recommended',
       message:
-        'Significant loss. Replacement helps maintain performance through the session.',
+        'Significant losses expected. Supplementing maintains performance and prevents fatigue.',
     };
   }
   return {
     score,
     level: 'essential',
     message:
-      'Critical loss. Plan intake at fixed intervals from the first 30 minutes onward.',
+      'Critical losses ahead. Without proper hydration and sodium, performance and health are at real risk.',
   };
 }

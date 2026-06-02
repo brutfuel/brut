@@ -59,14 +59,14 @@ export default function SessionResult({ plan }: Props) {
   return (
     <div id="results" className="flex flex-col gap-10">
       {/* Replacement need banner */}
-      <section className="border border-brut-black p-5">
+      <section className="border border-brut-line p-6 md:p-7">
         <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
           Replacement need
         </span>
-        <p className="mt-2 text-2xl font-thin tracking-brut text-brut-black uppercase">
+        <p className="mt-2 text-[42px] font-normal tracking-[0.02em] text-brut-black uppercase leading-[1.05]">
           {LEVEL_COPY[plan.replacementLevel]}
         </p>
-        <p className="mt-3 text-sm font-normal text-brut-ink leading-relaxed">
+        <p className="mt-4 text-sm font-normal text-brut-ink leading-[1.5]">
           {plan.replacementMessage}
         </p>
       </section>

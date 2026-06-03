@@ -21,6 +21,10 @@ interface Props {
   value: SessionInput;
   onChange: (next: SessionInput) => void;
   onSubmit?: () => void;
+  /** Label shown on the submit button (e.g. "Calculate", "Recalculate"). */
+  submitLabel?: string;
+  /** Disables the submit button — e.g. while the result is already fresh. */
+  submitDisabled?: boolean;
 }
 
 // Default session type per sport, used when the user switches sport.
@@ -64,7 +68,13 @@ const SODIUM_DIET: ReadonlyArray<{ value: SodiumDiet; label: string }> = [
   { value: 'high', label: 'High' },
 ];
 
-export default function SessionForm({ value, onChange, onSubmit }: Props) {
+export default function SessionForm({
+  value,
+  onChange,
+  onSubmit,
+  submitLabel = 'Calculate',
+  submitDisabled = false,
+}: Props) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
   // Patch helper — typed update of a single field.
@@ -334,14 +344,16 @@ export default function SessionForm({ value, onChange, onSubmit }: Props) {
         ) : null}
       </section>
 
-      {/* CTA — scrolls to results on mobile. Live calc means no action needed. */}
+      {/* CTA — explicit Calculate / Recalculate / Up to date trigger.
+          Submission is wired through the form's onSubmit prop above. */}
       <div className="border-t border-brut-line pt-8 mt-2">
-        <a
-          href="#results"
-          className="block w-full text-center py-5 bg-brut-black text-white text-xs font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors"
+        <button
+          type="submit"
+          disabled={submitDisabled}
+          className="block w-full text-center py-5 bg-brut-black text-white text-xs font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Generate session plan
-        </a>
+          {submitLabel}
+        </button>
       </div>
     </form>
   );

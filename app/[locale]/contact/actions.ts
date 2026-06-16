@@ -1,5 +1,6 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { sendContactEmail } from '@/lib/email/send';
 import {
   contactMessageSchema,
@@ -13,19 +14,15 @@ export async function sendContactMessage(
 ): Promise<ActionResult> {
   const parsed = contactMessageSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid input.',
-    };
+    const code = parsed.error.issues[0]?.message ?? 'email_invalid';
+    const tV = await getTranslations('common.validation');
+    return { ok: false, error: tV(code) };
   }
 
   const result = await sendContactEmail(parsed.data);
   if (!result.ok) {
-    return {
-      ok: false,
-      error:
-        'Could not send your message. Try again or write directly to hello@brutfuel.com.',
-    };
+    const tC = await getTranslations('contact');
+    return { ok: false, error: tC('send_failed') };
   }
   return { ok: true };
 }

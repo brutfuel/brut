@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import Input from '@/components/ui/Input';
 import { sendContactMessage } from '@/app/[locale]/contact/actions';
 import {
@@ -21,7 +22,12 @@ interface Props {
   initialName?: string;
 }
 
-export default function ContactForm({ initialEmail = '', initialName = '' }: Props) {
+export default function ContactForm({
+  initialEmail = '',
+  initialName = '',
+}: Props) {
+  const t = useTranslations('contact');
+  const tV = useTranslations('common.validation');
   const [sent, setSent] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -54,48 +60,56 @@ export default function ContactForm({ initialEmail = '', initialName = '' }: Pro
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col gap-6"
+      noValidate
+    >
       <div>
         <Input
           id="name"
-          label="Name"
+          label={t('name_label')}
           type="text"
           autoComplete="name"
-          placeholder="Your name"
+          placeholder={t('name_placeholder')}
           {...register('name')}
         />
-        {errors.name ? <p className={fieldError}>{errors.name.message}</p> : null}
+        {errors.name?.message ? (
+          <p className={fieldError}>{tV(errors.name.message)}</p>
+        ) : null}
       </div>
       <div>
         <Input
           id="email"
-          label="Email"
+          label={t('email_label')}
           type="email"
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder={t('email_placeholder')}
           {...register('email')}
         />
-        {errors.email ? <p className={fieldError}>{errors.email.message}</p> : null}
+        {errors.email?.message ? (
+          <p className={fieldError}>{tV(errors.email.message)}</p>
+        ) : null}
       </div>
       <div className="flex flex-col gap-2">
         <label htmlFor="message" className={subLabel}>
-          Message
+          {t('message_label')}
         </label>
         <textarea
           id="message"
           rows={5}
-          placeholder="How can we help?"
+          placeholder={t('message_placeholder')}
           className="w-full bg-transparent border-b border-brut-line py-2 text-base font-normal text-brut-black placeholder:text-brut-muted focus:outline-none focus:border-brut-black transition-colors resize-none"
           {...register('message')}
         />
-        {errors.message ? (
-          <p className={fieldError}>{errors.message.message}</p>
+        {errors.message?.message ? (
+          <p className={fieldError}>{tV(errors.message.message)}</p>
         ) : null}
       </div>
 
       {sent ? (
         <p className="text-sm font-normal text-brut-ink leading-relaxed border-l-2 border-brut-black pl-3">
-          Thanks — message received. We&rsquo;ll reply by email.
+          {t('success')}
         </p>
       ) : null}
       {formError ? (
@@ -105,7 +119,7 @@ export default function ContactForm({ initialEmail = '', initialName = '' }: Pro
       ) : null}
 
       <button type="submit" disabled={pending} className={blackButton}>
-        {pending ? 'Sending…' : 'Send message'}
+        {pending ? t('submit_pending') : t('submit')}
       </button>
     </form>
   );

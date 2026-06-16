@@ -1,9 +1,12 @@
-import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Link } from '@/lib/i18n/routing';
 
 // Public landing page. Server component, no state.
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getTranslations('landing');
+
   return (
     <>
       <Header />
@@ -12,13 +15,13 @@ export default function HomePage() {
         {/* Hero */}
         <section className="mx-auto max-w-7xl px-6 md:px-10 pt-20 md:pt-32 pb-20 md:pb-32">
           <h1 className="font-thin tracking-brut text-brut-black text-[64px] sm:text-[80px] md:text-[100px] leading-[0.95]">
-            Electrolyte
+            {t('hero_line_1')}
             <br />
-            performance.
+            {t('hero_line_2')}
           </h1>
 
           <p className="mt-8 md:mt-10 max-w-2xl text-lg md:text-xl font-normal text-brut-muted leading-relaxed">
-            Science-based nutrition tools for endurance athletes.
+            {t('tagline')}
           </p>
         </section>
 
@@ -30,21 +33,19 @@ export default function HomePage() {
               className="group block px-6 md:px-10 py-16 md:py-28 bg-white hover:bg-brut-bg-soft transition-colors"
             >
               <span className="text-xs font-semibold tracking-brut-wide uppercase text-brut-muted">
-                01 — Session
+                {t('section_session_eyebrow')}
               </span>
               <h2 className="mt-6 text-4xl md:text-5xl font-thin tracking-brut text-brut-black">
                 BRUT TRAIN
               </h2>
               <p className="mt-6 text-xl md:text-2xl font-normal text-brut-ink">
-                Plan your next session.
+                {t('session_card_title')}
               </p>
               <p className="mt-4 max-w-md text-base font-normal text-brut-muted leading-relaxed">
-                Generate a one-off session structure and the matching pre,
-                during and post nutrition — built from your duration, intensity
-                and conditions.
+                {t('session_card_body')}
               </p>
               <span className="mt-10 inline-block text-xs font-semibold tracking-brut-wide uppercase text-brut-black border-b border-brut-black pb-1 group-hover:opacity-70 transition-opacity">
-                Build a session
+                {t('session_card_cta')}
               </span>
             </Link>
 
@@ -53,21 +54,19 @@ export default function HomePage() {
               className="group block px-6 md:px-10 py-16 md:py-28 bg-brut-bg-soft hover:bg-brut-panel transition-colors"
             >
               <span className="text-xs font-semibold tracking-brut-wide uppercase text-brut-muted">
-                02 — Race
+                {t('section_race_eyebrow')}
               </span>
               <h2 className="mt-6 text-4xl md:text-5xl font-thin tracking-brut text-brut-black">
                 BRUT RACE
               </h2>
               <p className="mt-6 text-xl md:text-2xl font-normal text-brut-ink">
-                Build your race plan.
+                {t('race_card_title')}
               </p>
               <p className="mt-4 max-w-md text-base font-normal text-brut-muted leading-relaxed">
-                A complete 12 to 16 week programme for a specific race
-                objective — structured progression, taper and full fuelling
-                strategy.
+                {t('race_card_body')}
               </p>
               <span className="mt-10 inline-block text-xs font-semibold tracking-brut-wide uppercase text-brut-black border-b border-brut-black pb-1 group-hover:opacity-70 transition-opacity">
-                Build a race
+                {t('race_card_cta')}
               </span>
             </Link>
           </div>
@@ -76,12 +75,10 @@ export default function HomePage() {
         {/* Evidence strap */}
         <section className="mx-auto max-w-7xl px-6 md:px-10 py-20 md:py-28 border-t border-brut-line">
           <p className="max-w-3xl text-base md:text-lg font-normal text-brut-ink leading-relaxed">
-            Every recommendation is grounded in current sports nutrition
-            literature — sweat sodium, glycogen demand and gut tolerance —
-            translated into practical numbers you can use today.
+            {t('evidence_body')}
           </p>
           <p className="mt-6 text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-            References: Baker LB, 2017 — Barnes et al., 2019.
+            {t('evidence_references')}
           </p>
         </section>
       </main>

@@ -188,9 +188,131 @@
     "email_label": "Correo electrónico",
     "message_label": "Mensaje",
     "message_placeholder": "¿Qué tienes en mente?",
-    "sent_message": "Gracias — recibido. Ya puedes cerrar."
+    "sent_message": "Gracias — recibido. Ya puedes cerrar.",
+    "send_failed": "No se ha podido enviar el feedback. Vuelve a intentarlo en un momento.",
+    "sign_in_required": "Inicia sesión para enviar feedback."
   },
   "locale_switcher": {
     "aria_label": "Cambiar idioma"
+  },
+  "landing": {
+    "metadata_title": "BRUT — Rendimiento de electrolitos",
+    "metadata_description": "Herramientas de nutrición basadas en ciencia para atletas de resistencia.",
+    "hero_line_1": "Rendimiento",
+    "hero_line_2": "de electrolitos.",
+    "tagline": "Herramientas de nutrición basadas en ciencia para atletas de resistencia.",
+    "section_session_eyebrow": "01 — Sesión",
+    "session_card_title": "Planifica tu próxima sesión.",
+    "session_card_body": "Genera una estructura de sesión única y la nutrición pre, durante y post correspondientes — construida a partir de tu duración, intensidad y condiciones.",
+    "session_card_cta": "Construye una sesión",
+    "section_race_eyebrow": "02 — Carrera",
+    "race_card_title": "Construye tu plan de carrera.",
+    "race_card_body": "Un programa completo de 12 a 16 semanas para un objetivo de carrera concreto — progresión estructurada, taper y estrategia completa de avituallamiento.",
+    "race_card_cta": "Construye una carrera",
+    "evidence_body": "Cada recomendación se basa en la literatura actual de nutrición deportiva — sodio en el sudor, demanda de glucógeno y tolerancia gastrointestinal — traducida en cifras prácticas que puedes usar hoy.",
+    "evidence_references": "Referencias: Baker LB, 2017 — Barnes et al., 2019."
+  },
+  "about": {
+    "eyebrow": "Sobre nosotros",
+    "intro": "BRUT es un compañero de avituallamiento y entrenamiento basado en ciencia para atletas de resistencia. Hacemos cápsulas de electrolitos y construimos las herramientas digitales que te dicen cuándo y cómo tomarlas.",
+    "what_we_make_title": "Qué hacemos",
+    "what_we_make_p1": "Las cápsulas BRUT aportan 211 mg de sodio cada una — calibradas para las pérdidas reales de los atletas de resistencia, no según supuestos genéricos de bebidas deportivas.",
+    "what_we_make_p2": "Alrededor de las cápsulas construimos herramientas de planificación deterministas: avituallamiento para una sesión única (BRUT TRAIN), programas de carrera periodizados completos (BRUT RACE) y estrategias completas para el día D (BRUT RACE DAY).",
+    "how_we_plan_title": "Cómo planificamos",
+    "how_we_plan_body": "Metodología por encima de la magia. Entrenamiento polarizado 80/20 (Seiler), periodización de carbohidratos por fases, hidratación basada en líneas base fisiológicas (Baker 2017, Barnes 2019, ACSM). Cada recomendación sale de una función pura con los supuestos visibles.",
+    "what_we_are_not_title": "Qué no somos",
+    "what_we_are_not_body": "No somos un entrenador. No somos consejo médico. Nuestros planes son un punto de partida estructurado que adaptas con experiencia, sensación y criterio profesional.",
+    "find_us_title": "Dónde encontrarnos",
+    "find_us_body": "Escribe a <mail>hello@brutfuel.com</mail> o consigue cápsulas en <shop>brutfuel.com</shop>.",
+    "references": "Referencias: Baker LB 2017 · Barnes et al. 2019 · Seiler 2010 · ACSM 2007",
+    "cta_session": "Planifica una sesión →",
+    "cta_race": "Planifica una carrera →"
+  },
+  "contact": {
+    "eyebrow": "Contacto",
+    "title": "Contacta con el equipo",
+    "intro": "Preguntas, feedback, colaboraciones — leemos cada mensaje. Escríbenos con el formulario de abajo o directamente a <mail>hello@brutfuel.com</mail>.",
+    "name_label": "Nombre",
+    "name_placeholder": "Tu nombre",
+    "email_label": "Correo electrónico",
+    "email_placeholder": "tu@ejemplo.com",
+    "message_label": "Mensaje",
+    "message_placeholder": "¿Cómo te ayudamos?",
+    "submit": "Enviar mensaje",
+    "submit_pending": "Enviando…",
+    "success": "Gracias — mensaje recibido. Te responderemos por correo.",
+    "send_failed": "No se ha podido enviar tu mensaje. Vuelve a intentarlo o escribe directamente a hello@brutfuel.com."
+  },
+  "auth": {
+    "eyebrow": "Cuenta",
+    "login": {
+      "title": "Iniciar sesión",
+      "redirect_note": "Inicia sesión para guardar tu plan.",
+      "error_auth": "No se ha podido iniciar sesión. Vuelve a intentarlo.",
+      "email_placeholder": "tu@ejemplo.com",
+      "password_placeholder": "••••••••",
+      "incorrect": "Correo o contraseña incorrectos.",
+      "google_redirecting": "Redirigiendo…"
+    },
+    "register": {
+      "title": "Crea tu cuenta",
+      "password_hint_placeholder": "Como mínimo 8 caracteres",
+      "confirm_password_placeholder": "Vuelve a escribir la contraseña"
+    },
+    "onboarding": {
+      "section_eyebrow": "Configura tu perfil",
+      "step_name_question": "¿Cómo te llamas?",
+      "step_name_label": "Nombre completo",
+      "step_name_placeholder": "Tu nombre",
+      "step_age_gender_question": "¿Cuántos años tienes y cuál es tu género?",
+      "step_age_label": "Edad",
+      "step_gender_label": "Género",
+      "step_sport_question": "¿Cuál es tu deporte principal?",
+      "step_weight_question": "¿Cuál es tu peso corporal?",
+      "gender": {
+        "male": "Hombre",
+        "female": "Mujer",
+        "other": "Otros",
+        "prefer_not_to_say": "Prefiero no decirlo"
+      },
+      "sport": {
+        "running": "Correr",
+        "cycling": "Ciclismo",
+        "triathlon": "Triatlón"
+      },
+      "default_error": "Revisa tus respuestas.",
+      "save_error": "No se ha podido guardar tu perfil. Vuelve a intentarlo."
+    },
+    "forgot_password": {
+      "title": "Has olvidado la contraseña",
+      "intro": "Escribe el correo con el que te registraste. Te enviaremos un enlace para restablecer la contraseña.",
+      "submit": "Enviar enlace",
+      "success": "Si hay una cuenta asociada a ese correo, el enlace ya está en camino. Mira la bandeja de entrada y el correo no deseado.",
+      "resend": "Enviar otro enlace"
+    },
+    "reset_password": {
+      "title": "Restablecer contraseña",
+      "intro_signed_in": "Elige una contraseña nueva. Te llevaremos directamente al panel.",
+      "intro_expired": "El enlace de restablecimiento ha caducado o no es válido. Pide uno nuevo para continuar.",
+      "request_new_link": "Enviar un nuevo enlace →",
+      "new_password_label": "Contraseña nueva",
+      "new_password_placeholder": "Como mínimo 8 caracteres",
+      "confirm_new_password_label": "Confirma la contraseña nueva",
+      "confirm_new_password_placeholder": "Vuelve a escribir la contraseña",
+      "submit": "Actualizar contraseña",
+      "submitting": "Actualizando…",
+      "expired_error": "El enlace ha caducado. Pide uno nuevo.",
+      "update_failed": "No se ha podido actualizar la contraseña. Vuelve a intentarlo."
+    },
+    "verify_email": {
+      "title": "Revisa el correo",
+      "intro_with_email": "Hemos enviado un enlace de verificación a {email}. Ábrelo para terminar de configurar la cuenta.",
+      "intro_generic": "Hemos enviado un enlace de verificación a tu bandeja de entrada. Ábrelo para terminar de configurar la cuenta.",
+      "spam_note": "¿No te ha llegado? Revisa el correo no deseado o reenvíalo desde aquí abajo.",
+      "email_label": "Correo electrónico",
+      "resend": "Reenviar el correo de verificación",
+      "success": "Si hay una cuenta asociada a ese correo, el enlace de verificación ya está en camino.",
+      "missing_email_error": "Escribe tu correo para poder reenviar."
+    }
   }
 }

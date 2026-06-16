@@ -188,9 +188,131 @@
     "email_label": "Correu electrònic",
     "message_label": "Missatge",
     "message_placeholder": "Què tens al cap?",
-    "sent_message": "Gràcies — rebut. Ja pots tancar."
+    "sent_message": "Gràcies — rebut. Ja pots tancar.",
+    "send_failed": "No s'ha pogut enviar el feedback. Torna-ho a provar en un moment.",
+    "sign_in_required": "Inicia sessió per enviar feedback."
   },
   "locale_switcher": {
     "aria_label": "Canvia d'idioma"
+  },
+  "landing": {
+    "metadata_title": "BRUT — Rendiment d'electròlits",
+    "metadata_description": "Eines de nutrició basades en ciència per a atletes de resistència.",
+    "hero_line_1": "Rendiment",
+    "hero_line_2": "d'electròlits.",
+    "tagline": "Eines de nutrició basades en ciència per a atletes de resistència.",
+    "section_session_eyebrow": "01 — Sessió",
+    "session_card_title": "Planifica la teva propera sessió.",
+    "session_card_body": "Genera una estructura de sessió única i la nutrició pre, durant i post que correspon — construïda a partir de la durada, intensitat i condicions.",
+    "session_card_cta": "Construeix una sessió",
+    "section_race_eyebrow": "02 — Cursa",
+    "race_card_title": "Construeix el teu pla de cursa.",
+    "race_card_body": "Un programa complet de 12 a 16 setmanes per a un objectiu de cursa concret — progressió estructurada, taper i estratègia completa d'avituallament.",
+    "race_card_cta": "Construeix una cursa",
+    "evidence_body": "Cada recomanació es basa en la literatura actual de nutrició esportiva — sodi en la suor, demanda de glicogen i tolerància gastrointestinal — traduïda a xifres pràctiques que pots fer servir avui.",
+    "evidence_references": "Referències: Baker LB, 2017 — Barnes et al., 2019."
+  },
+  "about": {
+    "eyebrow": "Sobre nosaltres",
+    "intro": "BRUT és un company d'avituallament i entrenament basat en ciència per a atletes de resistència. Fem càpsules d'electròlits i construïm les eines digitals que et diuen quan i com prendre-les.",
+    "what_we_make_title": "Què fem",
+    "what_we_make_p1": "Les càpsules BRUT aporten 211 mg de sodi cadascuna — calibrades per a les pèrdues reals dels atletes de resistència, no segons supòsits genèrics de begudes esportives.",
+    "what_we_make_p2": "Al voltant de les càpsules construïm eines de planificació deterministes: avituallament per a una sessió única (BRUT TRAIN), programes de cursa periodificats complets (BRUT RACE) i estratègies completes per al dia D (BRUT RACE DAY).",
+    "how_we_plan_title": "Com planifiquem",
+    "how_we_plan_body": "Metodologia per sobre de la màgia. Entrenament polaritzat 80/20 (Seiler), periodització de carbohidrats per fases, hidratació basada en línies base fisiològiques (Baker 2017, Barnes 2019, ACSM). Cada recomanació surt d'una funció pura amb els supòsits visibles.",
+    "what_we_are_not_title": "Què no som",
+    "what_we_are_not_body": "No som un entrenador. No som consells mèdics. Els nostres plans són un punt de partida estructurat que adaptes amb l'experiència, la sensació i el criteri professional.",
+    "find_us_title": "On trobar-nos",
+    "find_us_body": "Escriu a <mail>hello@brutfuel.com</mail> o agafa càpsules a <shop>brutfuel.com</shop>.",
+    "references": "Referències: Baker LB 2017 · Barnes et al. 2019 · Seiler 2010 · ACSM 2007",
+    "cta_session": "Planifica una sessió →",
+    "cta_race": "Planifica una cursa →"
+  },
+  "contact": {
+    "eyebrow": "Contacte",
+    "title": "Contacta amb l'equip",
+    "intro": "Preguntes, feedback, col·laboracions — llegim cada missatge. Escriu-nos amb el formulari de sota o directament a <mail>hello@brutfuel.com</mail>.",
+    "name_label": "Nom",
+    "name_placeholder": "El teu nom",
+    "email_label": "Correu electrònic",
+    "email_placeholder": "tu@exemple.com",
+    "message_label": "Missatge",
+    "message_placeholder": "Com t'ajudem?",
+    "submit": "Envia el missatge",
+    "submit_pending": "Enviant…",
+    "success": "Gràcies — missatge rebut. Et respondrem per correu.",
+    "send_failed": "No s'ha pogut enviar el teu missatge. Torna-ho a provar o escriu directament a hello@brutfuel.com."
+  },
+  "auth": {
+    "eyebrow": "Compte",
+    "login": {
+      "title": "Inicia sessió",
+      "redirect_note": "Inicia sessió per desar el teu pla.",
+      "error_auth": "No s'ha pogut iniciar sessió. Torna-ho a provar.",
+      "email_placeholder": "tu@exemple.com",
+      "password_placeholder": "••••••••",
+      "incorrect": "Correu o contrasenya incorrectes.",
+      "google_redirecting": "Redirigint…"
+    },
+    "register": {
+      "title": "Crea el teu compte",
+      "password_hint_placeholder": "Com a mínim 8 caràcters",
+      "confirm_password_placeholder": "Torna a escriure la contrasenya"
+    },
+    "onboarding": {
+      "section_eyebrow": "Configura el teu perfil",
+      "step_name_question": "Quin és el teu nom?",
+      "step_name_label": "Nom complet",
+      "step_name_placeholder": "El teu nom",
+      "step_age_gender_question": "Quina edat tens i quin és el teu gènere?",
+      "step_age_label": "Edat",
+      "step_gender_label": "Gènere",
+      "step_sport_question": "Quin és el teu esport principal?",
+      "step_weight_question": "Quin és el teu pes corporal?",
+      "gender": {
+        "male": "Home",
+        "female": "Dona",
+        "other": "Altres",
+        "prefer_not_to_say": "Prefereixo no dir-ho"
+      },
+      "sport": {
+        "running": "Córrer",
+        "cycling": "Ciclisme",
+        "triathlon": "Triatló"
+      },
+      "default_error": "Revisa les teves respostes.",
+      "save_error": "No s'ha pogut desar el teu perfil. Torna-ho a provar."
+    },
+    "forgot_password": {
+      "title": "Has oblidat la contrasenya",
+      "intro": "Escriu el correu amb què et vas registrar. T'enviarem un enllaç per restablir la contrasenya.",
+      "submit": "Envia l'enllaç",
+      "success": "Si hi ha un compte associat a aquest correu, l'enllaç ja està en camí. Mira la safata d'entrada i el correu brossa.",
+      "resend": "Envia un altre enllaç"
+    },
+    "reset_password": {
+      "title": "Restableix la contrasenya",
+      "intro_signed_in": "Tria una contrasenya nova. T'enviarem directament al tauler.",
+      "intro_expired": "L'enllaç de restabliment ha caducat o no és vàlid. Demana'n un de nou per continuar.",
+      "request_new_link": "Envia un nou enllaç →",
+      "new_password_label": "Contrasenya nova",
+      "new_password_placeholder": "Com a mínim 8 caràcters",
+      "confirm_new_password_label": "Confirma la contrasenya nova",
+      "confirm_new_password_placeholder": "Torna a escriure la contrasenya",
+      "submit": "Actualitza la contrasenya",
+      "submitting": "Actualitzant…",
+      "expired_error": "L'enllaç ha caducat. Demana'n un de nou.",
+      "update_failed": "No s'ha pogut actualitzar la contrasenya. Torna-ho a provar."
+    },
+    "verify_email": {
+      "title": "Revisa el correu",
+      "intro_with_email": "Hem enviat un enllaç de verificació a {email}. Obre'l per acabar de configurar el compte.",
+      "intro_generic": "Hem enviat un enllaç de verificació a la teva safata d'entrada. Obre'l per acabar de configurar el compte.",
+      "spam_note": "No t'ha arribat? Mira el correu brossa o reenvia'l des d'aquí sota.",
+      "email_label": "Correu electrònic",
+      "resend": "Reenvia el correu de verificació",
+      "success": "Si hi ha un compte associat a aquest correu, l'enllaç de verificació ja està en camí.",
+      "missing_email_error": "Escriu el teu correu per poder reenviar."
+    }
   }
 }

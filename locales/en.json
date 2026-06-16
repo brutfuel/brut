@@ -188,9 +188,131 @@
     "email_label": "Email",
     "message_label": "Message",
     "message_placeholder": "What’s on your mind?",
-    "sent_message": "Thanks — received. You can close this now."
+    "sent_message": "Thanks — received. You can close this now.",
+    "send_failed": "Could not send feedback. Try again in a minute.",
+    "sign_in_required": "Sign in to send feedback."
   },
   "locale_switcher": {
     "aria_label": "Change language"
+  },
+  "landing": {
+    "metadata_title": "BRUT — Electrolyte performance",
+    "metadata_description": "Science-based nutrition tools for endurance athletes.",
+    "hero_line_1": "Electrolyte",
+    "hero_line_2": "performance.",
+    "tagline": "Science-based nutrition tools for endurance athletes.",
+    "section_session_eyebrow": "01 — Session",
+    "session_card_title": "Plan your next session.",
+    "session_card_body": "Generate a one-off session structure and the matching pre, during and post nutrition — built from your duration, intensity and conditions.",
+    "session_card_cta": "Build a session",
+    "section_race_eyebrow": "02 — Race",
+    "race_card_title": "Build your race plan.",
+    "race_card_body": "A complete 12 to 16 week programme for a specific race objective — structured progression, taper and full fuelling strategy.",
+    "race_card_cta": "Build a race",
+    "evidence_body": "Every recommendation is grounded in current sports nutrition literature — sweat sodium, glycogen demand and gut tolerance — translated into practical numbers you can use today.",
+    "evidence_references": "References: Baker LB, 2017 — Barnes et al., 2019."
+  },
+  "about": {
+    "eyebrow": "About",
+    "intro": "BRUT is a science-based fuelling and training companion for endurance athletes. We make electrolyte capsules and build the digital tools that tell you when and how to take them.",
+    "what_we_make_title": "What we make",
+    "what_we_make_p1": "BRUT capsules deliver 211 mg of sodium each — calibrated for the losses real endurance athletes face, not generic sports-drink assumptions.",
+    "what_we_make_p2": "Around the capsules we build deterministic planning tools: single-session fuelling (BRUT TRAIN), full periodised race programmes (BRUT RACE) and complete race-day strategies (BRUT RACE DAY).",
+    "how_we_plan_title": "How we plan",
+    "how_we_plan_body": "Methodology over magic. Polarised 80/20 training (Seiler), carb periodisation through phases, hydration grounded in physiological baselines (Baker 2017, Barnes 2019, ACSM). Every recommendation comes from a pure function with the assumptions visible.",
+    "what_we_are_not_title": "What we are not",
+    "what_we_are_not_body": "We are not a coach. We are not medical advice. Our plans are a structured starting point you adapt with experience, sensation and professional guidance.",
+    "find_us_title": "Find us",
+    "find_us_body": "Email <mail>hello@brutfuel.com</mail> or pick up capsules at <shop>brutfuel.com</shop>.",
+    "references": "References: Baker LB 2017 · Barnes et al. 2019 · Seiler 2010 · ACSM 2007",
+    "cta_session": "Plan a session →",
+    "cta_race": "Plan a race →"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Reach the team",
+    "intro": "Questions, feedback, partnerships — we read every message. Write using the form below or email <mail>hello@brutfuel.com</mail> directly.",
+    "name_label": "Name",
+    "name_placeholder": "Your name",
+    "email_label": "Email",
+    "email_placeholder": "you@example.com",
+    "message_label": "Message",
+    "message_placeholder": "How can we help?",
+    "submit": "Send message",
+    "submit_pending": "Sending…",
+    "success": "Thanks — message received. We’ll reply by email.",
+    "send_failed": "Could not send your message. Try again or write directly to hello@brutfuel.com."
+  },
+  "auth": {
+    "eyebrow": "Account",
+    "login": {
+      "title": "Sign in",
+      "redirect_note": "Sign in to save your plan.",
+      "error_auth": "Sign-in could not be completed. Please try again.",
+      "email_placeholder": "you@example.com",
+      "password_placeholder": "••••••••",
+      "incorrect": "Incorrect email or password.",
+      "google_redirecting": "Redirecting…"
+    },
+    "register": {
+      "title": "Create your account",
+      "password_hint_placeholder": "At least 8 characters",
+      "confirm_password_placeholder": "Re-enter your password"
+    },
+    "onboarding": {
+      "section_eyebrow": "Set up your profile",
+      "step_name_question": "What’s your name?",
+      "step_name_label": "Full name",
+      "step_name_placeholder": "Your name",
+      "step_age_gender_question": "How old are you and what’s your gender?",
+      "step_age_label": "Age",
+      "step_gender_label": "Gender",
+      "step_sport_question": "What’s your primary sport?",
+      "step_weight_question": "What’s your body weight?",
+      "gender": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "prefer_not_to_say": "Prefer not to say"
+      },
+      "sport": {
+        "running": "Running",
+        "cycling": "Cycling",
+        "triathlon": "Triathlon"
+      },
+      "default_error": "Please check your answers.",
+      "save_error": "Could not save your profile. Try again."
+    },
+    "forgot_password": {
+      "title": "Forgot password",
+      "intro": "Enter the email you signed up with. We’ll send a link to reset your password.",
+      "submit": "Send reset link",
+      "success": "If an account exists for that email, a reset link is on its way. Check your inbox and your spam folder.",
+      "resend": "Send another link"
+    },
+    "reset_password": {
+      "title": "Reset password",
+      "intro_signed_in": "Choose a new password. You’ll be signed straight into your dashboard.",
+      "intro_expired": "The reset link has expired or is invalid. Request a new one to continue.",
+      "request_new_link": "Send a new reset link →",
+      "new_password_label": "New password",
+      "new_password_placeholder": "At least 8 characters",
+      "confirm_new_password_label": "Confirm new password",
+      "confirm_new_password_placeholder": "Re-enter your password",
+      "submit": "Update password",
+      "submitting": "Updating…",
+      "expired_error": "Your reset link has expired. Request a new one.",
+      "update_failed": "Could not update password. Try again."
+    },
+    "verify_email": {
+      "title": "Check your email",
+      "intro_with_email": "We’ve sent a verification link to {email}. Open it to finish setting up your account.",
+      "intro_generic": "We’ve sent a verification link to your inbox. Open it to finish setting up your account.",
+      "spam_note": "Didn’t arrive? Check your spam folder or resend the email below.",
+      "email_label": "Email",
+      "resend": "Resend verification email",
+      "success": "If an account exists for that email, a fresh verification link is on its way.",
+      "missing_email_error": "Enter your email to resend."
+    }
   }
 }

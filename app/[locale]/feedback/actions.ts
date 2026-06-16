@@ -1,5 +1,6 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { sendFeedbackEmail } from '@/lib/email/send';
 import {
@@ -18,10 +19,9 @@ export async function sendFeedback(
 ): Promise<ActionResult> {
   const parsed = feedbackMessageSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid feedback.',
-    };
+    const code = parsed.error.issues[0]?.message ?? 'feedback_min';
+    const tV = await getTranslations('common.validation');
+    return { ok: false, error: tV(code) };
   }
 
   // Optional gate — only signed-in users can submit. Keeps the button
@@ -30,16 +30,14 @@ export async function sendFeedback(
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const tFb = await getTranslations('feedback_button');
   if (!user) {
-    return { ok: false, error: 'Sign in to send feedback.' };
+    return { ok: false, error: tFb('sign_in_required') };
   }
 
   const result = await sendFeedbackEmail(parsed.data);
   if (!result.ok) {
-    return {
-      ok: false,
-      error: 'Could not send feedback. Try again in a minute.',
-    };
+    return { ok: false, error: tFb('send_failed') };
   }
   return { ok: true };
 }

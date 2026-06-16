@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/ui/Input';
-import { sendContactMessage } from '@/app/contact/actions';
+import { sendContactMessage } from '@/app/[locale]/contact/actions';
 import {
   contactMessageSchema,
   type ContactMessageValues,

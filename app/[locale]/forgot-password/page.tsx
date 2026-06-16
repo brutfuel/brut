@@ -1,16 +1,9 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import VerifyEmailClient from '@/app/auth/verify/VerifyEmailClient';
+import ForgotPasswordForm from '@/app/[locale]/forgot-password/ForgotPasswordForm';
 
-interface Props {
-  searchParams: { email?: string };
-}
-
-export default function VerifyEmailPage({ searchParams }: Props) {
-  const initialEmail =
-    typeof searchParams.email === 'string' ? searchParams.email : '';
-
+export default function ForgotPasswordPage() {
   return (
     <>
       <Header />
@@ -21,28 +14,19 @@ export default function VerifyEmailPage({ searchParams }: Props) {
             Account
           </span>
           <h1 className="mt-6 text-[40px] md:text-[56px] leading-[1.0] font-thin tracking-brut text-brut-black">
-            Check your email
+            Forgot password
           </h1>
           <p className="mt-4 text-sm font-normal text-brut-ink leading-relaxed">
-            We&rsquo;ve sent a verification link to{' '}
-            {initialEmail ? (
-              <span className="text-brut-black">{initialEmail}</span>
-            ) : (
-              'your inbox'
-            )}
-            . Open it to finish setting up your account.
-          </p>
-          <p className="mt-3 text-xs font-normal text-brut-muted">
-            Didn&rsquo;t arrive? Check your spam folder or resend the email
-            below.
+            Enter the email you signed up with. We&rsquo;ll send a link to
+            reset your password.
           </p>
 
           <div className="mt-10">
-            <VerifyEmailClient initialEmail={initialEmail} />
+            <ForgotPasswordForm />
           </div>
 
           <p className="mt-10 text-sm font-normal text-brut-muted">
-            Already verified?{' '}
+            Remembered it?{' '}
             <Link
               href="/login"
               className="text-brut-black border-b border-brut-black pb-0.5 hover:opacity-60 transition-opacity"

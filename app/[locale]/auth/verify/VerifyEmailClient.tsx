@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { resendVerificationEmail } from '@/app/login/actions';
+import { resendVerificationEmail } from '@/app/[locale]/login/actions';
 
 interface Props {
   initialEmail: string;

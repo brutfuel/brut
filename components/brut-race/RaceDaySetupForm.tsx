@@ -7,7 +7,7 @@ import FieldRow from '@/components/ui/FieldRow';
 import Segmented from '@/components/ui/Segmented';
 import Slider from '@/components/ui/Slider';
 import Toggle from '@/components/ui/Toggle';
-import { saveRaceDaySetup } from '@/app/brut-race/[planId]/race-day/actions';
+import { saveRaceDaySetup } from '@/app/[locale]/brut-race/[planId]/race-day/actions';
 import {
   raceDaySetupSchema,
   type RaceDaySetupValues,

@@ -6,7 +6,7 @@ import {
   markSessionDone,
   rescheduleSession,
   skipSession,
-} from '@/app/brut-race/actions';
+} from '@/app/[locale]/brut-race/actions';
 import { dayOfWeekFromIso, weekBoundsFromIso } from '@/lib/utils/dates';
 import type { Session, SessionFelt } from '@/lib/types/db';
 

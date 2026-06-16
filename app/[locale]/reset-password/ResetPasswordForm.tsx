@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/ui/Input';
-import { updatePassword } from '@/app/login/actions';
+import { updatePassword } from '@/app/[locale]/login/actions';
 import {
   updatePasswordSchema,
   type UpdatePasswordValues,

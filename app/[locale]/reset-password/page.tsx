@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ResetPasswordForm from '@/app/reset-password/ResetPasswordForm';
+import ResetPasswordForm from '@/app/[locale]/reset-password/ResetPasswordForm';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function ResetPasswordPage() {

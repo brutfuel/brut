@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ContactForm from '@/app/contact/ContactForm';
+import ContactForm from '@/app/[locale]/contact/ContactForm';
 import { createClient } from '@/lib/supabase/server';
 import type { Profile } from '@/lib/types/db';
 

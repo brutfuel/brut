@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/ui/Input';
-import { signInWithEmail, signInWithGoogle } from '@/app/login/actions';
+import { signInWithEmail, signInWithGoogle } from '@/app/[locale]/login/actions';
 import { loginSchema, type LoginValues } from '@/lib/validation/auth';
 
 interface Props {

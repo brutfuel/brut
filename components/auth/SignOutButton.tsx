@@ -1,7 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
-import { signOut } from '@/app/login/actions';
+import { signOut } from '@/app/[locale]/login/actions';
 
 interface Props {
   /** Override styling when used outside the header dropdown. */

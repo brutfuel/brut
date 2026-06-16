@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/ui/Modal';
-import { deleteAccount } from '@/app/profile/actions';
+import { deleteAccount } from '@/app/[locale]/profile/actions';
 
 const blackButton =
   'inline-flex items-center justify-center px-5 py-3 bg-brut-black text-white text-[10px] font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors disabled:opacity-40 disabled:cursor-not-allowed';

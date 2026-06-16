@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Input from '@/components/ui/Input';
 import Slider from '@/components/ui/Slider';
-import { completeOnboarding } from '@/app/register/actions';
+import { completeOnboarding } from '@/app/[locale]/register/actions';
 import {
   GENDERS,
   onboardingSchema,

@@ -7,7 +7,7 @@ import FieldRow from '@/components/ui/FieldRow';
 import Segmented from '@/components/ui/Segmented';
 import Toggle from '@/components/ui/Toggle';
 import Input from '@/components/ui/Input';
-import { updateProfile } from '@/app/profile/actions';
+import { updateProfile } from '@/app/[locale]/profile/actions';
 import {
   DIETARY_RESTRICTION_OPTIONS,
   EXPERIENCE_LEVELS,

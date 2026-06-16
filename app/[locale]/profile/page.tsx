@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ProfileEditor from '@/app/profile/ProfileEditor';
+import ProfileEditor from '@/app/[locale]/profile/ProfileEditor';
 import DeleteAccountSection from '@/components/auth/DeleteAccountSection';
 import { createClient } from '@/lib/supabase/server';
 import {

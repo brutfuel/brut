@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import FieldRow from '@/components/ui/FieldRow';
 import Segmented from '@/components/ui/Segmented';
-import { createRacePlan } from '@/app/brut-race/actions';
+import { createRacePlan } from '@/app/[locale]/brut-race/actions';
 import {
   DISTANCE_PRESETS,
   EXPERIENCE_LEVELS,

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import Modal from '@/components/ui/Modal';
-import { postponeRace } from '@/app/brut-race/actions';
+import { postponeRace } from '@/app/[locale]/brut-race/actions';
 
 interface Props {
   planId: string;

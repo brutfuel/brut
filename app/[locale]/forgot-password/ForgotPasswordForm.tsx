@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/ui/Input';
-import { requestPasswordReset } from '@/app/login/actions';
+import { requestPasswordReset } from '@/app/[locale]/login/actions';
 import {
   requestPasswordResetSchema,
   type RequestPasswordResetValues,

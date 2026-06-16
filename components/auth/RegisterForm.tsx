@@ -4,8 +4,8 @@ import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/ui/Input';
-import { signUpWithEmail } from '@/app/register/actions';
-import { signInWithGoogle } from '@/app/login/actions';
+import { signUpWithEmail } from '@/app/[locale]/register/actions';
+import { signInWithGoogle } from '@/app/[locale]/login/actions';
 import { registerSchema, type RegisterValues } from '@/lib/validation/auth';
 
 const blackButton =

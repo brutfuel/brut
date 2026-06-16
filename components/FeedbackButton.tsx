@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import Modal from '@/components/ui/Modal';
 import { createClient } from '@/lib/supabase/client';
-import { sendFeedback } from '@/app/feedback/actions';
+import { sendFeedback } from '@/app/[locale]/feedback/actions';
 
 const blackButton =
   'inline-flex items-center justify-center px-5 py-3 bg-brut-black text-white text-[10px] font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors disabled:opacity-40 disabled:cursor-not-allowed';

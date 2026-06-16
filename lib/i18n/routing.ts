@@ -26,3 +26,27 @@ export type AppLocale = (typeof routing.locales)[number];
  */
 export const { Link, redirect, usePathname, useRouter, getPathname } =
   createNavigation(routing);
+
+/**
+ * Build the URL for `path` rendered in `locale`. Strips any existing
+ * locale prefix from `path` first so callers can pass either a raw
+ * `/dashboard` or an already-prefixed `/ca/dashboard` without doubling
+ * up. The default locale gets no prefix (matches `localePrefix:
+ * 'as-needed'`).
+ *
+ * Used by server actions that want to redirect into the athlete's
+ * preferred locale after sign-in / onboarding.
+ */
+export function localizedPath(locale: AppLocale, path: string): string {
+  let normalised = path.startsWith('/') ? path : `/${path}`;
+  const segments = normalised.split('/');
+  if (
+    segments[1] &&
+    (routing.locales as ReadonlyArray<string>).includes(segments[1])
+  ) {
+    segments.splice(1, 1);
+    normalised = segments.join('/') || '/';
+  }
+  if (locale === routing.defaultLocale) return normalised;
+  return normalised === '/' ? `/${locale}` : `/${locale}${normalised}`;
+}

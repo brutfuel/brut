@@ -11,8 +11,41 @@ import {
   deleteAccountSchema,
   type DeleteAccountValues,
 } from '@/lib/validation/password';
+import { routing, type AppLocale } from '@/lib/i18n/routing';
 
 type ActionResult = { ok: true } | { ok: false; error: string };
+
+/**
+ * Persist the athlete's preferred locale onto `profiles.locale`. Used
+ * by the LocaleSwitcher in the header. Silently no-ops for visitors
+ * who are not signed in — their preference lives only in the
+ * `NEXT_LOCALE` cookie set by next-intl's router.
+ */
+export async function updateLocale(locale: string): Promise<ActionResult> {
+  if (!(routing.locales as ReadonlyArray<string>).includes(locale)) {
+    return { ok: false, error: 'Unsupported locale.' };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    // Anonymous switch — handled entirely by the cookie set by the
+    // next-intl router. Treat as success so the client UI proceeds.
+    return { ok: true };
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ locale: locale as AppLocale })
+    .eq('id', user.id);
+
+  if (error) {
+    return { ok: false, error: 'Could not save your language preference.' };
+  }
+  return { ok: true };
+}
 
 /** Persist the profile editor form. */
 export async function updateProfile(

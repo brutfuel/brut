@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import SignOutButton from '@/components/auth/SignOutButton';
+import LocaleSwitcher from '@/components/i18n/LocaleSwitcher';
 
 /**
  * Sticky, monochrome header. Client component so it can reflect the
@@ -94,6 +95,8 @@ export default function Header() {
           >
             Shop
           </a>
+
+          <LocaleSwitcher />
 
           {/* Auth slot */}
           {loading ? (

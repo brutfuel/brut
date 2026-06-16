@@ -1,5 +1,6 @@
 import type { PrimarySport } from '@/lib/validation/auth';
 import type { ExperienceLevel } from '@/lib/validation/race';
+import type { AppLocale } from '@/lib/i18n/routing';
 import type { PhaseName } from '@/lib/calculations/race-plan-generator';
 import type {
   CourseProfile,
@@ -65,6 +66,8 @@ export interface Profile {
   // Logistics
   typical_training_time: TrainingTime | null;
   typical_terrain: string[] | null;
+  // Added by migration-profile-locale.sql
+  locale: AppLocale | null;
 }
 
 export type RacePlanStatus = 'active' | 'completed' | 'archived' | 'paused';

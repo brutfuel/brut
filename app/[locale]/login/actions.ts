@@ -2,6 +2,7 @@
 
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { loginSchema, type LoginValues } from '@/lib/validation/auth';
 import {
@@ -12,6 +13,12 @@ import {
   type ResendVerificationValues,
   type UpdatePasswordValues,
 } from '@/lib/validation/password';
+import {
+  localizedPath,
+  routing,
+  type AppLocale,
+} from '@/lib/i18n/routing';
+import type { Profile } from '@/lib/types/db';
 
 type ActionResult = { error: string };
 type OkResult = { ok: true } | { ok: false; error: string };
@@ -24,8 +31,35 @@ function safeNext(next?: string): string {
 }
 
 /**
- * Sign in with email + password. Returns an error on failure;
- * on success redirects to `next` (or the dashboard).
+ * Resolve the locale we should land the athlete in after a successful
+ * sign-in. Preference order: `profiles.locale` (if set) → current
+ * request locale → default locale.
+ */
+async function resolvePostSignInLocale(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+): Promise<AppLocale> {
+  const { data } = await supabase
+    .from('profiles')
+    .select('locale')
+    .eq('id', userId)
+    .maybeSingle();
+  const stored = (data as Pick<Profile, 'locale'> | null)?.locale;
+  if (stored && (routing.locales as ReadonlyArray<string>).includes(stored)) {
+    return stored;
+  }
+  const current = await getLocale();
+  return (
+    (routing.locales as ReadonlyArray<string>).includes(current)
+      ? current
+      : routing.defaultLocale
+  ) as AppLocale;
+}
+
+/**
+ * Sign in with email + password. Returns an error on failure; on
+ * success redirects to `next` (or the dashboard), under the athlete's
+ * preferred locale.
  */
 export async function signInWithEmail(
   values: LoginValues,
@@ -37,28 +71,34 @@ export async function signInWithEmail(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: parsed.data.email,
     password: parsed.data.password,
   });
 
-  if (error) {
+  if (error || !data.user) {
     return { error: 'Incorrect email or password.' };
   }
 
-  redirect(safeNext(next));
+  const locale = await resolvePostSignInLocale(supabase, data.user.id);
+  redirect(localizedPath(locale, safeNext(next)));
 }
 
 /**
- * Start the Google OAuth flow. Supabase returns the provider URL,
- * which we redirect the browser to.
+ * Start the Google OAuth flow. The callback URL carries both the
+ * post-auth destination and the locale the athlete arrived from, so
+ * the route handler can land brand-new Google users in their preferred
+ * language even before a `profiles.locale` exists.
  */
 export async function signInWithGoogle(
   next?: string,
 ): Promise<ActionResult | void> {
   const supabase = await createClient();
   const origin = (await headers()).get('origin') ?? '';
-  const callback = `${origin}/auth/callback?next=${encodeURIComponent(safeNext(next))}`;
+  const locale = await getLocale();
+  const callback = `${origin}/auth/callback?next=${encodeURIComponent(
+    safeNext(next),
+  )}&locale=${encodeURIComponent(locale)}`;
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
@@ -76,7 +116,8 @@ export async function signInWithGoogle(
 export async function signOut(): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect('/login');
+  const locale = (await getLocale()) as AppLocale;
+  redirect(localizedPath(locale, '/login'));
 }
 
 // ----------------------------------------------------------------

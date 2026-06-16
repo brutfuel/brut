@@ -2,6 +2,7 @@
 
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { sendWelcomeEmail } from '@/lib/email/send';
 import {
@@ -10,8 +11,23 @@ import {
   type OnboardingValues,
   type RegisterValues,
 } from '@/lib/validation/auth';
+import {
+  localizedPath,
+  routing,
+  type AppLocale,
+} from '@/lib/i18n/routing';
 
 type ActionResult = { error: string };
+
+/** Coerce the current request locale to a known `AppLocale`. */
+async function currentLocale(): Promise<AppLocale> {
+  const locale = await getLocale();
+  return (
+    (routing.locales as ReadonlyArray<string>).includes(locale)
+      ? locale
+      : routing.defaultLocale
+  ) as AppLocale;
+}
 
 /**
  * Create a new account with email + password.
@@ -31,12 +47,13 @@ export async function signUpWithEmail(
 
   const supabase = await createClient();
   const origin = (await headers()).get('origin') ?? '';
+  const locale = await currentLocale();
 
   const { error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?next=/register/onboarding`,
+      emailRedirectTo: `${origin}/auth/callback?next=/register/onboarding&locale=${encodeURIComponent(locale)}`,
     },
   });
 
@@ -44,7 +61,7 @@ export async function signUpWithEmail(
     return { error: error.message };
   }
 
-  redirect('/register/onboarding');
+  redirect(localizedPath(locale, '/register/onboarding'));
 }
 
 /**
@@ -65,8 +82,10 @@ export async function completeOnboarding(
     data: { user },
   } = await supabase.auth.getUser();
 
+  const locale = await currentLocale();
+
   if (!user) {
-    redirect('/login');
+    redirect(localizedPath(locale, '/login'));
   }
 
   const { error } = await supabase
@@ -77,10 +96,14 @@ export async function completeOnboarding(
       gender: parsed.data.gender,
       primary_sport: parsed.data.primarySport,
       weight_kg: parsed.data.weightKg,
+      // Anchor profiles.locale to the page the athlete onboarded from.
+      // Phase F will use it to pick the welcome-email language.
+      locale,
     })
     .eq('id', user.id);
 
   if (error) {
+    console.error('completeOnboarding profile update failed', error);
     return { error: 'Could not save your profile. Try again.' };
   }
 
@@ -95,5 +118,5 @@ export async function completeOnboarding(
     }
   }
 
-  redirect('/dashboard');
+  redirect(localizedPath(locale, '/dashboard'));
 }

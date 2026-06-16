@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   routing,
   usePathname,
@@ -24,6 +24,7 @@ const LABELS: Record<AppLocale, string> = {
  * no-op when the visitor is not signed in.
  */
 export default function LocaleSwitcher() {
+  const t = useTranslations('locale_switcher');
   const current = useLocale() as AppLocale;
   const router = useRouter();
   const pathname = usePathname();
@@ -49,7 +50,7 @@ export default function LocaleSwitcher() {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label="Change language"
+        aria-label={t('aria_label')}
         className="text-xs font-medium tracking-brut-wide uppercase text-brut-ink hover:text-brut-black transition-colors disabled:opacity-50"
         disabled={pending}
       >

@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
+import { Link } from '@/lib/i18n/routing';
 
 const colTitle =
   'text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted';
@@ -10,56 +11,58 @@ const colLink =
  * secondary links and the copyright. Pages that require auth still
  * gate access themselves, so every link is rendered unconditionally.
  */
-export default function Footer() {
+export default async function Footer() {
+  const t = await getTranslations('footer');
+
   return (
     <footer className="w-full border-t border-brut-line mt-24 bg-white">
       <div className="mx-auto max-w-7xl px-6 md:px-10 py-12 md:py-16 flex flex-col gap-10">
         <p className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-          BRUT — Electrolyte performance
+          {t('tagline')}
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-10">
           <div className="flex flex-col gap-3">
-            <span className={colTitle}>Tools</span>
+            <span className={colTitle}>{t('col_tools')}</span>
             <Link href="/brut-train" className={colLink}>
-              Brut Train
+              {t('tools_brut_train')}
             </Link>
             <Link href="/brut-race" className={colLink}>
-              Brut Race
+              {t('tools_brut_race')}
             </Link>
           </div>
           <div className="flex flex-col gap-3">
-            <span className={colTitle}>Account</span>
+            <span className={colTitle}>{t('col_account')}</span>
             <Link href="/login" className={colLink}>
-              Sign in
+              {t('account_sign_in')}
             </Link>
             <Link href="/profile" className={colLink}>
-              Profile
+              {t('account_profile')}
             </Link>
             <Link href="/dashboard" className={colLink}>
-              Dashboard
+              {t('account_dashboard')}
             </Link>
           </div>
           <div className="flex flex-col gap-3">
-            <span className={colTitle}>Legal</span>
+            <span className={colTitle}>{t('col_legal')}</span>
             <Link href="/legal/privacy" className={colLink}>
-              Privacy
+              {t('legal_privacy')}
             </Link>
             <Link href="/legal/terms" className={colLink}>
-              Terms
+              {t('legal_terms')}
             </Link>
             <Link href="/legal/cookies" className={colLink}>
-              Cookies
+              {t('legal_cookies')}
             </Link>
           </div>
         </div>
 
         <nav className="flex flex-wrap gap-x-6 gap-y-3 border-t border-brut-line pt-8">
           <Link href="/about" className={colLink}>
-            About
+            {t('link_about')}
           </Link>
           <Link href="/contact" className={colLink}>
-            Contact
+            {t('link_contact')}
           </Link>
           <a
             href="https://brutfuel.com"
@@ -67,12 +70,12 @@ export default function Footer() {
             rel="noopener noreferrer"
             className={colLink}
           >
-            Shop
+            {t('link_shop')}
           </a>
         </nav>
 
         <p className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-          © 2026 Brut.
+          {t('copyright')}
         </p>
       </div>
     </footer>

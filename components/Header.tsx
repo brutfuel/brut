@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/lib/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
 import SignOutButton from '@/components/auth/SignOutButton';
 import LocaleSwitcher from '@/components/i18n/LocaleSwitcher';
@@ -12,6 +13,8 @@ import LocaleSwitcher from '@/components/i18n/LocaleSwitcher';
  * such as BRUT TRAIN, which rules out an async server component).
  */
 export default function Header() {
+  const t = useTranslations('header');
+  const tAuth = useTranslations('common.auth_actions');
   const [loading, setLoading] = useState(true);
   const [signedIn, setSignedIn] = useState(false);
   const [firstName, setFirstName] = useState<string>('');
@@ -68,7 +71,7 @@ export default function Header() {
       <div className="mx-auto max-w-7xl px-6 md:px-10 h-16 flex items-center justify-between">
         <Link
           href="/"
-          aria-label="BRUT home"
+          aria-label={t('home_aria')}
           className="text-xl md:text-2xl font-thin tracking-brut-wide text-brut-black"
         >
           BRUT
@@ -79,13 +82,13 @@ export default function Header() {
             href="/brut-train"
             className="text-brut-ink hover:text-brut-black transition-colors"
           >
-            Train
+            {t('nav_train')}
           </Link>
           <Link
             href="/brut-race"
             className="text-brut-ink hover:text-brut-black transition-colors"
           >
-            Race
+            {t('nav_race')}
           </Link>
           <a
             href="https://brutfuel.com"
@@ -93,7 +96,7 @@ export default function Header() {
             rel="noopener noreferrer"
             className="text-brut-ink hover:text-brut-black transition-colors"
           >
-            Shop
+            {t('nav_shop')}
           </a>
 
           <LocaleSwitcher />
@@ -110,7 +113,7 @@ export default function Header() {
                 aria-haspopup="menu"
                 className="text-brut-black hover:text-brut-ink transition-colors uppercase"
               >
-                {firstName || 'Account'}
+                {firstName || t('account_fallback')}
               </button>
 
               {menuOpen ? (
@@ -133,7 +136,7 @@ export default function Header() {
                       onClick={() => setMenuOpen(false)}
                       className="block px-4 py-3 text-xs font-medium tracking-brut-wide uppercase text-brut-ink hover:bg-brut-bg-soft transition-colors"
                     >
-                      Dashboard
+                      {t('menu_dashboard')}
                     </Link>
                     <Link
                       href="/profile"
@@ -141,7 +144,7 @@ export default function Header() {
                       onClick={() => setMenuOpen(false)}
                       className="block px-4 py-3 text-xs font-medium tracking-brut-wide uppercase text-brut-ink hover:bg-brut-bg-soft transition-colors border-t border-brut-line"
                     >
-                      Profile
+                      {t('menu_profile')}
                     </Link>
                     <div className="border-t border-brut-line">
                       <SignOutButton />
@@ -155,7 +158,7 @@ export default function Header() {
               href="/login"
               className="text-brut-black hover:text-brut-ink transition-colors"
             >
-              Sign in
+              {tAuth('sign_in')}
             </Link>
           )}
         </nav>

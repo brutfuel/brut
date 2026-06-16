@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import Modal from '@/components/ui/Modal';
 import { createClient } from '@/lib/supabase/client';
 import { sendFeedback } from '@/app/[locale]/feedback/actions';
@@ -17,6 +18,8 @@ const subLabel =
  * Opens a modal with email pre-filled and the current page URL.
  */
 export default function FeedbackButton() {
+  const t = useTranslations('feedback_button');
+  const tActions = useTranslations('common.actions');
   const [authReady, setAuthReady] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [email, setEmail] = useState('');
@@ -81,16 +84,16 @@ export default function FeedbackButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Send feedback"
+        aria-label={t('open_label')}
         className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-30 inline-flex items-center justify-center px-4 py-3 bg-brut-black text-white text-[10px] font-semibold tracking-brut-wide uppercase shadow-none hover:bg-brut-ink transition-colors"
       >
-        Send feedback
+        {t('open_label')}
       </button>
 
       <Modal
         open={open}
         onClose={close}
-        title="Send feedback"
+        title={t('modal_title')}
         footer={
           <>
             <button
@@ -99,7 +102,7 @@ export default function FeedbackButton() {
               onClick={close}
               disabled={pending}
             >
-              Close
+              {tActions('close')}
             </button>
             <button
               type="button"
@@ -107,19 +110,22 @@ export default function FeedbackButton() {
               onClick={submit}
               disabled={pending || sent}
             >
-              {pending ? 'Sending…' : sent ? 'Sent' : 'Send'}
+              {pending
+                ? tActions('sending')
+                : sent
+                  ? tActions('sent')
+                  : tActions('send')}
             </button>
           </>
         }
       >
         <div className="flex flex-col gap-4">
           <p className="text-sm font-normal text-brut-ink leading-relaxed">
-            Bug, idea, friction — whatever helps us improve BRUT. We read
-            everything.
+            {t('intro')}
           </p>
 
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>Email</span>
+            <span className={subLabel}>{t('email_label')}</span>
             <input
               type="email"
               value={email}
@@ -129,19 +135,19 @@ export default function FeedbackButton() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>Message</span>
+            <span className={subLabel}>{t('message_label')}</span>
             <textarea
               rows={4}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="What&rsquo;s on your mind?"
+              placeholder={t('message_placeholder')}
               className="w-full bg-transparent border-b border-brut-line py-2 text-sm font-normal text-brut-black placeholder:text-brut-muted focus:outline-none focus:border-brut-black transition-colors resize-none"
             />
           </div>
 
           {sent ? (
             <p className="text-sm font-normal text-brut-ink leading-relaxed border-l-2 border-brut-black pl-3">
-              Thanks — received. You can close this now.
+              {t('sent_message')}
             </p>
           ) : null}
           {error ? (

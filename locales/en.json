@@ -149,5 +149,48 @@
       "sessions_of_total": "{done} of {total} sessions completed",
       "sessions_skipped": "{count, plural, one {# skipped} other {# skipped}}"
     }
+  },
+  "header": {
+    "home_aria": "BRUT home",
+    "nav_train": "Train",
+    "nav_race": "Race",
+    "nav_shop": "Shop",
+    "account_fallback": "Account",
+    "menu_dashboard": "Dashboard",
+    "menu_profile": "Profile"
+  },
+  "footer": {
+    "tagline": "BRUT — Electrolyte performance",
+    "col_tools": "Tools",
+    "col_account": "Account",
+    "col_legal": "Legal",
+    "tools_brut_train": "Brut Train",
+    "tools_brut_race": "Brut Race",
+    "account_sign_in": "Sign in",
+    "account_profile": "Profile",
+    "account_dashboard": "Dashboard",
+    "legal_privacy": "Privacy",
+    "legal_terms": "Terms",
+    "legal_cookies": "Cookies",
+    "link_about": "About",
+    "link_contact": "Contact",
+    "link_shop": "Shop",
+    "copyright": "© 2026 Brut."
+  },
+  "cookie_banner": {
+    "message": "We use minimal cookies to keep you signed in. By using BRUT you accept our <privacy>Privacy Policy</privacy>.",
+    "accept": "Got it"
+  },
+  "feedback_button": {
+    "open_label": "Send feedback",
+    "modal_title": "Send feedback",
+    "intro": "Bug, idea, friction — whatever helps us improve BRUT. We read everything.",
+    "email_label": "Email",
+    "message_label": "Message",
+    "message_placeholder": "What’s on your mind?",
+    "sent_message": "Thanks — received. You can close this now."
+  },
+  "locale_switcher": {
+    "aria_label": "Change language"
   }
 }

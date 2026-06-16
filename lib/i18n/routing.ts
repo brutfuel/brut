@@ -20,6 +20,16 @@ export const routing = defineRouting({
 export type AppLocale = (typeof routing.locales)[number];
 
 /**
+ * BCP-47 tags for `Intl.*` formatters. We keep British English for
+ * the default and pin both translated locales to Spain.
+ */
+export const BCP47: Record<AppLocale, string> = {
+  en: 'en-GB',
+  ca: 'ca-ES',
+  es: 'es-ES',
+};
+
+/**
  * Locale-aware navigation helpers. Use these `Link`, `redirect`,
  * `usePathname`, `useRouter` everywhere inside the `[locale]` segment
  * instead of the ones from `next/link` / `next/navigation`.

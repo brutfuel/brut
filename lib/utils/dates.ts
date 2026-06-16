@@ -2,6 +2,8 @@
 //
 // Weekdays follow the database convention: 1 = Monday … 7 = Sunday.
 
+import { BCP47, type AppLocale } from '@/lib/i18n/routing';
+
 export const WEEKDAY_LABELS = [
   'Mon',
   'Tue',
@@ -46,17 +48,27 @@ export function toIsoDate(date: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-/** "SATURDAY 15 FEB" style date for editorial headings. */
-export function formatLongDate(iso: string | null): string {
+/** "SATURDAY 15 FEB" / "DISSABTE 15 FEB" / "SÁBADO 15 FEB" style date. */
+export function formatLongDate(
+  iso: string | null,
+  locale: AppLocale = 'en',
+): string {
   if (!iso) return '';
   const d = new Date(`${iso}T00:00:00`);
   return d
-    .toLocaleDateString('en-GB', {
+    .toLocaleDateString(BCP47[locale], {
       weekday: 'long',
       day: 'numeric',
       month: 'short',
     })
     .toUpperCase();
+}
+
+/** Full weekday name in the active locale ("Saturday" / "Dissabte" / "Sábado"). */
+export function weekdayLong(iso: string, locale: AppLocale = 'en'): string {
+  return new Date(`${iso}T00:00:00`).toLocaleDateString(BCP47[locale], {
+    weekday: 'long',
+  });
 }
 
 /** Whole days from today (00:00) to the given ISO date. May be negative. */

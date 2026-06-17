@@ -1,8 +1,9 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import RaceDaySetupForm from '@/components/brut-race/RaceDaySetupForm';
+import { Link } from '@/lib/i18n/routing';
 import { createClient } from '@/lib/supabase/server';
 import { daysFromTodayToIso } from '@/lib/utils/dates';
 import type { RaceDayPlan, RacePlan } from '@/lib/types/db';
@@ -11,12 +12,6 @@ import type { RaceDaySetupValues } from '@/lib/validation/race-day';
 interface Props {
   params: { planId: string };
 }
-
-const SPORT_LABELS: Record<RacePlan['sport'], string> = {
-  running: 'Running',
-  cycling: 'Cycling',
-  triathlon: 'Triathlon',
-};
 
 function defaultSetup(): RaceDaySetupValues {
   return {
@@ -32,6 +27,9 @@ function defaultSetup(): RaceDaySetupValues {
 }
 
 export default async function RaceDaySetupPage({ params }: Props) {
+  const t = await getTranslations('brut_race.race_day_setup');
+  const tSports = await getTranslations('sports');
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -57,10 +55,10 @@ export default async function RaceDaySetupPage({ params }: Props) {
             href="/dashboard"
             className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted hover:text-brut-black transition-colors"
           >
-            &larr; Back to dashboard
+            {t('back_to_dashboard')}
           </Link>
           <h1 className="mt-6 text-[40px] md:text-[56px] leading-[1.0] font-thin tracking-brut text-brut-black">
-            Race plan not found
+            {t('plan_not_found')}
           </h1>
         </main>
         <Footer />
@@ -94,7 +92,7 @@ export default async function RaceDaySetupPage({ params }: Props) {
 
   const daysToGo = daysFromTodayToIso(plan.race_date);
   const title =
-    plan.race_name ?? `${SPORT_LABELS[plan.sport]} · ${plan.distance_km} km`;
+    plan.race_name ?? `${tSports(plan.sport)} · ${plan.distance_km} km`;
 
   return (
     <>
@@ -105,17 +103,19 @@ export default async function RaceDaySetupPage({ params }: Props) {
           href={`/brut-race/${plan.id}`}
           className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted hover:text-brut-black transition-colors"
         >
-          &larr; Back to plan
+          {t('back_to_plan')}
         </Link>
 
         <span className="mt-6 inline-block text-xs font-semibold tracking-brut-wide uppercase text-brut-muted">
-          Race day plan
+          {t('eyebrow')}
         </span>
         <h1 className="mt-3 text-[40px] md:text-[56px] leading-[1.0] font-thin tracking-brut text-brut-black">
           {title}
         </h1>
         <p className="mt-3 text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted tabular-nums">
-          {daysToGo >= 0 ? `${daysToGo} days to go` : `Race day passed`}
+          {daysToGo >= 0
+            ? t('days_to_go', { days: daysToGo })
+            : t('race_day_passed')}
         </p>
 
         <div className="mt-12">

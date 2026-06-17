@@ -90,9 +90,9 @@
       "message_min": "Afegeix més paraules perquè et puguem ajudar",
       "message_too_long": "El missatge és massa llarg",
       "start_time_format": "Fes servir HH:MM",
-      "start_time_required": "Tria l'hora de sortida",
-      "expected_temp_required": "Tria una temperatura prevista",
-      "expected_humidity_required": "Tria una humitat prevista",
+      "start_time_required": "Tria una hora d'inici",
+      "expected_temp_required": "Tria una temperatura esperada",
+      "expected_humidity_required": "Tria una humitat esperada",
       "training_days_required": "Tria els teus dies d'entrenament",
       "new_date_required": "Tria una nova data",
       "new_race_date_required": "Tria una nova data de cursa",
@@ -105,7 +105,8 @@
       "hr_max_too_low": "La FC màx. sembla massa baixa",
       "hr_max_too_high": "La FC màx. sembla massa alta",
       "ftp_too_low": "L'FTP sembla massa baix",
-      "ftp_too_high": "L'FTP sembla massa alt"
+      "ftp_too_high": "L'FTP sembla massa alt",
+      "start_time_invalid": "Utilitza HH:MM"
     },
     "status": {
       "completed": "Completada",
@@ -708,6 +709,131 @@
       "action_mark_done": "Marca com a feta",
       "action_reschedule": "Reprograma",
       "action_skip": "Omet"
+    },
+    "race_day_setup": {
+      "eyebrow": "Pla del dia de cursa",
+      "back_to_plan": "← Tornar al pla",
+      "back_to_dashboard": "← Tornar al tauler",
+      "plan_not_found": "Pla de cursa no trobat",
+      "days_to_go": "{days} dies per anar",
+      "race_day_passed": "El dia de la cursa ja ha passat",
+      "form": {
+        "course_profile": "Perfil del recorregut",
+        "expected_conditions": "Condicions esperades",
+        "temperature": "Temperatura",
+        "humidity": "Humitat",
+        "weather": "Meteorologia",
+        "race_start": "Inici de la cursa",
+        "race_start_aria": "Hora d'inici de la cursa",
+        "pacing_strategy": "Estratègia de ritme",
+        "restrictions": "Restriccions",
+        "caffeine_ok": "Cafeïna OK?",
+        "preferred_fueling": "Nutrició preferida (opcional)",
+        "preferred_fueling_placeholder": "p. ex. SiS Beta Fuel, Maurten Gel 100, plàtan"
+      },
+      "course_profile": {
+        "flat": "Pla",
+        "rolling": "Ondulat",
+        "hilly": "Muntanyós suau",
+        "mountainous": "Muntanyós"
+      },
+      "weather": {
+        "sunny": "Sol",
+        "cloudy": "Núvol",
+        "rainy": "Pluja",
+        "cold": "Fred",
+        "hot": "Calor"
+      },
+      "pacing": {
+        "even": "Ritme uniforme",
+        "even_desc": "Mantén el mateix ritme de cap a cap.",
+        "negative_split": "Negative split",
+        "negative_split_desc": "Comença controlat, accelera a la segona meitat.",
+        "cautious_start": "Inici prudent",
+        "cautious_start_desc": "Surt més suau que el ritme objectiu i ves construint.",
+        "aggressive_start": "Inici agressiu",
+        "aggressive_start_desc": "Guanya temps al principi i aguanta el final."
+      },
+      "submit": "Genera el pla del dia",
+      "submitting": "Generant…",
+      "actions": {
+        "invalid_setup": "Configuració no vàlida.",
+        "sign_in_required": "Cal iniciar sessió.",
+        "plan_not_found": "Pla de cursa no trobat.",
+        "could_not_save": "No s'ha pogut desar el pla del dia."
+      }
+    },
+    "race_day_view": {
+      "eyebrow": "Pla del dia de cursa",
+      "back_to_plan": "← Tornar al pla",
+      "countdown": "Compte enrere",
+      "today_is_the_day": "Avui és el dia",
+      "days_to_go": "dies per anar",
+      "day_to_go": "dia per anar",
+      "race_day_passed": "El dia de la cursa ja ha passat",
+      "meta_start": "Inici {time}",
+      "meta_expected_prefix": "Esperat ",
+      "meta_humidity_suffix": " d'humitat",
+      "section_pre_week": "Setmana prèvia",
+      "section_morning": "Matí de la cursa",
+      "section_during": "Durant la cursa",
+      "section_post": "Recuperació post-cursa",
+      "morning_unavailable": "Pla del matí de cursa no disponible.",
+      "during_unavailable": "Pla durant la cursa no disponible.",
+      "post_unavailable": "Pla post-cursa no disponible.",
+      "morning_wake_up": "Despertador",
+      "morning_wake_up_detail": "Inici tranquil. Llum natural, líquids, moviment lleuger.",
+      "morning_meal": "Àpat pre-cursa · {carbs} g de carbohidrats",
+      "morning_water": "{ml} ml d'aigua{salt, select, true { amb una mica de sal} other {}}",
+      "morning_water_detail": "Beu a glops, no d'un cop.",
+      "morning_last_brut": "Última càpsula BRUT",
+      "morning_last_brut_detail": "Recarrega sodi just abans de sortir.",
+      "morning_warm_up": "Escalfament",
+      "morning_race_start": "INICI DE LA CURSA",
+      "morning_race_start_detail": "Confia en el pla.",
+      "km_range": "Km {start} – {end}",
+      "fueling_water": "{ml} ml d'aigua @ km {at}",
+      "fueling_gel_one": "{count} gel",
+      "fueling_gel_other": "{count} gels",
+      "fueling_gel_at": " @ km {at}",
+      "fueling_brut_one": "{count} càps. BRUT",
+      "fueling_brut_other": "{count} càps. BRUT",
+      "fueling_brut_at": " @ km {at}",
+      "refuel_window": "Finestra de recàrrega",
+      "refuel_summary": "{protein} g proteïna · {carbs} g carbohidrats · {water} ml aigua · {count, plural, one {# càpsula BRUT} other {# càpsules BRUT}}",
+      "post_day_of": "Mateix dia",
+      "post_day_plus_1": "Dia +1",
+      "post_day_plus_2": "Dia +2",
+      "post_return": "Retorn",
+      "edit_setup": "Edita la configuració",
+      "actions_coming_note": "Imprimir i marcar com a completada arriben aviat.",
+      "day_keys": {
+        "day_minus_7": "Dia −7",
+        "day_minus_6": "Dia −6",
+        "day_minus_5": "Dia −5",
+        "day_minus_4": "Dia −4",
+        "day_minus_3": "Dia −3",
+        "day_minus_2": "Dia −2",
+        "day_minus_1": "Dia −1"
+      },
+      "focus": {
+        "maintain": "Manteniment",
+        "taper": "Afinament",
+        "rest": "Descans",
+        "race_prep": "Preparació de cursa"
+      },
+      "training": {
+        "short_easy": "Suau curt",
+        "short_with_strides": "Suau + progressions",
+        "short_quality": "Qualitat curta",
+        "rest": "Descans"
+      },
+      "nutrition_focus": {
+        "normal": "Alimentació normal",
+        "carb_load": "Càrrega de carbohidrats",
+        "low_fiber": "Baixa en fibra",
+        "hydration_priority": "Prioritat d'hidratació"
+      }
     }
   }
 }

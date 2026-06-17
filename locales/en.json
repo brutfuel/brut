@@ -105,7 +105,8 @@
       "hr_max_too_low": "HR max looks too low",
       "hr_max_too_high": "HR max looks too high",
       "ftp_too_low": "FTP looks too low",
-      "ftp_too_high": "FTP looks too high"
+      "ftp_too_high": "FTP looks too high",
+      "start_time_invalid": "Use HH:MM"
     },
     "status": {
       "completed": "Completed",
@@ -708,6 +709,131 @@
       "action_mark_done": "Mark as done",
       "action_reschedule": "Reschedule",
       "action_skip": "Skip"
+    },
+    "race_day_setup": {
+      "eyebrow": "Race day plan",
+      "back_to_plan": "← Back to plan",
+      "back_to_dashboard": "← Back to dashboard",
+      "plan_not_found": "Race plan not found",
+      "days_to_go": "{days} days to go",
+      "race_day_passed": "Race day passed",
+      "form": {
+        "course_profile": "Course profile",
+        "expected_conditions": "Expected conditions",
+        "temperature": "Temperature",
+        "humidity": "Humidity",
+        "weather": "Weather",
+        "race_start": "Race start",
+        "race_start_aria": "Race start time",
+        "pacing_strategy": "Pacing strategy",
+        "restrictions": "Restrictions",
+        "caffeine_ok": "Caffeine OK?",
+        "preferred_fueling": "Preferred fuelling (optional)",
+        "preferred_fueling_placeholder": "e.g. SiS Beta Fuel, Maurten Gel 100, banana"
+      },
+      "course_profile": {
+        "flat": "Flat",
+        "rolling": "Rolling",
+        "hilly": "Hilly",
+        "mountainous": "Mountainous"
+      },
+      "weather": {
+        "sunny": "Sunny",
+        "cloudy": "Cloudy",
+        "rainy": "Rainy",
+        "cold": "Cold",
+        "hot": "Hot"
+      },
+      "pacing": {
+        "even": "Even pace",
+        "even_desc": "Hold steady from gun to tape.",
+        "negative_split": "Negative split",
+        "negative_split_desc": "Start controlled, lift in the second half.",
+        "cautious_start": "Cautious start",
+        "cautious_start_desc": "Open easier than goal pace, build into it.",
+        "aggressive_start": "Aggressive start",
+        "aggressive_start_desc": "Bank time early, hold on at the back end."
+      },
+      "submit": "Generate race day plan",
+      "submitting": "Generating…",
+      "actions": {
+        "invalid_setup": "Invalid setup.",
+        "sign_in_required": "Sign in required.",
+        "plan_not_found": "Race plan not found.",
+        "could_not_save": "Could not save your race-day plan."
+      }
+    },
+    "race_day_view": {
+      "eyebrow": "Race day plan",
+      "back_to_plan": "← Back to plan",
+      "countdown": "Countdown",
+      "today_is_the_day": "Today is the day",
+      "days_to_go": "days to go",
+      "day_to_go": "day to go",
+      "race_day_passed": "Race day passed",
+      "meta_start": "Start {time}",
+      "meta_expected_prefix": "Expected ",
+      "meta_humidity_suffix": " humidity",
+      "section_pre_week": "Pre-race week",
+      "section_morning": "Race morning",
+      "section_during": "During the race",
+      "section_post": "Post-race recovery",
+      "morning_unavailable": "Race morning plan unavailable.",
+      "during_unavailable": "During-race plan unavailable.",
+      "post_unavailable": "Post-race plan unavailable.",
+      "morning_wake_up": "Wake up",
+      "morning_wake_up_detail": "Calm start. Daylight, fluids, light movement.",
+      "morning_meal": "Pre-race meal · {carbs} g carbs",
+      "morning_water": "{ml} ml water{salt, select, true { with a pinch of salt} other {}}",
+      "morning_water_detail": "Sip steadily, not gulp.",
+      "morning_last_brut": "Last BRUT capsule",
+      "morning_last_brut_detail": "Top up sodium right before the gun.",
+      "morning_warm_up": "Warm-up",
+      "morning_race_start": "RACE START",
+      "morning_race_start_detail": "Trust the plan.",
+      "km_range": "Km {start} – {end}",
+      "fueling_water": "{ml} ml water @ km {at}",
+      "fueling_gel_one": "{count} gel",
+      "fueling_gel_other": "{count} gels",
+      "fueling_gel_at": " @ km {at}",
+      "fueling_brut_one": "{count} BRUT cap",
+      "fueling_brut_other": "{count} BRUT caps",
+      "fueling_brut_at": " @ km {at}",
+      "refuel_window": "Refuel window",
+      "refuel_summary": "{protein} g protein · {carbs} g carbs · {water} ml water · {count, plural, one {# BRUT capsule} other {# BRUT capsules}}",
+      "post_day_of": "Day of",
+      "post_day_plus_1": "Day +1",
+      "post_day_plus_2": "Day +2",
+      "post_return": "Return",
+      "edit_setup": "Edit setup",
+      "actions_coming_note": "Print and mark complete arrive soon.",
+      "day_keys": {
+        "day_minus_7": "Day −7",
+        "day_minus_6": "Day −6",
+        "day_minus_5": "Day −5",
+        "day_minus_4": "Day −4",
+        "day_minus_3": "Day −3",
+        "day_minus_2": "Day −2",
+        "day_minus_1": "Day −1"
+      },
+      "focus": {
+        "maintain": "Maintain",
+        "taper": "Taper",
+        "rest": "Rest",
+        "race_prep": "Race prep"
+      },
+      "training": {
+        "short_easy": "Short easy",
+        "short_with_strides": "Easy + strides",
+        "short_quality": "Short quality",
+        "rest": "Rest"
+      },
+      "nutrition_focus": {
+        "normal": "Normal eating",
+        "carb_load": "Carb loading",
+        "low_fiber": "Low fibre",
+        "hydration_priority": "Hydration priority"
+      }
     }
   }
 }

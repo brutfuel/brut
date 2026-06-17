@@ -90,9 +90,9 @@
       "message_min": "Añade más palabras para que podamos ayudarte",
       "message_too_long": "El mensaje es demasiado largo",
       "start_time_format": "Usa HH:MM",
-      "start_time_required": "Elige la hora de salida",
-      "expected_temp_required": "Elige una temperatura prevista",
-      "expected_humidity_required": "Elige una humedad prevista",
+      "start_time_required": "Elige una hora de inicio",
+      "expected_temp_required": "Elige una temperatura esperada",
+      "expected_humidity_required": "Elige una humedad esperada",
       "training_days_required": "Elige tus días de entrenamiento",
       "new_date_required": "Elige una nueva fecha",
       "new_race_date_required": "Elige una nueva fecha de carrera",
@@ -105,7 +105,8 @@
       "hr_max_too_low": "La FC máx. parece demasiado baja",
       "hr_max_too_high": "La FC máx. parece demasiado alta",
       "ftp_too_low": "El FTP parece demasiado bajo",
-      "ftp_too_high": "El FTP parece demasiado alto"
+      "ftp_too_high": "El FTP parece demasiado alto",
+      "start_time_invalid": "Usa HH:MM"
     },
     "status": {
       "completed": "Completada",
@@ -708,6 +709,131 @@
       "action_mark_done": "Marcar como hecha",
       "action_reschedule": "Reprogramar",
       "action_skip": "Omitir"
+    },
+    "race_day_setup": {
+      "eyebrow": "Plan del día de carrera",
+      "back_to_plan": "← Volver al plan",
+      "back_to_dashboard": "← Volver al panel",
+      "plan_not_found": "Plan de carrera no encontrado",
+      "days_to_go": "{days} días para la meta",
+      "race_day_passed": "El día de la carrera ya ha pasado",
+      "form": {
+        "course_profile": "Perfil del recorrido",
+        "expected_conditions": "Condiciones esperadas",
+        "temperature": "Temperatura",
+        "humidity": "Humedad",
+        "weather": "Meteorología",
+        "race_start": "Inicio de la carrera",
+        "race_start_aria": "Hora de inicio de la carrera",
+        "pacing_strategy": "Estrategia de ritmo",
+        "restrictions": "Restricciones",
+        "caffeine_ok": "¿Cafeína OK?",
+        "preferred_fueling": "Nutrición preferida (opcional)",
+        "preferred_fueling_placeholder": "p. ej. SiS Beta Fuel, Maurten Gel 100, plátano"
+      },
+      "course_profile": {
+        "flat": "Llano",
+        "rolling": "Ondulado",
+        "hilly": "Montañoso suave",
+        "mountainous": "Montañoso"
+      },
+      "weather": {
+        "sunny": "Sol",
+        "cloudy": "Nublado",
+        "rainy": "Lluvia",
+        "cold": "Frío",
+        "hot": "Calor"
+      },
+      "pacing": {
+        "even": "Ritmo uniforme",
+        "even_desc": "Mantén el mismo ritmo de principio a fin.",
+        "negative_split": "Negative split",
+        "negative_split_desc": "Empieza controlado, acelera en la segunda mitad.",
+        "cautious_start": "Inicio prudente",
+        "cautious_start_desc": "Sal más suave que el ritmo objetivo y ve construyendo.",
+        "aggressive_start": "Inicio agresivo",
+        "aggressive_start_desc": "Gana tiempo al principio y aguanta el final."
+      },
+      "submit": "Generar plan del día",
+      "submitting": "Generando…",
+      "actions": {
+        "invalid_setup": "Configuración no válida.",
+        "sign_in_required": "Inicia sesión para continuar.",
+        "plan_not_found": "Plan de carrera no encontrado.",
+        "could_not_save": "No se pudo guardar el plan del día."
+      }
+    },
+    "race_day_view": {
+      "eyebrow": "Plan del día de carrera",
+      "back_to_plan": "← Volver al plan",
+      "countdown": "Cuenta atrás",
+      "today_is_the_day": "Hoy es el día",
+      "days_to_go": "días para la meta",
+      "day_to_go": "día para la meta",
+      "race_day_passed": "El día de la carrera ya ha pasado",
+      "meta_start": "Inicio {time}",
+      "meta_expected_prefix": "Esperado ",
+      "meta_humidity_suffix": " de humedad",
+      "section_pre_week": "Semana previa",
+      "section_morning": "Mañana de la carrera",
+      "section_during": "Durante la carrera",
+      "section_post": "Recuperación post-carrera",
+      "morning_unavailable": "Plan de la mañana de carrera no disponible.",
+      "during_unavailable": "Plan durante la carrera no disponible.",
+      "post_unavailable": "Plan post-carrera no disponible.",
+      "morning_wake_up": "Despertarse",
+      "morning_wake_up_detail": "Inicio tranquilo. Luz natural, líquidos, movimiento ligero.",
+      "morning_meal": "Comida pre-carrera · {carbs} g de carbohidratos",
+      "morning_water": "{ml} ml de agua{salt, select, true { con una pizca de sal} other {}}",
+      "morning_water_detail": "Bebe a sorbos, no de golpe.",
+      "morning_last_brut": "Última cápsula BRUT",
+      "morning_last_brut_detail": "Recarga sodio justo antes de salir.",
+      "morning_warm_up": "Calentamiento",
+      "morning_race_start": "INICIO DE LA CARRERA",
+      "morning_race_start_detail": "Confía en el plan.",
+      "km_range": "Km {start} – {end}",
+      "fueling_water": "{ml} ml de agua @ km {at}",
+      "fueling_gel_one": "{count} gel",
+      "fueling_gel_other": "{count} geles",
+      "fueling_gel_at": " @ km {at}",
+      "fueling_brut_one": "{count} cáps. BRUT",
+      "fueling_brut_other": "{count} cáps. BRUT",
+      "fueling_brut_at": " @ km {at}",
+      "refuel_window": "Ventana de recarga",
+      "refuel_summary": "{protein} g proteína · {carbs} g carbohidratos · {water} ml agua · {count, plural, one {# cápsula BRUT} other {# cápsulas BRUT}}",
+      "post_day_of": "Mismo día",
+      "post_day_plus_1": "Día +1",
+      "post_day_plus_2": "Día +2",
+      "post_return": "Retorno",
+      "edit_setup": "Editar configuración",
+      "actions_coming_note": "Imprimir y marcar como completada llegan pronto.",
+      "day_keys": {
+        "day_minus_7": "Día −7",
+        "day_minus_6": "Día −6",
+        "day_minus_5": "Día −5",
+        "day_minus_4": "Día −4",
+        "day_minus_3": "Día −3",
+        "day_minus_2": "Día −2",
+        "day_minus_1": "Día −1"
+      },
+      "focus": {
+        "maintain": "Mantenimiento",
+        "taper": "Afinamiento",
+        "rest": "Descanso",
+        "race_prep": "Preparación de carrera"
+      },
+      "training": {
+        "short_easy": "Suave corto",
+        "short_with_strides": "Suave + progresiones",
+        "short_quality": "Calidad corta",
+        "rest": "Descanso"
+      },
+      "nutrition_focus": {
+        "normal": "Alimentación normal",
+        "carb_load": "Carga de carbohidratos",
+        "low_fiber": "Baja en fibra",
+        "hydration_priority": "Prioridad de hidratación"
+      }
     }
   }
 }

@@ -13,12 +13,12 @@ import {
 export const raceDaySetupSchema = z.object({
   courseProfile: z.enum(COURSE_PROFILES),
   expectedTemperatureC: z
-    .number({ error: 'Pick an expected temperature' })
+    .number({ error: 'expected_temp_required' })
     .int()
     .min(-10)
     .max(45),
   expectedHumidityPct: z
-    .number({ error: 'Pick an expected humidity' })
+    .number({ error: 'expected_humidity_required' })
     .int()
     .min(0)
     .max(100),
@@ -26,8 +26,8 @@ export const raceDaySetupSchema = z.object({
   /** Race start time HH:MM (24h). */
   startTime: z
     .string()
-    .regex(/^\d{2}:\d{2}$/, 'Use HH:MM')
-    .min(1, 'Pick a start time'),
+    .regex(/^\d{2}:\d{2}$/, 'start_time_invalid')
+    .min(1, 'start_time_required'),
   pacingStrategy: z.enum(PACING_STRATEGIES),
   caffeineOk: z.boolean(),
   preferredGels: z.string().max(200).nullable(),

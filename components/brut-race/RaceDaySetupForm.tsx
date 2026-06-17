@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FieldRow from '@/components/ui/FieldRow';
@@ -12,10 +13,13 @@ import {
   raceDaySetupSchema,
   type RaceDaySetupValues,
 } from '@/lib/validation/race-day';
-import type {
-  CourseProfile,
-  ExpectedWeather,
-  PacingStrategy,
+import {
+  COURSE_PROFILES,
+  EXPECTED_WEATHERS,
+  PACING_STRATEGIES,
+  type CourseProfile,
+  type ExpectedWeather,
+  type PacingStrategy,
 } from '@/lib/calculations/race-day-generator';
 
 interface Props {
@@ -25,55 +29,17 @@ interface Props {
 
 const TOTAL = '05';
 
-const COURSE_OPTIONS: ReadonlyArray<{ value: CourseProfile; label: string }> = [
-  { value: 'flat', label: 'Flat' },
-  { value: 'rolling', label: 'Rolling' },
-  { value: 'hilly', label: 'Hilly' },
-  { value: 'mountainous', label: 'Mountainous' },
-];
-
-const WEATHER_OPTIONS: ReadonlyArray<{
-  value: ExpectedWeather;
-  label: string;
-}> = [
-  { value: 'sunny', label: 'Sunny' },
-  { value: 'cloudy', label: 'Cloudy' },
-  { value: 'rainy', label: 'Rainy' },
-  { value: 'cold', label: 'Cold' },
-  { value: 'hot', label: 'Hot' },
-];
-
-const PACING_OPTIONS: ReadonlyArray<{
-  value: PacingStrategy;
-  label: string;
-  description: string;
-}> = [
-  {
-    value: 'even',
-    label: 'Even pace',
-    description: 'Hold steady from gun to tape.',
-  },
-  {
-    value: 'negative_split',
-    label: 'Negative split',
-    description: 'Start controlled, lift in the second half.',
-  },
-  {
-    value: 'cautious_start',
-    label: 'Cautious start',
-    description: 'Open easier than goal pace, build into it.',
-  },
-  {
-    value: 'aggressive_start',
-    label: 'Aggressive start',
-    description: 'Bank time early, hold on at the back end.',
-  },
-];
-
 const subLabel =
   'text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted';
 
 export default function RaceDaySetupForm({ planId, initialValues }: Props) {
+  const t = useTranslations('brut_race.race_day_setup');
+  const tForm = useTranslations('brut_race.race_day_setup.form');
+  const tCourse = useTranslations('brut_race.race_day_setup.course_profile');
+  const tWeather = useTranslations('brut_race.race_day_setup.weather');
+  const tPacing = useTranslations('brut_race.race_day_setup.pacing');
+  const tV = useTranslations('common.validation');
+
   const [formError, setFormError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -99,17 +65,39 @@ export default function RaceDaySetupForm({ planId, initialValues }: Props) {
     setFormError(null);
     startTransition(async () => {
       const result = await saveRaceDaySetup(planId, values);
-      // Success redirects server-side; only errors return.
       if (result?.ok === false) {
         setFormError(result.error);
       }
     });
   }
 
+  function err(code: string | undefined): string | null {
+    if (!code) return null;
+    try {
+      return tV(code);
+    } catch {
+      return code;
+    }
+  }
+
+  const COURSE_OPTIONS = COURSE_PROFILES.map((v) => ({
+    value: v,
+    label: tCourse(v),
+  }));
+  const WEATHER_OPTIONS = EXPECTED_WEATHERS.map((v) => ({
+    value: v,
+    label: tWeather(v),
+  }));
+  const PACING_OPTIONS = PACING_STRATEGIES.map((v) => ({
+    value: v,
+    label: tPacing(v),
+    description: tPacing(`${v}_desc`),
+  }));
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full" noValidate>
       {/* 01 — Course profile */}
-      <FieldRow index="01" total={TOTAL} label="Course profile">
+      <FieldRow index="01" total={TOTAL} label={tForm('course_profile')}>
         <Segmented
           options={COURSE_OPTIONS}
           value={courseProfile}
@@ -117,15 +105,19 @@ export default function RaceDaySetupForm({ planId, initialValues }: Props) {
             setValue('courseProfile', v, { shouldValidate: true })
           }
           columns={4}
-          ariaLabel="Course profile"
+          ariaLabel={tForm('course_profile')}
         />
       </FieldRow>
 
       {/* 02 — Expected conditions */}
-      <FieldRow index="02" total={TOTAL} label="Expected conditions">
+      <FieldRow
+        index="02"
+        total={TOTAL}
+        label={tForm('expected_conditions')}
+      >
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>Temperature</span>
+            <span className={subLabel}>{tForm('temperature')}</span>
             <Slider
               min={-5}
               max={45}
@@ -135,11 +127,11 @@ export default function RaceDaySetupForm({ planId, initialValues }: Props) {
                 setValue('expectedTemperatureC', v, { shouldValidate: true })
               }
               formatValue={(v) => `${v}°C`}
-              ariaLabel="Expected temperature"
+              ariaLabel={tForm('temperature')}
             />
           </div>
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>Humidity</span>
+            <span className={subLabel}>{tForm('humidity')}</span>
             <Slider
               min={10}
               max={100}
@@ -149,11 +141,11 @@ export default function RaceDaySetupForm({ planId, initialValues }: Props) {
                 setValue('expectedHumidityPct', v, { shouldValidate: true })
               }
               formatValue={(v) => `${v}%`}
-              ariaLabel="Expected humidity"
+              ariaLabel={tForm('humidity')}
             />
           </div>
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>Weather</span>
+            <span className={subLabel}>{tForm('weather')}</span>
             <Segmented
               options={WEATHER_OPTIONS}
               value={expectedWeather}
@@ -162,31 +154,31 @@ export default function RaceDaySetupForm({ planId, initialValues }: Props) {
               }
               columns={5}
               size="sm"
-              ariaLabel="Expected weather"
+              ariaLabel={tForm('weather')}
             />
           </div>
         </div>
       </FieldRow>
 
       {/* 03 — Race start */}
-      <FieldRow index="03" total={TOTAL} label="Race start">
+      <FieldRow index="03" total={TOTAL} label={tForm('race_start')}>
         <div className="flex flex-col gap-2">
           <input
             type="time"
-            aria-label="Race start time"
+            aria-label={tForm('race_start_aria')}
             className="w-full max-w-xs bg-transparent border-b border-brut-line py-2 text-base font-normal text-brut-black focus:outline-none focus:border-brut-black transition-colors"
             {...register('startTime')}
           />
           {errors.startTime ? (
             <p className="mt-1 text-xs font-medium text-brut-ink">
-              {errors.startTime.message}
+              {err(errors.startTime.message)}
             </p>
           ) : null}
         </div>
       </FieldRow>
 
       {/* 04 — Pacing strategy */}
-      <FieldRow index="04" total={TOTAL} label="Pacing strategy">
+      <FieldRow index="04" total={TOTAL} label={tForm('pacing_strategy')}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-brut-line border border-brut-line">
           {PACING_OPTIONS.map((opt) => {
             const active = pacingStrategy === opt.value;
@@ -195,7 +187,7 @@ export default function RaceDaySetupForm({ planId, initialValues }: Props) {
                 key={opt.value}
                 type="button"
                 onClick={() =>
-                  setValue('pacingStrategy', opt.value, {
+                  setValue('pacingStrategy', opt.value as PacingStrategy, {
                     shouldValidate: true,
                   })
                 }
@@ -223,23 +215,23 @@ export default function RaceDaySetupForm({ planId, initialValues }: Props) {
       </FieldRow>
 
       {/* 05 — Restrictions */}
-      <FieldRow index="05" total={TOTAL} label="Restrictions">
+      <FieldRow index="05" total={TOTAL} label={tForm('restrictions')}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>Caffeine OK?</span>
+            <span className={subLabel}>{tForm('caffeine_ok')}</span>
             <Toggle
               value={caffeineOk}
               onChange={(v) =>
                 setValue('caffeineOk', v, { shouldValidate: true })
               }
-              ariaLabel="Caffeine OK"
+              ariaLabel={tForm('caffeine_ok')}
             />
           </div>
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>Preferred fuelling (optional)</span>
+            <span className={subLabel}>{tForm('preferred_fueling')}</span>
             <input
               type="text"
-              placeholder="e.g. SiS Beta Fuel, Maurten Gel 100, banana"
+              placeholder={tForm('preferred_fueling_placeholder')}
               className="w-full bg-transparent border-b border-brut-line py-2 text-base font-normal text-brut-black placeholder:text-brut-muted focus:outline-none focus:border-brut-black transition-colors"
               {...register('preferredGels', {
                 setValueAs: (v) =>
@@ -262,7 +254,7 @@ export default function RaceDaySetupForm({ planId, initialValues }: Props) {
           disabled={pending}
           className="block w-full text-center py-5 bg-brut-black text-white text-xs font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {pending ? 'Generating…' : 'Generate race day plan'}
+          {pending ? t('submitting') : t('submit')}
         </button>
       </div>
     </form>

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import {
   raceDaySetupSchema,
@@ -24,19 +25,19 @@ export async function saveRaceDaySetup(
   planId: string,
   values: RaceDaySetupValues,
 ): Promise<ActionResult | void> {
+  const tE = await getTranslations('brut_race.race_day_setup.actions');
+  const tV = await getTranslations('common.validation');
   const parsed = raceDaySetupSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid setup.',
-    };
+    const code = parsed.error.issues[0]?.message;
+    return { ok: false, error: code ? tV(code) : tE('invalid_setup') };
   }
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: 'Sign in required.' };
+  if (!user) return { ok: false, error: tE('sign_in_required') };
 
   // Race plan — used as the input for the generator.
   const { data: planData } = await supabase
@@ -48,7 +49,7 @@ export async function saveRaceDaySetup(
     RacePlan,
     'id' | 'sport' | 'distance_km' | 'race_date' | 'target_time_minutes'
   > | null;
-  if (!plan) return { ok: false, error: 'Race plan not found.' };
+  if (!plan) return { ok: false, error: tE('plan_not_found') };
 
   // Athlete weight.
   const { data: profileData } = await supabase
@@ -112,12 +113,12 @@ export async function saveRaceDaySetup(
       .update(payload)
       .eq('id', existing.id);
     if (error) {
-      return { ok: false, error: 'Could not save your race-day plan.' };
+      return { ok: false, error: tE('could_not_save') };
     }
   } else {
     const { error } = await supabase.from('race_day_plans').insert(payload);
     if (error) {
-      return { ok: false, error: 'Could not save your race-day plan.' };
+      return { ok: false, error: tE('could_not_save') };
     }
   }
 

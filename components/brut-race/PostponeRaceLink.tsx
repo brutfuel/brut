@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import Modal from '@/components/ui/Modal';
 import { postponeRace } from '@/app/[locale]/brut-race/actions';
 
@@ -19,6 +20,7 @@ const subLabel =
   'text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted';
 
 export default function PostponeRaceLink({ planId, currentRaceDate }: Props) {
+  const t = useTranslations('brut_race.postpone');
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(currentRaceDate);
   const [confirm, setConfirm] = useState(false);
@@ -42,11 +44,11 @@ export default function PostponeRaceLink({ planId, currentRaceDate }: Props) {
   function submit() {
     setError(null);
     if (diffDays <= 0) {
-      setError('New race date must be later than the current one.');
+      setError(t('new_date_earlier_error'));
       return;
     }
     if (requiresRegenerate && !confirm) {
-      setError('Confirm full plan regeneration to continue.');
+      setError(t('confirm_regen_error'));
       return;
     }
     startTransition(async () => {
@@ -73,13 +75,13 @@ export default function PostponeRaceLink({ planId, currentRaceDate }: Props) {
         }}
         className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted hover:text-brut-black transition-colors underline underline-offset-4 decoration-brut-line hover:decoration-brut-black"
       >
-        Postpone race date
+        {t('trigger')}
       </button>
 
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        title="Postpone race"
+        title={t('title')}
         footer={
           <>
             <button
@@ -88,7 +90,7 @@ export default function PostponeRaceLink({ planId, currentRaceDate }: Props) {
               onClick={() => setOpen(false)}
               disabled={pending}
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               type="button"
@@ -96,17 +98,17 @@ export default function PostponeRaceLink({ planId, currentRaceDate }: Props) {
               onClick={submit}
               disabled={pending}
             >
-              {pending ? 'Updating…' : 'Update race date'}
+              {pending ? t('submitting') : t('submit')}
             </button>
           </>
         }
       >
         <div className="flex flex-col gap-4">
           <p className="text-sm font-normal text-brut-ink leading-relaxed">
-            Current race date: {currentRaceDate}.
+            {t('current_race_date', { date: currentRaceDate })}
           </p>
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>New race date</span>
+            <span className={subLabel}>{t('new_race_date_label')}</span>
             <input
               type="date"
               value={date}
@@ -118,7 +120,7 @@ export default function PostponeRaceLink({ planId, currentRaceDate }: Props) {
 
           {diffDays > 0 ? (
             <p className="text-xs font-normal text-brut-muted">
-              {diffDays} days later than today&rsquo;s plan.
+              {t('days_later', { days: diffDays })}
             </p>
           ) : null}
 
@@ -130,16 +132,11 @@ export default function PostponeRaceLink({ planId, currentRaceDate }: Props) {
                 onChange={(e) => setConfirm(e.target.checked)}
                 className="mt-1"
               />
-              <span>
-                More than four weeks later — the existing programme will be
-                replaced by a freshly regenerated plan. Completed sessions
-                history will be lost.
-              </span>
+              <span>{t('regen_consent')}</span>
             </label>
           ) : (
             <p className="text-xs font-normal text-brut-muted">
-              All scheduled sessions will shift forward by the same number of
-              days.
+              {t('soft_shift_note')}
             </p>
           )}
 

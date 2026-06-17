@@ -1,9 +1,10 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PlanWeekBrowser from '@/components/brut-race/PlanWeekBrowser';
 import PostponeRaceLink from '@/components/brut-race/PostponeRaceLink';
+import { Link } from '@/lib/i18n/routing';
 import { createClient } from '@/lib/supabase/server';
 import { daysFromTodayToIso } from '@/lib/utils/dates';
 import type {
@@ -18,27 +19,21 @@ interface Props {
   params: { planId: string };
 }
 
-const SPORT_LABELS: Record<RacePlan['sport'], string> = {
-  running: 'Running',
-  cycling: 'Cycling',
-  triathlon: 'Triathlon',
-};
-
-const PHASE_LABELS: Record<Phase['name'], string> = {
-  base: 'Base',
-  build: 'Build',
-  peak: 'Peak',
-  taper: 'Taper',
-};
-
-function formatTargetTime(minutes: number | null): string {
-  if (minutes === null) return 'To be estimated';
+function formatTargetTime(
+  minutes: number | null,
+  estimatedLabel: string,
+): string {
+  if (minutes === null) return estimatedLabel;
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
   return `${h}h ${String(m).padStart(2, '0')}m`;
 }
 
 export default async function RacePlanPage({ params }: Props) {
+  const t = await getTranslations('brut_race.plan_view');
+  const tPhases = await getTranslations('phases');
+  const tSports = await getTranslations('sports');
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -63,19 +58,19 @@ export default async function RacePlanPage({ params }: Props) {
         <main className="mx-auto max-w-7xl px-6 md:px-10 pt-16 md:pt-24 pb-24 min-h-[70vh]">
           <div className="max-w-xl">
             <span className="text-xs font-semibold tracking-brut-wide uppercase text-brut-muted">
-              Race plan
+              {t('eyebrow')}
             </span>
             <h1 className="mt-6 text-[40px] md:text-[56px] leading-[1.0] font-thin tracking-brut text-brut-black">
-              Plan not found
+              {t('not_found_title')}
             </h1>
             <p className="mt-6 text-base font-normal text-brut-ink leading-relaxed">
-              This race plan does not exist or is not yours to view.
+              {t('not_found_body')}
             </p>
             <Link
               href="/brut-race"
               className="mt-8 inline-block text-[10px] font-semibold tracking-brut-wide uppercase border-b border-brut-black pb-1 hover:opacity-60 transition-opacity"
             >
-              Build a new plan &rarr;
+              {t('build_new_plan')}
             </Link>
           </div>
         </main>
@@ -130,17 +125,17 @@ export default async function RacePlanPage({ params }: Props) {
 
       <main className="mx-auto max-w-7xl px-6 md:px-10 pt-16 md:pt-24 pb-24">
         <span className="text-xs font-semibold tracking-brut-wide uppercase text-brut-muted">
-          Race plan
+          {t('eyebrow')}
         </span>
         <h1 className="mt-6 text-[44px] md:text-[68px] leading-[0.98] font-thin tracking-brut text-brut-black">
-          {SPORT_LABELS[plan.sport]} · {plan.distance_km} km
+          {tSports(plan.sport)} · {plan.distance_km} km
         </h1>
 
         {/* Summary */}
         <dl className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-8 max-w-3xl">
           <div className="flex flex-col gap-1">
             <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-              Race date
+              {t('race_date')}
             </dt>
             <dd className="text-2xl font-thin tracking-brut text-brut-black">
               {plan.race_date}
@@ -152,23 +147,26 @@ export default async function RacePlanPage({ params }: Props) {
           </div>
           <div className="flex flex-col gap-1">
             <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-              Target time
+              {t('target_time')}
             </dt>
             <dd className="text-2xl font-thin tracking-brut text-brut-black">
-              {formatTargetTime(plan.target_time_minutes)}
+              {formatTargetTime(
+                plan.target_time_minutes,
+                t('target_time_estimated'),
+              )}
             </dd>
           </div>
           <div className="flex flex-col gap-1">
             <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-              Programme
+              {t('programme')}
             </dt>
             <dd className="text-2xl font-thin tracking-brut text-brut-black tabular-nums">
-              {plan.weeks_total} weeks
+              {t('weeks_count', { count: plan.weeks_total })}
             </dd>
           </div>
           <div className="flex flex-col gap-1">
             <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-              Days / week
+              {t('days_per_week')}
             </dt>
             <dd className="text-2xl font-thin tracking-brut text-brut-black tabular-nums">
               {plan.days_per_week}
@@ -183,7 +181,7 @@ export default async function RacePlanPage({ params }: Props) {
               01
             </span>
             <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-ink">
-              Phases
+              {t('section_phases')}
             </span>
           </div>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-px bg-brut-line border border-brut-line">
@@ -192,18 +190,25 @@ export default async function RacePlanPage({ params }: Props) {
               return (
                 <div key={phase.id} className="bg-white p-5 flex flex-col gap-2">
                   <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted tabular-nums">
-                    Weeks {phase.week_start}–{phase.week_end}
+                    {t('weeks_range', {
+                      start: phase.week_start,
+                      end: phase.week_end,
+                    })}
                   </span>
                   <span className="text-xl font-thin tracking-brut text-brut-black uppercase">
-                    {PHASE_LABELS[phase.name]}
+                    {tPhases(phase.name)}
                   </span>
                   <p className="text-xs font-normal text-brut-ink leading-relaxed">
                     {phase.focus_description}
                   </p>
-                  {nutrition ? (
+                  {nutrition &&
+                  nutrition.carbs_g_per_kg_min !== null &&
+                  nutrition.carbs_g_per_kg_max !== null ? (
                     <p className="mt-1 text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                      Carbs {nutrition.carbs_g_per_kg_min}–
-                      {nutrition.carbs_g_per_kg_max} g/kg
+                      {t('carbs_range', {
+                        min: nutrition.carbs_g_per_kg_min,
+                        max: nutrition.carbs_g_per_kg_max,
+                      })}
                     </p>
                   ) : null}
                 </div>
@@ -215,55 +220,51 @@ export default async function RacePlanPage({ params }: Props) {
         {/* Race day plan */}
         <section className="mt-16 border border-brut-black p-6 md:p-8 flex flex-col gap-3">
           <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-            Race day plan
+            {t('race_day_eyebrow')}
           </span>
           {raceDayPlan ? (
             <>
               <p className="text-2xl font-thin tracking-brut text-brut-black">
-                Your race-day plan is ready.
+                {t('race_day_ready_title')}
               </p>
               <p className="text-sm font-normal text-brut-ink leading-relaxed">
-                Pre-race week, race morning, segment-by-segment fuelling and
-                recovery — all in one place.
+                {t('race_day_ready_body')}
               </p>
               <Link
                 href={`/brut-race/${plan.id}/race-day`}
                 className="mt-3 inline-block text-[10px] font-semibold tracking-brut-wide uppercase border-b border-brut-black pb-1 self-start hover:opacity-60 transition-opacity"
               >
-                Open race day plan &rarr;
+                {t('race_day_open')}
               </Link>
             </>
           ) : daysToRace <= 14 && daysToRace >= 0 ? (
             <>
               <p className="text-2xl font-thin tracking-brut text-brut-black">
-                Almost ready — build your race day plan.
+                {t('race_day_almost_title')}
               </p>
               <p className="text-sm font-normal text-brut-ink leading-relaxed">
-                Course profile, expected weather, pacing strategy and the full
-                segment-by-segment fuelling plan. Takes two minutes.
+                {t('race_day_almost_body')}
               </p>
               <Link
                 href={`/brut-race/${plan.id}/race-day/setup`}
                 className="mt-3 inline-flex items-center justify-center px-5 py-3 bg-brut-black text-white text-[10px] font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors self-start"
               >
-                Build my race day plan
+                {t('race_day_almost_cta')}
               </Link>
             </>
           ) : (
             <>
               <p className="text-2xl font-thin tracking-brut text-brut-black">
-                Unlocks 14 days before the race.
+                {t('race_day_locked_title')}
               </p>
               <p className="text-sm font-normal text-brut-ink leading-relaxed">
-                You can build it manually any time — but the closer you are to
-                race day, the more accurate the weather and fuelling defaults
-                will be.
+                {t('race_day_locked_body')}
               </p>
               <Link
                 href={`/brut-race/${plan.id}/race-day/setup`}
                 className="mt-3 inline-block text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted hover:text-brut-black transition-colors underline underline-offset-4 decoration-brut-line hover:decoration-brut-black self-start"
               >
-                Build it now anyway
+                {t('race_day_locked_cta')}
               </Link>
             </>
           )}
@@ -276,7 +277,7 @@ export default async function RacePlanPage({ params }: Props) {
               02
             </span>
             <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-ink">
-              Weekly schedule
+              {t('section_weekly_schedule')}
             </span>
           </div>
           <div className="mt-6">

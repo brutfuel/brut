@@ -3,13 +3,13 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   MarkDoneModal,
   RescheduleModal,
   SkipModal,
 } from '@/components/brut-race/SessionModals';
-import { formatDuration, WEEKDAY_LABELS } from '@/lib/utils/dates';
-import { SESSION_TYPE_LABELS } from '@/lib/types/db';
+import { formatDuration } from '@/lib/utils/dates';
 import type { Phase, Session } from '@/lib/types/db';
 
 interface Props {
@@ -18,13 +18,6 @@ interface Props {
   phases: Phase[];
   sessions: Session[];
 }
-
-const PHASE_LABELS: Record<Phase['name'], string> = {
-  base: 'Base',
-  build: 'Build',
-  peak: 'Peak',
-  taper: 'Taper',
-};
 
 type ModalKind = 'mark' | 'skip' | 'reschedule';
 
@@ -35,6 +28,9 @@ interface SessionRowProps {
 }
 
 function SessionRow({ session, planId, onAction }: SessionRowProps) {
+  const t = useTranslations('brut_race.plan_week_browser');
+  const tSessionTypes = useTranslations('session_types');
+  const tWk = useTranslations('brut_race.weekday_short');
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -65,10 +61,10 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
           className="flex flex-1 items-center gap-3 text-left"
         >
           <span className="w-10 shrink-0 text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-            {WEEKDAY_LABELS[session.day_of_week - 1]}
+            {tWk(String(session.day_of_week))}
           </span>
           <span className={labelClass}>
-            {SESSION_TYPE_LABELS[session.session_type]}
+            {tSessionTypes(session.session_type)}
           </span>
           <span className="hidden sm:inline text-sm font-normal text-brut-ink tabular-nums">
             {formatDuration(session.duration_minutes)}
@@ -80,7 +76,7 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
 
         {isCompleted ? (
           <span
-            aria-label="Completed"
+            aria-label={t('completed_aria')}
             className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-black"
           >
             ✓
@@ -88,7 +84,7 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
         ) : null}
         {isSkipped ? (
           <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted border border-brut-line px-2 py-0.5">
-            Skipped
+            {t('skipped_tag')}
           </span>
         ) : null}
 
@@ -99,7 +95,7 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
               onClick={() => onAction('mark', session)}
               className="hidden sm:inline-flex px-3 py-1.5 text-[10px] font-semibold tracking-brut-wide uppercase border border-brut-black text-brut-black hover:bg-brut-black hover:text-white transition-colors"
             >
-              Mark done
+              {t('action_mark_done')}
             </button>
 
             <div className="relative">
@@ -109,7 +105,7 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
                 aria-haspopup="menu"
                 aria-expanded={menuOpen}
                 className="w-7 h-7 text-brut-muted hover:text-brut-black transition-colors text-base leading-none"
-                aria-label="Session actions"
+                aria-label={t('action_session_actions')}
               >
                 ⋯
               </button>
@@ -135,7 +131,7 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
                       }}
                       className="block w-full text-left px-4 py-3 text-[10px] font-medium tracking-brut-wide uppercase text-brut-ink hover:bg-brut-bg-soft transition-colors sm:hidden"
                     >
-                      Mark done
+                      {t('action_mark_done')}
                     </button>
                     <button
                       type="button"
@@ -146,7 +142,7 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
                       }}
                       className="block w-full text-left px-4 py-3 text-[10px] font-medium tracking-brut-wide uppercase text-brut-ink hover:bg-brut-bg-soft transition-colors border-t border-brut-line first:border-t-0"
                     >
-                      Reschedule
+                      {t('action_reschedule')}
                     </button>
                     <button
                       type="button"
@@ -157,7 +153,7 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
                       }}
                       className="block w-full text-left px-4 py-3 text-[10px] font-medium tracking-brut-wide uppercase text-brut-ink hover:bg-brut-bg-soft transition-colors border-t border-brut-line"
                     >
-                      Skip
+                      {t('action_skip')}
                     </button>
                   </div>
                 </>
@@ -179,14 +175,14 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
                 const block = structure[key];
                 const label =
                   key === 'warmup'
-                    ? 'Warm-up'
+                    ? t('block_warm_up')
                     : key === 'mainSet'
-                      ? 'Main set'
-                      : 'Cool-down';
+                      ? t('block_main_set')
+                      : t('block_cool_down');
                 return (
                   <div key={key}>
                     <p className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                      {label} · {block.minutes} min
+                      {label} · {block.minutes} {t('block_minutes_suffix')}
                     </p>
                     <p className="mt-1 text-sm font-normal text-brut-ink leading-relaxed">
                       {block.description}
@@ -199,28 +195,32 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
 
           <div className="border-t border-brut-line pt-4 flex flex-col gap-3">
             <p className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-              Fuelling
+              {t('fuelling')}
             </p>
             {session.pre_session_nutrition ? (
               <p className="text-sm font-normal text-brut-ink leading-relaxed">
-                <span className="text-brut-muted">Before — </span>
+                <span className="text-brut-muted">{t('fuelling_before')}</span>
                 {session.pre_session_nutrition.food}
               </p>
             ) : null}
             {session.during_nutrition ? (
               <p className="text-sm font-normal text-brut-ink leading-relaxed">
-                <span className="text-brut-muted">During — </span>
-                {session.during_nutrition.carbsPerHour} g carbs/h ·{' '}
-                {session.during_nutrition.capsulesPerHour} BRUT caps/h ·{' '}
-                {session.during_nutrition.totals.waterMl} ml water total
+                <span className="text-brut-muted">{t('fuelling_during')}</span>
+                {t('during_summary', {
+                  carbsPerHour: session.during_nutrition.carbsPerHour,
+                  capsulesPerHour: session.during_nutrition.capsulesPerHour,
+                  waterMl: session.during_nutrition.totals.waterMl,
+                })}
               </p>
             ) : null}
             {session.post_session_nutrition ? (
               <p className="text-sm font-normal text-brut-ink leading-relaxed">
-                <span className="text-brut-muted">After — </span>
-                {session.post_session_nutrition.proteinGrams} protein ·{' '}
-                {session.post_session_nutrition.carbsGrams} carbs ·{' '}
-                {session.post_session_nutrition.waterMl} fluid
+                <span className="text-brut-muted">{t('fuelling_after')}</span>
+                {t('after_summary', {
+                  protein: session.post_session_nutrition.proteinGrams,
+                  carbs: session.post_session_nutrition.carbsGrams,
+                  water: session.post_session_nutrition.waterMl,
+                })}
               </p>
             ) : null}
           </div>
@@ -228,7 +228,7 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
           {(isCompleted || isSkipped) && session.user_notes ? (
             <div className="border-t border-brut-line pt-4">
               <p className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                Your notes
+                {t('your_notes')}
               </p>
               <p className="mt-1 text-sm font-normal text-brut-ink leading-relaxed">
                 {session.user_notes}
@@ -240,7 +240,7 @@ function SessionRow({ session, planId, onAction }: SessionRowProps) {
             href={`/brut-race/${planId}/session/${session.id}?week=${session.week_number}`}
             className="inline-block text-[10px] font-semibold tracking-brut-wide uppercase border-b border-brut-black pb-0.5 self-start hover:opacity-60 transition-opacity"
           >
-            Open session detail &rarr;
+            {t('open_session_detail')}
           </Link>
         </div>
       ) : null}
@@ -254,6 +254,9 @@ export default function PlanWeekBrowser({
   phases,
   sessions,
 }: Props) {
+  const t = useTranslations('brut_race.plan_week_browser');
+  const tPhases = useTranslations('phases');
+  const tWk = useTranslations('brut_race.weekday_short');
   const searchParams = useSearchParams();
   const initialWeek = Math.max(
     1,
@@ -337,20 +340,23 @@ export default function PlanWeekBrowser({
           disabled={currentWeek === 1}
           className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-ink hover:text-brut-black transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          &larr; Prev
+          {t('prev')}
         </button>
         <div className="flex items-baseline gap-3 flex-wrap justify-center">
           <span className="text-sm font-medium tracking-brut-wide uppercase text-brut-black tabular-nums">
-            Week {String(currentWeek).padStart(2, '0')} / {weeksTotal}
+            {t('week_x_of_y', {
+              current: String(currentWeek).padStart(2, '0'),
+              total: weeksTotal,
+            })}
           </span>
           {weekPhase ? (
             <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-              {PHASE_LABELS[weekPhase.name]}
+              {tPhases(weekPhase.name)}
             </span>
           ) : null}
           {recovery ? (
             <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-black border border-brut-black px-2 py-0.5">
-              Recovery
+              {t('recovery')}
             </span>
           ) : null}
         </div>
@@ -360,7 +366,7 @@ export default function PlanWeekBrowser({
           disabled={currentWeek === weeksTotal}
           className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-ink hover:text-brut-black transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          Next &rarr;
+          {t('next')}
         </button>
       </div>
 
@@ -368,11 +374,11 @@ export default function PlanWeekBrowser({
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline justify-between">
           <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-            {completed} of {total} sessions completed
-            {skipped > 0 ? ` · ${skipped} skipped` : ''}
+            {t('sessions_completed', { completed, total })}
+            {skipped > 0 ? ` ${t('skipped_suffix', { count: skipped })}` : ''}
           </span>
           <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted tabular-nums">
-            {formatDuration(weekMinutes)} planned
+            {t('week_planned', { duration: formatDuration(weekMinutes) })}
           </span>
         </div>
         <div className="h-px bg-brut-line relative overflow-hidden">
@@ -386,8 +392,7 @@ export default function PlanWeekBrowser({
 
       {/* Day rows */}
       <div className="flex flex-col">
-        {WEEKDAY_LABELS.map((label, index) => {
-          const day = index + 1;
+        {[1, 2, 3, 4, 5, 6, 7].map((day) => {
           const session = weekSessions.find((s) => s.day_of_week === day);
           if (session) {
             return (
@@ -405,10 +410,10 @@ export default function PlanWeekBrowser({
               className="border-t border-brut-line first:border-t-0 flex items-center gap-4 py-4"
             >
               <span className="w-10 shrink-0 text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                {label}
+                {tWk(String(day))}
               </span>
               <span className="flex-1 text-sm font-normal text-brut-muted">
-                Rest
+                {t('rest')}
               </span>
             </div>
           );

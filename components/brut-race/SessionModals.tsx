@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import Modal from '@/components/ui/Modal';
 import {
   markSessionDone,
@@ -24,13 +25,12 @@ const ghostButton =
 const subLabel =
   'text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted';
 
-const FELT_OPTIONS: ReadonlyArray<{ value: SessionFelt; label: string }> = [
-  { value: 'easy', label: 'Easy' },
-  { value: 'right', label: 'Right' },
-  { value: 'hard', label: 'Hard' },
-];
+const FELT_VALUES: ReadonlyArray<SessionFelt> = ['easy', 'right', 'hard'];
 
 export function MarkDoneModal({ open, onClose, session, onSaved }: BaseProps) {
+  const t = useTranslations('brut_race.session_modals');
+  const tFelt = useTranslations('brut_race.session_modals.felt');
+
   const recommendedCaps = session.during_nutrition?.totals.capsules ?? 0;
   const [felt, setFelt] = useState<SessionFelt>('right');
   const [notes, setNotes] = useState('');
@@ -59,7 +59,7 @@ export function MarkDoneModal({ open, onClose, session, onSaved }: BaseProps) {
     <Modal
       open={open}
       onClose={onClose}
-      title="Mark as done"
+      title={t('mark_done_title')}
       footer={
         <>
           <button
@@ -68,7 +68,7 @@ export function MarkDoneModal({ open, onClose, session, onSaved }: BaseProps) {
             onClick={onClose}
             disabled={pending}
           >
-            Cancel
+            {t('cancel')}
           </button>
           <button
             type="button"
@@ -76,22 +76,22 @@ export function MarkDoneModal({ open, onClose, session, onSaved }: BaseProps) {
             onClick={submit}
             disabled={pending}
           >
-            {pending ? 'Saving…' : 'Save'}
+            {pending ? t('saving') : t('save')}
           </button>
         </>
       }
     >
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
-          <span className={subLabel}>How did it feel?</span>
+          <span className={subLabel}>{t('how_did_it_feel')}</span>
           <div className="grid grid-cols-3 gap-px bg-brut-line border border-brut-line">
-            {FELT_OPTIONS.map((opt) => {
-              const active = felt === opt.value;
+            {FELT_VALUES.map((value) => {
+              const active = felt === value;
               return (
                 <button
-                  key={opt.value}
+                  key={value}
                   type="button"
-                  onClick={() => setFelt(opt.value)}
+                  onClick={() => setFelt(value)}
                   aria-pressed={active}
                   className={`py-3 text-xs font-semibold tracking-brut-wide uppercase transition-colors ${
                     active
@@ -99,7 +99,7 @@ export function MarkDoneModal({ open, onClose, session, onSaved }: BaseProps) {
                       : 'bg-white text-brut-ink hover:bg-brut-bg-soft'
                   }`}
                 >
-                  {opt.label}
+                  {tFelt(value)}
                 </button>
               );
             })}
@@ -107,18 +107,18 @@ export function MarkDoneModal({ open, onClose, session, onSaved }: BaseProps) {
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className={subLabel}>Notes (optional)</span>
+          <span className={subLabel}>{t('notes_optional')}</span>
           <textarea
             rows={3}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="How the session went…"
+            placeholder={t('notes_placeholder')}
             className="w-full bg-transparent border-b border-brut-line py-2 text-sm font-normal text-brut-black placeholder:text-brut-muted focus:outline-none focus:border-brut-black transition-colors resize-none"
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className={subLabel}>BRUT capsules taken</span>
+          <span className={subLabel}>{t('capsules_taken')}</span>
           <div className="flex items-baseline gap-2">
             <input
               type="number"
@@ -127,12 +127,12 @@ export function MarkDoneModal({ open, onClose, session, onSaved }: BaseProps) {
               value={caps}
               onChange={(e) => setCaps(e.target.value)}
               className="brut-number w-20 bg-transparent border-b border-brut-line py-2 text-2xl font-thin tracking-brut text-brut-black focus:outline-none focus:border-brut-black transition-colors tabular-nums"
-              aria-label="BRUT capsules taken"
+              aria-label={t('capsules_taken_aria')}
             />
-            <span className={subLabel}>caps</span>
+            <span className={subLabel}>{t('caps')}</span>
           </div>
           <p className="text-xs font-normal text-brut-muted">
-            Recommended for this session: {recommendedCaps}.
+            {t('recommended_for_session', { count: recommendedCaps })}
           </p>
         </div>
 
@@ -147,6 +147,7 @@ export function MarkDoneModal({ open, onClose, session, onSaved }: BaseProps) {
 }
 
 export function SkipModal({ open, onClose, session, onSaved }: BaseProps) {
+  const t = useTranslations('brut_race.session_modals');
   const [reason, setReason] = useState('');
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -170,7 +171,7 @@ export function SkipModal({ open, onClose, session, onSaved }: BaseProps) {
     <Modal
       open={open}
       onClose={onClose}
-      title="Skip this session"
+      title={t('skip_title')}
       footer={
         <>
           <button
@@ -179,7 +180,7 @@ export function SkipModal({ open, onClose, session, onSaved }: BaseProps) {
             onClick={onClose}
             disabled={pending}
           >
-            Cancel
+            {t('cancel')}
           </button>
           <button
             type="button"
@@ -187,23 +188,22 @@ export function SkipModal({ open, onClose, session, onSaved }: BaseProps) {
             onClick={submit}
             disabled={pending}
           >
-            {pending ? 'Saving…' : 'Skip session'}
+            {pending ? t('saving') : t('skip_session')}
           </button>
         </>
       }
     >
       <div className="flex flex-col gap-4">
         <p className="text-sm font-normal text-brut-ink leading-relaxed">
-          The session will be marked as skipped and removed from your weekly
-          totals.
+          {t('skip_body')}
         </p>
         <div className="flex flex-col gap-2">
-          <span className={subLabel}>Why? (optional)</span>
+          <span className={subLabel}>{t('skip_reason_label')}</span>
           <textarea
             rows={3}
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Quick note for future you…"
+            placeholder={t('skip_reason_placeholder')}
             className="w-full bg-transparent border-b border-brut-line py-2 text-sm font-normal text-brut-black placeholder:text-brut-muted focus:outline-none focus:border-brut-black transition-colors resize-none"
           />
         </div>
@@ -223,6 +223,7 @@ export function RescheduleModal({
   session,
   onSaved,
 }: BaseProps) {
+  const t = useTranslations('brut_race.session_modals');
   const current = session.scheduled_date ?? '';
   const bounds = useMemo(
     () => (current ? weekBoundsFromIso(current) : null),
@@ -235,11 +236,11 @@ export function RescheduleModal({
   function submit() {
     setError(null);
     if (!date) {
-      setError('Pick a new date.');
+      setError(t('pick_new_date'));
       return;
     }
     if (bounds && (date < bounds.monday || date > bounds.sunday)) {
-      setError('New date must stay within the current training week.');
+      setError(t('cross_week_error'));
       return;
     }
     startTransition(async () => {
@@ -260,7 +261,7 @@ export function RescheduleModal({
     <Modal
       open={open}
       onClose={onClose}
-      title="Reschedule session"
+      title={t('reschedule_title')}
       footer={
         <>
           <button
@@ -269,7 +270,7 @@ export function RescheduleModal({
             onClick={onClose}
             disabled={pending}
           >
-            Cancel
+            {t('cancel')}
           </button>
           <button
             type="button"
@@ -277,18 +278,17 @@ export function RescheduleModal({
             onClick={submit}
             disabled={pending}
           >
-            {pending ? 'Saving…' : 'Move session'}
+            {pending ? t('saving') : t('move_session')}
           </button>
         </>
       }
     >
       <div className="flex flex-col gap-4">
         <p className="text-sm font-normal text-brut-ink leading-relaxed">
-          Pick any day within this training week. Cross-week moves arrive
-          later.
+          {t('reschedule_body')}
         </p>
         <div className="flex flex-col gap-2">
-          <span className={subLabel}>New date</span>
+          <span className={subLabel}>{t('new_date_label')}</span>
           <input
             type="date"
             value={date}

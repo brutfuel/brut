@@ -10,6 +10,14 @@ const para = 'mt-3 text-sm font-normal text-brut-ink leading-relaxed';
 const mailLink =
   'text-brut-black border-b border-brut-black pb-0.5 hover:opacity-60 transition-opacity';
 
+export async function generateMetadata() {
+  const t = await getTranslations('metadata');
+  return {
+    title: t('about_title'),
+    description: t('about_description'),
+  };
+}
+
 export default async function AboutPage() {
   const t = await getTranslations('about');
 

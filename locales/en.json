@@ -1057,5 +1057,13 @@
       "signoff": "Train smart,",
       "signature": "The Brut team"
     }
+  },
+  "metadata": {
+    "site_title": "BRUT — Electrolyte performance",
+    "site_description": "Science-based nutrition tools for endurance athletes. Plan your session, build your race.",
+    "about_title": "About — BRUT",
+    "about_description": "Editorial sports nutrition, built for endurance athletes.",
+    "contact_title": "Contact — BRUT",
+    "contact_description": "Get in touch with the BRUT team."
   }
 }

@@ -3,6 +3,14 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Link } from '@/lib/i18n/routing';
 
+export async function generateMetadata() {
+  const t = await getTranslations('landing');
+  return {
+    title: t('metadata_title'),
+    description: t('metadata_description'),
+  };
+}
+
 // Public landing page. Server component, no state.
 export default async function HomePage() {
   const t = await getTranslations('landing');

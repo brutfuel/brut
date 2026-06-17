@@ -3,11 +3,13 @@ import Script from 'next/script';
 import { notFound } from 'next/navigation';
 import { Montserrat } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import CookieBanner from '@/components/CookieBanner';
 import FeedbackButton from '@/components/FeedbackButton';
-import { routing, type AppLocale } from '@/lib/i18n/routing';
+import { BCP47, routing, type AppLocale } from '@/lib/i18n/routing';
 import '../globals.css';
+
+const SITE_URL = 'https://brutfuel.com';
 
 // Single typeface across the app — only the weights we actually use.
 const montserrat = Montserrat({
@@ -17,13 +19,6 @@ const montserrat = Montserrat({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: 'BRUT — Electrolyte performance',
-  description:
-    'Science-based nutrition tools for endurance athletes. Plan your session, build your race.',
-  metadataBase: new URL('https://brutfuel.com'),
-};
-
 /** Pre-generate one layout per supported locale at build time. */
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -32,6 +27,43 @@ export function generateStaticParams() {
 interface Props {
   children: React.ReactNode;
   params: { locale: string };
+}
+
+/** Localised default <title> + <description> + hreflang map. */
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const { locale } = params;
+  if (!(routing.locales as ReadonlyArray<string>).includes(locale)) {
+    return {};
+  }
+  const t = await getTranslations({
+    locale: locale as AppLocale,
+    namespace: 'metadata',
+  });
+
+  const languages: Record<string, string> = {};
+  for (const l of routing.locales) {
+    // Default locale lives at the root path; others under /<l>.
+    languages[BCP47[l]] =
+      l === routing.defaultLocale ? SITE_URL : `${SITE_URL}/${l}`;
+  }
+  languages['x-default'] = SITE_URL;
+
+  const canonical =
+    locale === routing.defaultLocale ? SITE_URL : `${SITE_URL}/${locale}`;
+
+  return {
+    title: t('site_title'),
+    description: t('site_description'),
+    metadataBase: new URL(SITE_URL),
+    alternates: {
+      canonical,
+      languages,
+    },
+  };
 }
 
 export default async function LocaleLayout({ children, params }: Props) {
@@ -49,7 +81,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
   return (
-    <html lang={locale} className={montserrat.variable}>
+    <html lang={BCP47[locale as AppLocale]} className={montserrat.variable}>
       <body className="bg-white text-brut-black font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
           {children}

@@ -1057,5 +1057,13 @@
       "signoff": "Entrena intel·ligent,",
       "signature": "L'equip de Brut"
     }
+  },
+  "metadata": {
+    "site_title": "BRUT — Rendiment amb electròlits",
+    "site_description": "Eines de nutrició basades en ciència per a atletes de resistència. Planifica la teva sessió, construeix la teva cursa.",
+    "about_title": "Sobre nosaltres — BRUT",
+    "about_description": "Nutrició esportiva editorial, dissenyada per a atletes de resistència.",
+    "contact_title": "Contacte — BRUT",
+    "contact_description": "Posa't en contacte amb l'equip de BRUT."
   }
 }

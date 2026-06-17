@@ -5,6 +5,14 @@ import ContactForm from '@/app/[locale]/contact/ContactForm';
 import { createClient } from '@/lib/supabase/server';
 import type { Profile } from '@/lib/types/db';
 
+export async function generateMetadata() {
+  const t = await getTranslations('metadata');
+  return {
+    title: t('contact_title'),
+    description: t('contact_description'),
+  };
+}
+
 export default async function ContactPage() {
   const t = await getTranslations('contact');
   const supabase = await createClient();

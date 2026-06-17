@@ -1057,5 +1057,13 @@
       "signoff": "Entrena con cabeza,",
       "signature": "El equipo de Brut"
     }
+  },
+  "metadata": {
+    "site_title": "BRUT — Rendimiento con electrolitos",
+    "site_description": "Herramientas de nutrición basadas en ciencia para atletas de resistencia. Planifica tu sesión, construye tu carrera.",
+    "about_title": "Sobre nosotros — BRUT",
+    "about_description": "Nutrición deportiva editorial, diseñada para atletas de resistencia.",
+    "contact_title": "Contacto — BRUT",
+    "contact_description": "Ponte en contacto con el equipo de BRUT."
   }
 }

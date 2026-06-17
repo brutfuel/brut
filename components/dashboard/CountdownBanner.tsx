@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
+import { Link } from '@/lib/i18n/routing';
 import { daysFromTodayToIso } from '@/lib/utils/dates';
 import type { RacePlan } from '@/lib/types/db';
 
@@ -10,20 +11,19 @@ interface Props {
   raceDayPlanExists: boolean;
 }
 
-const SPORT_LABELS: Record<RacePlan['sport'], string> = {
-  running: 'Running',
-  cycling: 'Cycling',
-  triathlon: 'Triathlon',
-};
-
 /**
  * Big "X days to go" hero. Becomes visually more prominent when the
  * race is imminent (<7 days) and a celebration on race day itself.
  */
-export default function CountdownBanner({ plan, raceDayPlanExists }: Props) {
+export default async function CountdownBanner({
+  plan,
+  raceDayPlanExists,
+}: Props) {
+  const t = await getTranslations('countdown_banner');
+  const tSports = await getTranslations('sports');
+
   const days = daysFromTodayToIso(plan.race_date);
-  const title =
-    plan.race_name ?? `${SPORT_LABELS[plan.sport]} · ${plan.distance_km} km`;
+  const title = plan.race_name ?? `${tSports(plan.sport)} · ${plan.distance_km} km`;
 
   const today = days === 0;
   const imminent = days >= 0 && days <= 6;
@@ -32,7 +32,9 @@ export default function CountdownBanner({ plan, raceDayPlanExists }: Props) {
     ? `/brut-race/${plan.id}/race-day`
     : `/brut-race/${plan.id}/race-day/setup`;
 
-  const containerBorder = imminent ? 'border-2 border-brut-black' : 'border border-brut-line';
+  const containerBorder = imminent
+    ? 'border-2 border-brut-black'
+    : 'border border-brut-line';
   const containerBg = imminent ? 'bg-brut-bg-soft' : 'bg-white';
   const titleSize = imminent
     ? 'text-[48px] md:text-[72px]'
@@ -46,7 +48,7 @@ export default function CountdownBanner({ plan, raceDayPlanExists }: Props) {
       className={`${containerBorder} ${containerBg} p-8 md:p-10 flex flex-col gap-4`}
     >
       <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-        Active race plan
+        {t('active_race_plan')}
       </span>
       <h2
         className={`${titleSize} leading-[0.98] font-thin tracking-brut text-brut-black uppercase`}
@@ -57,16 +59,16 @@ export default function CountdownBanner({ plan, raceDayPlanExists }: Props) {
       <p
         className={`${countdownSize} leading-none font-thin tracking-brut text-brut-black tabular-nums`}
       >
-        {today ? 'TODAY' : days > 0 ? days : '—'}
+        {today ? t('today_word') : days > 0 ? days : '—'}
       </p>
       <p className="text-xs font-semibold tracking-brut-wide uppercase text-brut-ink">
         {today
-          ? 'Today is the day'
+          ? t('today_is_the_day')
           : days > 1
-            ? 'days to go'
+            ? t('days_to_go_plural')
             : days === 1
-              ? 'day to go'
-              : 'race day passed'}
+              ? t('days_to_go_singular')
+              : t('race_day_passed')}
       </p>
       <p className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted tabular-nums">
         {plan.race_date}
@@ -77,22 +79,22 @@ export default function CountdownBanner({ plan, raceDayPlanExists }: Props) {
           href={`/brut-race/${plan.id}`}
           className="inline-flex items-center justify-center px-5 py-3 bg-brut-black text-white text-[10px] font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors"
         >
-          Open my plan &rarr;
+          {t('open_my_plan')}
         </Link>
         {raceDayUnlocked ? (
           <Link
             href={raceDayHref}
             className="inline-flex items-center justify-center px-5 py-3 border border-brut-black text-brut-black text-[10px] font-semibold tracking-brut-wide uppercase hover:bg-brut-black hover:text-white transition-colors"
           >
-            {today ? 'Open race day plan' : 'Race day plan'} &rarr;
+            {today ? t('open_race_day_plan') : t('race_day_plan')}
           </Link>
         ) : (
           <span
             className="inline-flex items-center justify-center px-5 py-3 border border-brut-line text-brut-muted text-[10px] font-semibold tracking-brut-wide uppercase cursor-not-allowed"
-            title="Unlocks 14 days before race"
+            title={t('race_day_unlocks_tooltip')}
             aria-disabled="true"
           >
-            Race day plan &rarr;
+            {t('race_day_plan')}
           </span>
         )}
       </div>

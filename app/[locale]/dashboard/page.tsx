@@ -1,8 +1,10 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { getLocale, getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CountdownBanner from '@/components/dashboard/CountdownBanner';
+import { Link } from '@/lib/i18n/routing';
+import type { AppLocale } from '@/lib/i18n/routing';
 import { createClient } from '@/lib/supabase/server';
 import {
   getCapsulesNeededThisWeek,
@@ -15,8 +17,7 @@ import {
   getWeekProgress,
   getWeeklyNutritionTargets,
 } from '@/lib/dashboard/metrics';
-import { formatDuration, toIsoDate } from '@/lib/utils/dates';
-import { SESSION_TYPE_LABELS } from '@/lib/types/db';
+import { formatDuration, toIsoDate, weekdayLong } from '@/lib/utils/dates';
 import type {
   NutritionPhase,
   Phase,
@@ -25,29 +26,6 @@ import type {
   RacePlan,
   Session,
 } from '@/lib/types/db';
-
-const PHASE_LABELS: Record<Phase['name'], string> = {
-  base: 'Base',
-  build: 'Build',
-  peak: 'Peak',
-  taper: 'Taper',
-};
-
-function weekdayLong(iso: string): string {
-  return new Date(`${iso}T00:00:00`).toLocaleDateString('en-GB', {
-    weekday: 'long',
-  });
-}
-
-/** Relative day label: Today / Tomorrow / Saturday. */
-function relativeDay(iso: string, today: string): string {
-  if (iso === today) return 'Today';
-  const next = new Date(`${today}T00:00:00`);
-  next.setDate(next.getDate() + 1);
-  const tomorrowIso = toIsoDate(next);
-  if (iso === tomorrowIso) return 'Tomorrow';
-  return weekdayLong(iso);
-}
 
 function sectionLabel(text: string) {
   return (
@@ -58,6 +36,11 @@ function sectionLabel(text: string) {
 }
 
 export default async function DashboardPage() {
+  const locale = (await getLocale()) as AppLocale;
+  const t = await getTranslations('dashboard');
+  const tPhases = await getTranslations('phases');
+  const tSessionTypes = await getTranslations('session_types');
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -83,7 +66,7 @@ export default async function DashboardPage() {
   }
 
   const firstName =
-    (profile.full_name ?? '').trim().split(' ')[0] || 'athlete';
+    (profile.full_name ?? '').trim().split(' ')[0] || t('athlete_word');
 
   const { data: planData } = await supabase
     .from('race_plans')
@@ -113,42 +96,40 @@ export default async function DashboardPage() {
       <>
         <Header />
         <main className="mx-auto max-w-3xl px-6 md:px-10 pt-16 md:pt-24 pb-24 min-h-[70vh]">
-          {sectionLabel('Dashboard')}
+          {sectionLabel(t('eyebrow'))}
           <h1 className="mt-6 text-[40px] md:text-[56px] leading-[1.0] font-thin tracking-brut text-brut-black">
-            Welcome to BRUT, {firstName}
+            {t('welcome_new', { name: firstName })}
           </h1>
           <p className="mt-4 text-sm md:text-base font-normal text-brut-ink leading-relaxed">
-            You haven&rsquo;t created a race plan yet. Let&rsquo;s build one in
-            two minutes — sport, distance, date, when you train. We&rsquo;ll
-            generate a periodised programme with fuelling baked in.
+            {t('empty_intro')}
           </p>
           <div className="mt-8 flex flex-col gap-3 items-start">
             <Link
               href="/brut-race"
               className="inline-flex items-center justify-center px-6 py-4 bg-brut-black text-white text-xs font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors"
             >
-              Build my first race plan &rarr;
+              {t('build_first_plan')}
             </Link>
             <Link
               href="/brut-train"
               className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted hover:text-brut-black transition-colors underline underline-offset-4 decoration-brut-line hover:decoration-brut-black"
             >
-              Or, plan just a single session &rarr;
+              {t('or_single_session')}
             </Link>
           </div>
 
           <section className="mt-16">
-            {sectionLabel('Quick tools')}
+            {sectionLabel(t('quick_tools'))}
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-px bg-brut-line border border-brut-line">
               <Link
                 href="/brut-train"
                 className="bg-white p-5 hover:bg-brut-bg-soft transition-colors flex flex-col gap-2"
               >
                 <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                  Brut Train
+                  BRUT TRAIN
                 </span>
                 <span className="text-xl font-thin tracking-brut text-brut-black">
-                  Plan a session &rarr;
+                  {t('plan_a_session')}
                 </span>
               </Link>
               <Link
@@ -156,10 +137,10 @@ export default async function DashboardPage() {
                 className="bg-white p-5 hover:bg-brut-bg-soft transition-colors flex flex-col gap-2"
               >
                 <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                  Brut Race
+                  BRUT RACE
                 </span>
                 <span className="text-xl font-thin tracking-brut text-brut-black">
-                  Plan a race &rarr;
+                  {t('plan_a_race')}
                 </span>
               </Link>
             </div>
@@ -225,14 +206,23 @@ export default async function DashboardPage() {
     nutritionPhase,
   );
 
+  function relativeDay(iso: string): string {
+    if (iso === today) return t('relative_today');
+    const next = new Date(`${today}T00:00:00`);
+    next.setDate(next.getDate() + 1);
+    const tomorrowIso = toIsoDate(next);
+    if (iso === tomorrowIso) return t('relative_tomorrow');
+    return weekdayLong(iso, locale);
+  }
+
   return (
     <>
       <Header />
 
       <main className="mx-auto max-w-3xl px-6 md:px-10 pt-12 md:pt-20 pb-24 min-h-[70vh]">
-        {sectionLabel('Dashboard')}
+        {sectionLabel(t('eyebrow'))}
         <h1 className="mt-4 text-[32px] md:text-[44px] leading-[1.0] font-thin tracking-brut text-brut-black">
-          Welcome back, {firstName}
+          {t('welcome_back', { name: firstName })}
         </h1>
 
         {/* ────────────── BLOC 1 · Race countdown ────────────── */}
@@ -245,14 +235,14 @@ export default async function DashboardPage() {
 
         {/* ────────────── BLOC 2 · Today's session ────────────── */}
         <section className="mt-12 border border-brut-line p-6 md:p-7 flex flex-col gap-3">
-          {sectionLabel('Today')}
+          {sectionLabel(t('today_eyebrow'))}
           {todaysSession ? (
             <>
               <p className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                {weekdayLong(today)}
+                {weekdayLong(today, locale)}
               </p>
               <p className="text-2xl md:text-3xl font-thin tracking-brut text-brut-black">
-                {SESSION_TYPE_LABELS[todaysSession.session_type]}
+                {tSessionTypes(todaysSession.session_type)}
                 {todaysSession.distance_km
                   ? ` · ${todaysSession.distance_km} km`
                   : ''}
@@ -267,16 +257,16 @@ export default async function DashboardPage() {
                 href={`/brut-race/${activePlan.id}/session/${todaysSession.id}?week=${todaysSession.week_number}`}
                 className="mt-3 inline-block text-[10px] font-semibold tracking-brut-wide uppercase border-b border-brut-black pb-1 self-start hover:opacity-60 transition-opacity"
               >
-                Open session &rarr;
+                {t('open_session')}
               </Link>
             </>
           ) : (
             <>
               <p className="text-2xl md:text-3xl font-thin tracking-brut text-brut-black">
-                Rest day.
+                {t('rest_day')}
               </p>
               <p className="text-sm font-normal text-brut-ink leading-relaxed">
-                Use it. Recovery is training.
+                {t('rest_day_caption')}
               </p>
             </>
           )}
@@ -285,21 +275,26 @@ export default async function DashboardPage() {
         {/* ────────────── BLOC 3 · This week & BLOC 5 · This week's nutrition ────────────── */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-px bg-brut-line border border-brut-line">
           <section className="bg-white p-6 md:p-7 flex flex-col gap-4">
-            {sectionLabel('This week')}
+            {sectionLabel(t('this_week'))}
             <p className="text-2xl md:text-3xl font-thin tracking-brut text-brut-black tabular-nums">
-              Week {currentWeek} <span className="text-brut-muted">/</span>{' '}
-              {activePlan.weeks_total}
+              {t.rich('week_x_of_y', {
+                current: currentWeek,
+                total: activePlan.weeks_total,
+              })}
             </p>
             {currentPhase ? (
               <p className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                {PHASE_LABELS[currentPhase.name]} phase
+                {t('phase_label', { phase: tPhases(currentPhase.name) })}
               </p>
             ) : null}
             <div className="flex flex-col gap-2 mt-2">
               <p className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                {weekProgress.completed} of {weekProgress.total} sessions done
+                {t('sessions_progress', {
+                  completed: weekProgress.completed,
+                  total: weekProgress.total,
+                })}
                 {weekProgress.skipped > 0
-                  ? ` · ${weekProgress.skipped} skipped`
+                  ? ` ${t('skipped_count', { count: weekProgress.skipped })}`
                   : ''}
               </p>
               <div className="h-px bg-brut-line relative overflow-hidden">
@@ -312,71 +307,74 @@ export default async function DashboardPage() {
             </div>
             {kmPlanned > 0 ? (
               <p className="text-sm font-normal text-brut-ink tabular-nums">
-                {kmCompleted.toFixed(1)} km of {kmPlanned.toFixed(1)} km
+                {t('km_completed_of_planned', {
+                  completed: kmCompleted.toFixed(1),
+                  planned: kmPlanned.toFixed(1),
+                })}
               </p>
             ) : null}
             <Link
               href={`/brut-race/${activePlan.id}?week=${currentWeek}`}
               className="mt-2 inline-block text-[10px] font-semibold tracking-brut-wide uppercase border-b border-brut-black pb-1 self-start hover:opacity-60 transition-opacity"
             >
-              See week &rarr;
+              {t('see_week')}
             </Link>
           </section>
 
           <section className="bg-white p-6 md:p-7 flex flex-col gap-4">
-            {sectionLabel("This week's nutrition")}
+            {sectionLabel(t('this_weeks_nutrition'))}
             {nutritionTargets ? (
               <>
                 <div className="flex flex-col gap-2">
                   <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                    Carbs
+                    {t('carbs')}
                   </span>
                   <span className="text-2xl font-thin tracking-brut text-brut-black tabular-nums">
                     {nutritionTargets.carbsMinGPerDay}–
                     {nutritionTargets.carbsMaxGPerDay}
                     <span className="ml-2 text-sm font-normal text-brut-muted">
-                      g / day
+                      {t('g_per_day')}
                     </span>
                   </span>
                 </div>
                 <div className="flex flex-col gap-2">
                   <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                    Protein
+                    {t('protein')}
                   </span>
                   <span className="text-2xl font-thin tracking-brut text-brut-black tabular-nums">
                     {nutritionTargets.proteinMinGPerDay}–
                     {nutritionTargets.proteinMaxGPerDay}
                     <span className="ml-2 text-sm font-normal text-brut-muted">
-                      g / day
+                      {t('g_per_day')}
                     </span>
                   </span>
                 </div>
                 <div className="flex flex-col gap-2">
                   <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                    Hydration
+                    {t('hydration')}
                   </span>
                   <span className="text-2xl font-thin tracking-brut text-brut-black tabular-nums">
                     {nutritionTargets.hydrationLPerDay}
                     <span className="ml-2 text-sm font-normal text-brut-muted">
-                      L / day
+                      {t('l_per_day')}
                     </span>
                   </span>
                 </div>
               </>
             ) : (
               <p className="text-sm font-normal text-brut-muted">
-                Nutrition targets unavailable.
+                {t('nutrition_unavailable')}
               </p>
             )}
 
             <div className="mt-2 pt-4 border-t border-brut-line flex flex-col gap-2">
               <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                BRUT capsules this week
+                {t('capsules_this_week')}
               </span>
               <span className="text-2xl font-thin tracking-brut text-brut-black tabular-nums">
                 {capsulesThisWeek}
                 <span className="ml-2 text-sm font-normal text-brut-muted">
-                  caps
+                  {t('caps')}
                 </span>
               </span>
               <a
@@ -385,7 +383,7 @@ export default async function DashboardPage() {
                 rel="noopener noreferrer"
                 className="mt-1 inline-block text-[10px] font-semibold tracking-brut-wide uppercase border-b border-brut-black pb-1 self-start hover:opacity-60 transition-opacity"
               >
-                Get capsules &rarr;
+                {t('get_capsules')}
               </a>
             </div>
           </section>
@@ -393,7 +391,7 @@ export default async function DashboardPage() {
 
         {/* ────────────── BLOC 4 · Next sessions ────────────── */}
         <section className="mt-12 flex flex-col gap-3">
-          {sectionLabel('Next sessions')}
+          {sectionLabel(t('next_sessions'))}
           {nextSessions.length > 0 ? (
             <div className="flex flex-col">
               {nextSessions.map((s) => (
@@ -403,10 +401,10 @@ export default async function DashboardPage() {
                   className="border-t border-brut-line first:border-t-0 py-4 flex items-center gap-3 hover:bg-brut-bg-soft transition-colors"
                 >
                   <span className="w-24 shrink-0 text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                    {s.scheduled_date ? relativeDay(s.scheduled_date, today) : '—'}
+                    {s.scheduled_date ? relativeDay(s.scheduled_date) : '—'}
                   </span>
                   <span className="flex-1 text-sm font-medium text-brut-black">
-                    {SESSION_TYPE_LABELS[s.session_type]}
+                    {tSessionTypes(s.session_type)}
                   </span>
                   <span className="text-sm font-normal text-brut-ink tabular-nums">
                     {s.distance_km != null
@@ -419,24 +417,24 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <p className="text-sm font-normal text-brut-muted">
-              No upcoming sessions on the calendar.
+              {t('no_upcoming_sessions')}
             </p>
           )}
         </section>
 
         {/* ────────────── BLOC 6 · Quick tools ────────────── */}
         <section className="mt-12">
-          {sectionLabel('Quick tools')}
+          {sectionLabel(t('quick_tools'))}
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-px bg-brut-line border border-brut-line">
             <Link
               href="/brut-train"
               className="bg-white p-5 hover:bg-brut-bg-soft transition-colors flex flex-col gap-2"
             >
               <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                Brut Train
+                BRUT TRAIN
               </span>
               <span className="text-xl font-thin tracking-brut text-brut-black">
-                Plan a session &rarr;
+                {t('plan_a_session')}
               </span>
             </Link>
             <Link
@@ -444,10 +442,10 @@ export default async function DashboardPage() {
               className="bg-white p-5 hover:bg-brut-bg-soft transition-colors flex flex-col gap-2"
             >
               <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                Brut Race
+                BRUT RACE
               </span>
               <span className="text-xl font-thin tracking-brut text-brut-black">
-                Plan a race &rarr;
+                {t('plan_a_race')}
               </span>
             </Link>
           </div>

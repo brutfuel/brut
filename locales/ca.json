@@ -399,5 +399,96 @@
     "long-combined": "Combinada llarga",
     "recovery-tri": "Recuperació",
     "rest": "Descans"
+  },
+  "brut_train": {
+    "eyebrow": "01 — Sessió",
+    "intro": "Configura la teva pròxima sessió i obtén una estructura completa, calendari de nutrició i objectiu de reposició.",
+    "empty_placeholder_eyebrow": "Pla",
+    "empty_placeholder_title": "Configura la sessió",
+    "empty_placeholder_body": "Omple el formulari de l'esquerra i prem <b>Calcula</b> per veure el teu pla de nutrició.",
+    "outdated_banner": "Desactualitzat · Recalcula per refrescar",
+    "submit_calculate": "Calcula",
+    "submit_recalculate": "Recalcula",
+    "submit_up_to_date": "Actualitzat",
+    "form": {
+      "sport": "Esport",
+      "session_type": "Tipus de sessió",
+      "duration": "Durada",
+      "distance": "Distància",
+      "elevation_gain": "Desnivell positiu",
+      "ambient_temperature": "Temperatura ambient",
+      "time_of_day": "Moment del dia",
+      "last_meal": "Darrer àpat",
+      "body_weight": "Pes corporal",
+      "advanced_parameters": "Paràmetres avançats",
+      "relative_humidity": "Humitat relativa",
+      "heat_acclimated": "Aclimatat a la calor",
+      "habitual_sodium_diet": "Dieta habitual de sodi",
+      "known_sweat_rate": "Taxa de suor coneguda",
+      "optional_override": "sobreescriptura opcional",
+      "known_sweat_rate_hint": "Si està definida, substitueix la taxa de suor calculada per a aquesta sessió."
+    },
+    "surface": {
+      "track-road": "Pista / Carretera",
+      "trail": "Trail",
+      "road": "Carretera",
+      "gravel": "Gravel",
+      "mtb": "BTT"
+    },
+    "time_of_day_options": {
+      "early-morning": "Matinada",
+      "morning": "Matí",
+      "afternoon": "Tarda",
+      "evening": "Vespre",
+      "night": "Nit"
+    },
+    "last_meal_options": {
+      "<1h": "< 1 h",
+      "1-2h": "1 – 2 h",
+      "2-4h": "2 – 4 h",
+      ">4h": "> 4 h"
+    },
+    "sodium_diet_options": {
+      "low": "Baixa",
+      "normal": "Normal",
+      "high": "Alta"
+    },
+    "result": {
+      "replacement_need": "Necessitat de reposició",
+      "sweat_rate": "Taxa de suor",
+      "total_loss": "Pèrdua total",
+      "dehydration": "Deshidratació",
+      "sodium_lost": "Sodi perdut",
+      "session_structure": "Estructura de la sessió",
+      "pre_session": "Abans",
+      "during_session": "Durant",
+      "post_session": "Després",
+      "totals": "Totals",
+      "warm_up": "Escalfament",
+      "main_set": "Sèrie principal",
+      "cool_down": "Refredament",
+      "carb_target": "Objectiu de carbohidrats",
+      "brut_target": "Objectiu BRUT",
+      "protein": "Proteïna",
+      "carbs": "Carbohidrats",
+      "water": "Aigua",
+      "brut": "BRUT",
+      "post_session_brut_note": "{count, plural, one {# càpsula} other {# càpsules}} amb un snack ric en electròlits.",
+      "buy_cta": "Compra a brutfuel.com →",
+      "references": "Referències: Baker LB 2017 · Barnes et al. 2019"
+    },
+    "replacement_levels": {
+      "not-necessary": "No necessària",
+      "optional": "Opcional",
+      "recommended": "Recomanada",
+      "essential": "Essencial"
+    },
+    "table": {
+      "empty": "Defineix una durada per veure el calendari durant la sessió.",
+      "time": "Hora",
+      "water": "Aigua",
+      "carbs": "Carbohidrats",
+      "brut": "BRUT"
+    }
   }
 }

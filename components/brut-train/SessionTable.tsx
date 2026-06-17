@@ -1,17 +1,18 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import type { ScheduleRow } from '@/lib/calculations/types';
 
 interface Props {
   rows: ScheduleRow[];
 }
 
-// Compact, scrollable schedule table. Optimised for the 380 px sticky panel.
 export default function SessionTable({ rows }: Props) {
+  const t = useTranslations('brut_train.table');
+  const tUnits = useTranslations('common.units');
+
   if (rows.length === 0) {
-    return (
-      <p className="text-sm text-brut-muted">
-        Set a duration to see the in-session schedule.
-      </p>
-    );
+    return <p className="text-sm text-brut-muted">{t('empty')}</p>;
   }
 
   return (
@@ -20,16 +21,16 @@ export default function SessionTable({ rows }: Props) {
         <thead>
           <tr className="border-b border-brut-line bg-brut-bg-soft">
             <th className="text-left py-2 px-3 text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-              Time
+              {t('time')}
             </th>
             <th className="text-right py-2 px-3 text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-              Water
+              {t('water')}
             </th>
             <th className="text-right py-2 px-3 text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-              Carbs
+              {t('carbs')}
             </th>
             <th className="text-right py-2 px-3 text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-              BRUT
+              {t('brut')}
             </th>
           </tr>
         </thead>
@@ -43,10 +44,10 @@ export default function SessionTable({ rows }: Props) {
                 {row.time}
               </td>
               <td className="py-2 px-3 text-right text-brut-ink">
-                {row.waterMl} ml
+                {row.waterMl} {tUnits('ml')}
               </td>
               <td className="py-2 px-3 text-right text-brut-ink">
-                {row.carbsG > 0 ? `${row.carbsG} g` : '—'}
+                {row.carbsG > 0 ? `${row.carbsG} ${tUnits('g')}` : '—'}
               </td>
               <td className="py-2 px-3 text-right text-brut-black font-semibold">
                 {row.capsules > 0 ? row.capsules : '—'}

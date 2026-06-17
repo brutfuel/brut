@@ -399,5 +399,96 @@
     "long-combined": "Long combined",
     "recovery-tri": "Recovery",
     "rest": "Rest"
+  },
+  "brut_train": {
+    "eyebrow": "01 — Session",
+    "intro": "Configure your next session and get a complete structure, fuelling schedule and replacement target.",
+    "empty_placeholder_eyebrow": "Plan",
+    "empty_placeholder_title": "Configure your session",
+    "empty_placeholder_body": "Fill in the form on the left, then press <b>Calculate</b> to see your fuelling plan.",
+    "outdated_banner": "Outdated · Recalculate to refresh",
+    "submit_calculate": "Calculate",
+    "submit_recalculate": "Recalculate",
+    "submit_up_to_date": "Up to date",
+    "form": {
+      "sport": "Sport",
+      "session_type": "Session type",
+      "duration": "Duration",
+      "distance": "Distance",
+      "elevation_gain": "Elevation gain",
+      "ambient_temperature": "Ambient temperature",
+      "time_of_day": "Time of day",
+      "last_meal": "Last meal",
+      "body_weight": "Body weight",
+      "advanced_parameters": "Advanced parameters",
+      "relative_humidity": "Relative humidity",
+      "heat_acclimated": "Heat acclimated",
+      "habitual_sodium_diet": "Habitual sodium diet",
+      "known_sweat_rate": "Known sweat rate",
+      "optional_override": "optional override",
+      "known_sweat_rate_hint": "If set, overrides the calculated sweat rate for this session."
+    },
+    "surface": {
+      "track-road": "Track / Road",
+      "trail": "Trail",
+      "road": "Road",
+      "gravel": "Gravel",
+      "mtb": "MTB"
+    },
+    "time_of_day_options": {
+      "early-morning": "Early morning",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "night": "Night"
+    },
+    "last_meal_options": {
+      "<1h": "< 1 h",
+      "1-2h": "1 – 2 h",
+      "2-4h": "2 – 4 h",
+      ">4h": "> 4 h"
+    },
+    "sodium_diet_options": {
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High"
+    },
+    "result": {
+      "replacement_need": "Replacement need",
+      "sweat_rate": "Sweat rate",
+      "total_loss": "Total loss",
+      "dehydration": "Dehydration",
+      "sodium_lost": "Sodium lost",
+      "session_structure": "Session structure",
+      "pre_session": "Pre-session",
+      "during_session": "During session",
+      "post_session": "Post-session",
+      "totals": "Totals",
+      "warm_up": "Warm-up",
+      "main_set": "Main set",
+      "cool_down": "Cool-down",
+      "carb_target": "Carb target",
+      "brut_target": "BRUT target",
+      "protein": "Protein",
+      "carbs": "Carbs",
+      "water": "Water",
+      "brut": "BRUT",
+      "post_session_brut_note": "{count, plural, one {# capsule} other {# capsules}} with an electrolyte-rich snack.",
+      "buy_cta": "Buy at brutfuel.com →",
+      "references": "References: Baker LB 2017 · Barnes et al. 2019"
+    },
+    "replacement_levels": {
+      "not-necessary": "Not necessary",
+      "optional": "Optional",
+      "recommended": "Recommended",
+      "essential": "Essential"
+    },
+    "table": {
+      "empty": "Set a duration to see the in-session schedule.",
+      "time": "Time",
+      "water": "Water",
+      "carbs": "Carbs",
+      "brut": "BRUT"
+    }
   }
 }

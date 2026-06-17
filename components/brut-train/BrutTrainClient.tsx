@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import SessionForm from '@/components/brut-train/SessionForm';
 import SessionResult from '@/components/brut-train/SessionResult';
 import { buildPlan } from '@/lib/calculations/plan';
@@ -11,33 +12,33 @@ interface Props {
   initialInput: SessionInput;
 }
 
-// Editorial placeholder shown in the result panel before the first
-// explicit Calculate click.
 function EmptyPlaceholder() {
+  const t = useTranslations('brut_train');
   return (
     <section className="border border-brut-line p-6 md:p-7 flex flex-col gap-3">
       <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-        Plan
+        {t('empty_placeholder_eyebrow')}
       </span>
       <p className="text-2xl font-thin tracking-brut text-brut-black">
-        Configure your session
+        {t('empty_placeholder_title')}
       </p>
       <p className="text-sm font-normal text-brut-ink leading-relaxed">
-        Fill in the form on the left, then press{' '}
-        <span className="font-medium text-brut-black">Calculate</span> to see
-        your fuelling plan.
+        {t.rich('empty_placeholder_body', {
+          b: (chunks) => (
+            <span className="font-medium text-brut-black">{chunks}</span>
+          ),
+        })}
       </p>
     </section>
   );
 }
 
-// Hairline banner shown above the result panel when the inputs have
-// drifted from the last calculation.
 function OutdatedBanner() {
+  const t = useTranslations('brut_train');
   return (
     <div className="mb-6 border border-brut-line bg-brut-bg-soft px-5 py-3">
       <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-black">
-        Outdated · Recalculate to refresh
+        {t('outdated_banner')}
       </span>
     </div>
   );
@@ -50,6 +51,7 @@ function OutdatedBanner() {
  * outdated until the next Calculate.
  */
 export default function BrutTrainClient({ initialInput }: Props) {
+  const t = useTranslations('brut_train');
   const [input, setInput] = useState<SessionInput>(initialInput);
   const [committedInput, setCommittedInput] = useState<SessionInput | null>(
     null,
@@ -67,17 +69,14 @@ export default function BrutTrainClient({ initialInput }: Props) {
     JSON.stringify(input) !== JSON.stringify(committedInput);
 
   const submitLabel = !hasResult
-    ? 'Calculate'
+    ? t('submit_calculate')
     : isOutdated
-      ? 'Recalculate'
-      : 'Up to date';
+      ? t('submit_recalculate')
+      : t('submit_up_to_date');
   const submitDisabled = hasResult && !isOutdated;
 
   function commit() {
     setCommittedInput(input);
-    // On mobile the result panel sits below the form — bring it into
-    // view so the athlete sees the freshly-rendered plan. No-op on
-    // desktop where the aside is already sticky-right.
     resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 

@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import type {
   ReplacementLevel,
   SessionPlan,
@@ -8,7 +11,6 @@ interface Props {
   plan: SessionPlan;
 }
 
-// Hairline + uppercase label used as section header inside the result panel.
 function SectionHeader({ index, label }: { index: string; label: string }) {
   return (
     <div className="flex items-baseline justify-between pb-3 border-b border-brut-line">
@@ -48,23 +50,20 @@ function Metric({
   );
 }
 
-const LEVEL_COPY: Record<ReplacementLevel, string> = {
-  'not-necessary': 'Not necessary',
-  optional: 'Optional',
-  recommended: 'Recommended',
-  essential: 'Essential',
-};
-
 export default function SessionResult({ plan }: Props) {
+  const tR = useTranslations('brut_train.result');
+  const tLevels = useTranslations('brut_train.replacement_levels');
+  const tUnits = useTranslations('common.units');
+
   return (
     <div id="results" className="flex flex-col gap-10">
       {/* Replacement need banner */}
       <section className="border border-brut-line p-6 md:p-7">
         <span className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-          Replacement need
+          {tR('replacement_need')}
         </span>
         <p className="mt-2 text-[42px] font-normal tracking-[0.02em] text-brut-black uppercase leading-[1.05]">
-          {LEVEL_COPY[plan.replacementLevel]}
+          {tLevels(plan.replacementLevel as ReplacementLevel)}
         </p>
         <p className="mt-4 text-sm font-normal text-brut-ink leading-[1.5]">
           {plan.replacementMessage}
@@ -74,24 +73,24 @@ export default function SessionResult({ plan }: Props) {
       {/* Key metrics */}
       <section className="grid grid-cols-2 gap-x-5 gap-y-6">
         <Metric
-          label="Sweat rate"
+          label={tR('sweat_rate')}
           value={plan.sweatRate.toFixed(2)}
-          unit="L / h"
+          unit={tUnits('L_per_h')}
         />
         <Metric
-          label="Total loss"
+          label={tR('total_loss')}
           value={plan.totalLoss.toFixed(2)}
-          unit="L"
+          unit={tUnits('L')}
         />
         <Metric
-          label="Dehydration"
+          label={tR('dehydration')}
           value={`${plan.dehydrationPct.toFixed(1)}`}
           unit="% BW"
         />
         <Metric
-          label="Sodium lost"
+          label={tR('sodium_lost')}
           value={`${Math.round(plan.sodiumTotalMg)}`}
-          unit="mg"
+          unit={tUnits('mg')}
         />
         {plan.pace ? (
           <div className="col-span-2">
@@ -102,11 +101,11 @@ export default function SessionResult({ plan }: Props) {
 
       {/* Session structure */}
       <section className="flex flex-col gap-5">
-        <SectionHeader index="01" label="Session structure" />
+        <SectionHeader index="01" label={tR('session_structure')} />
         <div className="flex flex-col gap-5">
           <div>
             <p className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-              Warm-up · {plan.structure.warmup.minutes} min
+              {tR('warm_up')} · {plan.structure.warmup.minutes} {tUnits('min')}
             </p>
             <p className="mt-1 text-sm text-brut-ink leading-relaxed">
               {plan.structure.warmup.description}
@@ -114,7 +113,7 @@ export default function SessionResult({ plan }: Props) {
           </div>
           <div>
             <p className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-              Main set · {plan.structure.mainSet.minutes} min
+              {tR('main_set')} · {plan.structure.mainSet.minutes} {tUnits('min')}
             </p>
             <p className="mt-1 text-sm text-brut-ink leading-relaxed">
               {plan.structure.mainSet.description}
@@ -122,7 +121,7 @@ export default function SessionResult({ plan }: Props) {
           </div>
           <div>
             <p className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-              Cool-down · {plan.structure.cooldown.minutes} min
+              {tR('cool_down')} · {plan.structure.cooldown.minutes} {tUnits('min')}
             </p>
             <p className="mt-1 text-sm text-brut-ink leading-relaxed">
               {plan.structure.cooldown.description}
@@ -133,7 +132,7 @@ export default function SessionResult({ plan }: Props) {
 
       {/* Pre-session */}
       <section className="flex flex-col gap-5">
-        <SectionHeader index="02" label="Pre-session" />
+        <SectionHeader index="02" label={tR('pre_session')} />
         <div className="flex flex-col gap-4">
           <p className="text-sm text-brut-ink leading-relaxed">
             {plan.preSession.food}
@@ -146,17 +145,17 @@ export default function SessionResult({ plan }: Props) {
 
       {/* During session */}
       <section className="flex flex-col gap-5">
-        <SectionHeader index="03" label="During session" />
+        <SectionHeader index="03" label={tR('during_session')} />
         <div className="grid grid-cols-2 gap-x-5 gap-y-6">
           <Metric
-            label="Carb target"
+            label={tR('carb_target')}
             value={plan.carbsPerHour > 0 ? String(plan.carbsPerHour) : '—'}
-            unit={plan.carbsPerHour > 0 ? 'g / h' : undefined}
+            unit={plan.carbsPerHour > 0 ? tUnits('g_per_h') : undefined}
           />
           <Metric
-            label="BRUT target"
+            label={tR('brut_target')}
             value={String(plan.capsulesPerHour)}
-            unit="caps / h"
+            unit={tUnits('caps_per_h')}
           />
         </div>
         <SessionTable rows={plan.schedule} />
@@ -164,33 +163,32 @@ export default function SessionResult({ plan }: Props) {
 
       {/* Post-session */}
       <section className="flex flex-col gap-5">
-        <SectionHeader index="04" label="Post-session" />
+        <SectionHeader index="04" label={tR('post_session')} />
         <dl className="grid grid-cols-2 gap-x-5 gap-y-4 text-sm">
           <div className="col-span-1">
             <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-              Protein
+              {tR('protein')}
             </dt>
             <dd className="text-brut-ink">{plan.postSession.proteinGrams}</dd>
           </div>
           <div className="col-span-1">
             <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-              Carbs
+              {tR('carbs')}
             </dt>
             <dd className="text-brut-ink">{plan.postSession.carbsGrams}</dd>
           </div>
           <div className="col-span-2">
             <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-              Water
+              {tR('water')}
             </dt>
             <dd className="text-brut-ink">{plan.postSession.waterMl}</dd>
           </div>
           <div className="col-span-2">
             <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-              BRUT
+              {tR('brut')}
             </dt>
             <dd className="text-brut-ink">
-              {plan.postSession.capsules} capsule with an electrolyte-rich
-              snack.
+              {tR('post_session_brut_note', { count: plan.postSession.capsules })}
             </dd>
           </div>
         </dl>
@@ -201,11 +199,11 @@ export default function SessionResult({ plan }: Props) {
 
       {/* Totals + CTA */}
       <section className="bg-brut-black text-white p-5">
-        <SectionHeader index="05" label="Totals" />
+        <SectionHeader index="05" label={tR('totals')} />
         <div className="grid grid-cols-3 gap-3 mt-5">
           <div>
             <p className="text-[10px] font-medium tracking-brut-wide uppercase text-white/60">
-              BRUT
+              {tR('brut')}
             </p>
             <p className="mt-1 text-3xl font-thin tracking-brut tabular-nums">
               {plan.totals.capsules}
@@ -213,20 +211,24 @@ export default function SessionResult({ plan }: Props) {
           </div>
           <div>
             <p className="text-[10px] font-medium tracking-brut-wide uppercase text-white/60">
-              Water
+              {tR('water')}
             </p>
             <p className="mt-1 text-3xl font-thin tracking-brut tabular-nums">
               {plan.totals.waterMl}
-              <span className="ml-1 text-xs font-normal text-white/60">ml</span>
+              <span className="ml-1 text-xs font-normal text-white/60">
+                {tUnits('ml')}
+              </span>
             </p>
           </div>
           <div>
             <p className="text-[10px] font-medium tracking-brut-wide uppercase text-white/60">
-              Carbs
+              {tR('carbs')}
             </p>
             <p className="mt-1 text-3xl font-thin tracking-brut tabular-nums">
               {plan.totals.carbsG}
-              <span className="ml-1 text-xs font-normal text-white/60">g</span>
+              <span className="ml-1 text-xs font-normal text-white/60">
+                {tUnits('g')}
+              </span>
             </p>
           </div>
         </div>
@@ -236,17 +238,15 @@ export default function SessionResult({ plan }: Props) {
           rel="noopener noreferrer"
           className="mt-6 inline-block text-[10px] font-semibold tracking-brut-wide uppercase border-b border-white pb-1 hover:opacity-70 transition-opacity"
         >
-          Buy at brutfuel.com →
+          {tR('buy_cta')}
         </a>
       </section>
 
-      {/* Footer note overriding any leftover styling */}
       <p className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-        References: Baker LB 2017 · Barnes et al. 2019
+        {tR('references')}
       </p>
     </div>
   );
 }
 
-// Re-export header so it can be reused if needed elsewhere.
 export { SectionHeader };

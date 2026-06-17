@@ -1042,5 +1042,20 @@
       "s5_title": "5. Vegeu també",
       "s5_body": "Per a una visió completa, llegeix la nostra <privacy>Política de privacitat</privacy>."
     }
+  },
+  "email": {
+    "welcome": {
+      "subject": "Benvingut a Brut",
+      "fallback_name": "atleta",
+      "greeting": "Hola {name},",
+      "intro": "Benvingut a Brut.",
+      "you_in": "Ja hi ets. Això és el que pots fer:",
+      "item_train": "— Planifica una sessió individual a brut-train",
+      "item_race": "— Construeix un programa de cursa complet a brut-race",
+      "item_nutrition": "— Fes el seguiment de la teva nutrició en cada entrenament",
+      "questions": "Si tens dubtes, respon aquest correu.",
+      "signoff": "Entrena intel·ligent,",
+      "signature": "L'equip de Brut"
+    }
   }
 }

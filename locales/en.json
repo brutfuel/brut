@@ -1042,5 +1042,20 @@
       "s5_title": "5. See also",
       "s5_body": "For the full picture, read our <privacy>Privacy Policy</privacy>."
     }
+  },
+  "email": {
+    "welcome": {
+      "subject": "Welcome to Brut",
+      "fallback_name": "athlete",
+      "greeting": "Hi {name},",
+      "intro": "Welcome to Brut.",
+      "you_in": "You're in. Here's what you can do:",
+      "item_train": "— Plan a single session at brut-train",
+      "item_race": "— Build a full race programme at brut-race",
+      "item_nutrition": "— Track your nutrition with every workout",
+      "questions": "If you have questions, reply to this email.",
+      "signoff": "Train smart,",
+      "signature": "The Brut team"
+    }
   }
 }

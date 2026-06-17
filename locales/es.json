@@ -1042,5 +1042,20 @@
       "s5_title": "5. Véase también",
       "s5_body": "Para una visión completa, lee nuestra <privacy>Política de privacidad</privacy>."
     }
+  },
+  "email": {
+    "welcome": {
+      "subject": "Bienvenido a Brut",
+      "fallback_name": "atleta",
+      "greeting": "Hola {name},",
+      "intro": "Bienvenido a Brut.",
+      "you_in": "Ya estás dentro. Esto es lo que puedes hacer:",
+      "item_train": "— Planifica una sesión individual en brut-train",
+      "item_race": "— Construye un programa de carrera completo en brut-race",
+      "item_nutrition": "— Lleva el seguimiento de tu nutrición en cada entrenamiento",
+      "questions": "Si tienes dudas, responde a este correo.",
+      "signoff": "Entrena con cabeza,",
+      "signature": "El equipo de Brut"
+    }
   }
 }

@@ -117,7 +117,7 @@ export async function completeOnboarding(
   if (user.email) {
     const firstName = parsed.data.fullName.trim().split(' ')[0] ?? '';
     try {
-      await sendWelcomeEmail({ to: user.email, firstName });
+      await sendWelcomeEmail({ to: user.email, firstName, locale });
     } catch (err) {
       console.warn('welcome email failed', err);
     }

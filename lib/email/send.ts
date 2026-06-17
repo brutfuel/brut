@@ -5,6 +5,7 @@
 import type { ContactMessageValues, FeedbackMessageValues } from '@/lib/validation/contact';
 import { welcomeEmail } from '@/lib/email/templates/welcome';
 import { passwordResetEmail } from '@/lib/email/templates/password-reset';
+import type { AppLocale } from '@/lib/i18n/routing';
 
 export type SendResult = { ok: true } | { ok: false; error: string };
 
@@ -102,8 +103,9 @@ export async function sendFeedbackEmail(
 export async function sendWelcomeEmail(args: {
   to: string;
   firstName: string;
+  locale?: AppLocale;
 }): Promise<SendResult> {
-  const { subject, text } = welcomeEmail(args.firstName);
+  const { subject, text } = await welcomeEmail(args.firstName, args.locale ?? 'en');
   return rawSend(args.to, subject, text);
 }
 

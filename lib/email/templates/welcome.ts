@@ -1,29 +1,36 @@
 // Welcome email — plain text, editorial. Sent once after onboarding completes.
 
+import { getTranslations } from 'next-intl/server';
+import type { AppLocale } from '@/lib/i18n/routing';
+
 export interface WelcomeEmailContent {
   subject: string;
   text: string;
 }
 
-export function welcomeEmail(firstName: string): WelcomeEmailContent {
-  const safeName = firstName.trim() || 'athlete';
+export async function welcomeEmail(
+  firstName: string,
+  locale: AppLocale = 'en',
+): Promise<WelcomeEmailContent> {
+  const t = await getTranslations({ locale, namespace: 'email.welcome' });
+  const safeName = firstName.trim() || t('fallback_name');
   return {
-    subject: 'Welcome to Brut',
+    subject: t('subject'),
     text: [
-      `Hi ${safeName},`,
+      t('greeting', { name: safeName }),
       '',
-      'Welcome to Brut.',
+      t('intro'),
       '',
-      "You're in. Here's what you can do:",
+      t('you_in'),
       '',
-      '— Plan a single session at brut-train',
-      '— Build a full race programme at brut-race',
-      '— Track your nutrition with every workout',
+      t('item_train'),
+      t('item_race'),
+      t('item_nutrition'),
       '',
-      'If you have questions, reply to this email.',
+      t('questions'),
       '',
-      'Train smart,',
-      'The Brut team',
+      t('signoff'),
+      t('signature'),
     ].join('\n'),
   };
 }

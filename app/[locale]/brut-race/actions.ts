@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import {
@@ -73,6 +74,7 @@ async function generateAndPersistProgramme(
   userId: string,
   input: RacePlanInput,
   raceDate: string,
+  tE: (key: string) => string,
 ): Promise<ActionResult> {
   const { phases, weeks } = generateRacePlan(input);
   const nutritionPhases = buildNutritionPhases(input.weightKg, phases);
@@ -93,7 +95,7 @@ async function generateAndPersistProgramme(
     .select('id, name');
 
   if (phaseError || !phaseRows) {
-    return { ok: false, error: 'Could not insert phases.' };
+    return { ok: false, error: tE('could_not_insert_phases') };
   }
   const phaseIdByName = new Map<string, string>(
     (phaseRows as Array<{ id: string; name: string }>).map((r) => [
@@ -121,7 +123,7 @@ async function generateAndPersistProgramme(
     );
 
   if (nutritionError) {
-    return { ok: false, error: 'Could not insert nutrition guidelines.' };
+    return { ok: false, error: tE('could_not_insert_nutrition') };
   }
 
   // Sessions. Anchor dates so the final week contains race day.
@@ -187,7 +189,7 @@ async function generateAndPersistProgramme(
     .insert(sessionRows);
 
   if (sessionError) {
-    return { ok: false, error: 'Could not insert sessions.' };
+    return { ok: false, error: tE('could_not_insert_sessions') };
   }
   return { ok: true };
 }
@@ -225,9 +227,12 @@ function inputFromPlanRow(
 export async function createRacePlan(
   values: RaceFormValues,
 ): Promise<CreateResult | void> {
+  const tE = await getTranslations('brut_race.action_errors');
+  const tV = await getTranslations('common.validation');
   const parsed = raceFormSchema.safeParse(values);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? 'Invalid plan details.' };
+    const code = parsed.error.issues[0]?.message;
+    return { error: code ? tV(code) : tE('invalid_plan') };
   }
 
   const supabase = await createClient();
@@ -279,7 +284,7 @@ export async function createRacePlan(
     .single();
 
   if (planError || !planRow) {
-    return { error: 'Could not create your race plan. Please try again.' };
+    return { error: tE('could_not_create_plan') };
   }
   const planId = (planRow as { id: string }).id;
 
@@ -307,6 +312,7 @@ export async function createRacePlan(
     user.id,
     input,
     d.raceDate,
+    tE,
   );
 
   if (!result.ok) {
@@ -325,6 +331,7 @@ export async function createRacePlan(
 async function loadSessionAndPlan(
   supabase: SupabaseClient,
   sessionId: string,
+  tE: (key: string) => string,
 ): Promise<
   | { ok: true; race_plan_id: string; week_number: number }
   | { ok: false; error: string }
@@ -335,7 +342,7 @@ async function loadSessionAndPlan(
     .eq('id', sessionId)
     .maybeSingle();
   if (error || !data) {
-    return { ok: false, error: 'Session not found.' };
+    return { ok: false, error: tE('session_not_found') };
   }
   const row = data as { race_plan_id: string; week_number: number };
   return { ok: true, race_plan_id: row.race_plan_id, week_number: row.week_number };
@@ -346,21 +353,21 @@ export async function markSessionDone(
   sessionId: string,
   values: MarkSessionDoneValues,
 ): Promise<ActionResult> {
+  const tE = await getTranslations('brut_race.action_errors');
+  const tV = await getTranslations('common.validation');
   const parsed = markSessionDoneSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid feedback.',
-    };
+    const code = parsed.error.issues[0]?.message;
+    return { ok: false, error: code ? tV(code) : tE('invalid_feedback') };
   }
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: 'Sign in required.' };
+  if (!user) return { ok: false, error: tE('sign_in_required') };
 
-  const session = await loadSessionAndPlan(supabase, sessionId);
+  const session = await loadSessionAndPlan(supabase, sessionId, tE);
   if (!session.ok) return session;
 
   const { error } = await supabase
@@ -374,7 +381,7 @@ export async function markSessionDone(
     })
     .eq('id', sessionId);
 
-  if (error) return { ok: false, error: 'Could not save. Please try again.' };
+  if (error) return { ok: false, error: tE('could_not_save') };
 
   revalidatePath(`/brut-race/${session.race_plan_id}`);
   revalidatePath(`/brut-race/${session.race_plan_id}/session/${sessionId}`);
@@ -387,21 +394,21 @@ export async function skipSession(
   sessionId: string,
   values: SkipSessionValues,
 ): Promise<ActionResult> {
+  const tE = await getTranslations('brut_race.action_errors');
+  const tV = await getTranslations('common.validation');
   const parsed = skipSessionSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid input.',
-    };
+    const code = parsed.error.issues[0]?.message;
+    return { ok: false, error: code ? tV(code) : tE('invalid_input') };
   }
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: 'Sign in required.' };
+  if (!user) return { ok: false, error: tE('sign_in_required') };
 
-  const session = await loadSessionAndPlan(supabase, sessionId);
+  const session = await loadSessionAndPlan(supabase, sessionId, tE);
   if (!session.ok) return session;
 
   const { error } = await supabase
@@ -413,7 +420,7 @@ export async function skipSession(
     })
     .eq('id', sessionId);
 
-  if (error) return { ok: false, error: 'Could not save. Please try again.' };
+  if (error) return { ok: false, error: tE('could_not_save') };
 
   revalidatePath(`/brut-race/${session.race_plan_id}`);
   revalidatePath(`/brut-race/${session.race_plan_id}/session/${sessionId}`);
@@ -430,21 +437,21 @@ export async function rescheduleSession(
   sessionId: string,
   values: RescheduleSessionValues,
 ): Promise<ActionResult> {
+  const tE = await getTranslations('brut_race.action_errors');
+  const tV = await getTranslations('common.validation');
   const parsed = rescheduleSessionSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid date.',
-    };
+    const code = parsed.error.issues[0]?.message;
+    return { ok: false, error: code ? tV(code) : tE('invalid_date') };
   }
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: 'Sign in required.' };
+  if (!user) return { ok: false, error: tE('sign_in_required') };
 
-  const session = await loadSessionAndPlan(supabase, sessionId);
+  const session = await loadSessionAndPlan(supabase, sessionId, tE);
   if (!session.ok) return session;
 
   const { error } = await supabase
@@ -456,7 +463,7 @@ export async function rescheduleSession(
     })
     .eq('id', sessionId);
 
-  if (error) return { ok: false, error: 'Could not move the session.' };
+  if (error) return { ok: false, error: tE('could_not_move_session') };
 
   revalidatePath(`/brut-race/${session.race_plan_id}`);
   revalidatePath(`/brut-race/${session.race_plan_id}/session/${sessionId}`);
@@ -477,19 +484,19 @@ export async function postponeRace(
   planId: string,
   values: PostponeRaceValues,
 ): Promise<ActionResult> {
+  const tE = await getTranslations('brut_race.action_errors');
+  const tV = await getTranslations('common.validation');
   const parsed = postponeRaceSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid date.',
-    };
+    const code = parsed.error.issues[0]?.message;
+    return { ok: false, error: code ? tV(code) : tE('invalid_date') };
   }
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: 'Sign in required.' };
+  if (!user) return { ok: false, error: tE('sign_in_required') };
 
   const { data: planData } = await supabase
     .from('race_plans')
@@ -497,30 +504,26 @@ export async function postponeRace(
     .eq('id', planId)
     .maybeSingle();
   const plan = planData as RacePlan | null;
-  if (!plan) return { ok: false, error: 'Plan not found.' };
+  if (!plan) return { ok: false, error: tE('plan_not_found') };
 
   const oldDate = new Date(`${plan.race_date}T00:00:00`);
   const newDate = new Date(`${parsed.data.newRaceDate}T00:00:00`);
   if (Number.isNaN(newDate.getTime())) {
-    return { ok: false, error: 'Invalid new date.' };
+    return { ok: false, error: tE('invalid_new_date') };
   }
   const diffDays = Math.round(
     (newDate.getTime() - oldDate.getTime()) / MS_PER_DAY,
   );
   if (diffDays === 0) {
-    return { ok: false, error: 'New race date must differ from the current one.' };
+    return { ok: false, error: tE('new_date_same') };
   }
   if (diffDays < 0) {
-    return { ok: false, error: 'New race date must be later than the current one.' };
+    return { ok: false, error: tE('new_date_earlier') };
   }
 
   if (diffDays > 28) {
     if (!parsed.data.regenerate) {
-      return {
-        ok: false,
-        error:
-          'Postponing by more than four weeks regenerates the full plan. Please confirm.',
-      };
+      return { ok: false, error: tE('regenerate_required') };
     }
 
     // Regenerate: wipe child rows, then re-run the generator with the new date.
@@ -529,7 +532,7 @@ export async function postponeRace(
       .delete()
       .eq('race_plan_id', planId);
     if (delError) {
-      return { ok: false, error: 'Could not reset the existing programme.' };
+      return { ok: false, error: tE('could_not_reset_programme') };
     }
 
     const newWeeksTotal = weeksUntilRace(parsed.data.newRaceDate);
@@ -551,7 +554,7 @@ export async function postponeRace(
       })
       .eq('id', planId);
     if (planUpdateError) {
-      return { ok: false, error: 'Could not update the plan.' };
+      return { ok: false, error: tE('could_not_update_plan') };
     }
 
     const input = inputFromPlanRow(plan, weightKg, newWeeksTotal);
@@ -561,6 +564,7 @@ export async function postponeRace(
       user.id,
       input,
       parsed.data.newRaceDate,
+      tE,
     );
     if (!result.ok) return result;
   } else {
@@ -570,7 +574,7 @@ export async function postponeRace(
       .select('id, scheduled_date')
       .eq('race_plan_id', planId);
     if (fetchError) {
-      return { ok: false, error: 'Could not load the sessions to move.' };
+      return { ok: false, error: tE('could_not_load_sessions') };
     }
 
     const sessions =
@@ -588,7 +592,7 @@ export async function postponeRace(
       });
     const results = await Promise.all(updates);
     if (results.some((r) => r.error)) {
-      return { ok: false, error: 'Could not shift some sessions.' };
+      return { ok: false, error: tE('could_not_shift_sessions') };
     }
 
     const { error: planUpdateError } = await supabase
@@ -596,7 +600,7 @@ export async function postponeRace(
       .update({ race_date: parsed.data.newRaceDate })
       .eq('id', planId);
     if (planUpdateError) {
-      return { ok: false, error: 'Could not update the plan.' };
+      return { ok: false, error: tE('could_not_update_plan') };
     }
   }
 

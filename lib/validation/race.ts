@@ -18,42 +18,24 @@ export const EXPERIENCE_LEVELS = ['beginner', 'amateur', 'pro'] as const;
 export type ExperienceLevel = (typeof EXPERIENCE_LEVELS)[number];
 
 /** Time-of-day options — reuse the calculations `TimeOfDay` vocabulary. */
-export const PREFERRED_TIMES: ReadonlyArray<{
-  value: TimeOfDay;
-  label: string;
-}> = [
-  { value: 'early-morning', label: 'Early morning' },
-  { value: 'morning', label: 'Morning' },
-  { value: 'afternoon', label: 'Afternoon' },
-  { value: 'evening', label: 'Evening' },
-  { value: 'night', label: 'Night' },
+export const PREFERRED_TIME_VALUES: ReadonlyArray<TimeOfDay> = [
+  'early-morning',
+  'morning',
+  'afternoon',
+  'evening',
+  'night',
 ];
 
 /** Weekdays — 1 = Monday … 7 = Sunday (matches `sessions.day_of_week`). */
-export const WEEKDAYS: ReadonlyArray<{ value: number; label: string }> = [
-  { value: 1, label: 'Mon' },
-  { value: 2, label: 'Tue' },
-  { value: 3, label: 'Wed' },
-  { value: 4, label: 'Thu' },
-  { value: 5, label: 'Fri' },
-  { value: 6, label: 'Sat' },
-  { value: 7, label: 'Sun' },
-];
+export const WEEKDAY_VALUES: ReadonlyArray<number> = [1, 2, 3, 4, 5, 6, 7];
 
 /** Terrain options per sport (triathlon has none). */
 export const SURFACES_BY_SPORT: Record<
   RaceSport,
-  ReadonlyArray<{ value: RunningSurface | CyclingSurface; label: string }>
+  ReadonlyArray<RunningSurface | CyclingSurface>
 > = {
-  running: [
-    { value: 'track-road', label: 'Road / Track' },
-    { value: 'trail', label: 'Trail' },
-  ],
-  cycling: [
-    { value: 'road', label: 'Road' },
-    { value: 'gravel', label: 'Gravel' },
-    { value: 'mtb', label: 'MTB' },
-  ],
+  running: ['track-road', 'trail'],
+  cycling: ['road', 'gravel', 'mtb'],
   triathlon: [],
 };
 
@@ -93,9 +75,9 @@ export const raceFormSchema = z
   .object({
     sport: z.enum(RACE_SPORTS),
     distanceKm: z
-      .number({ error: 'Enter a race distance' })
-      .positive('Enter a race distance')
-      .max(1000, 'Distance is too large'),
+      .number({ error: 'distance_required' })
+      .positive('distance_required')
+      .max(1000, 'distance_too_large'),
     surface: z
       .enum(['track-road', 'trail', 'road', 'gravel', 'mtb'])
       .nullable(),
@@ -103,24 +85,24 @@ export const raceFormSchema = z
       .number()
       .int()
       .min(0)
-      .max(15000, 'Elevation looks too high')
+      .max(15000, 'elevation_too_high')
       .nullable(),
     objectiveHours: z
       .number()
       .int()
       .min(0)
-      .max(99, 'Check the hours value')
+      .max(99, 'hours_invalid')
       .nullable(),
     objectiveMinutes: z
       .number()
       .int()
       .min(0)
-      .max(59, 'Minutes must be 0–59')
+      .max(59, 'minutes_invalid')
       .nullable(),
-    raceDate: z.string().min(1, 'Choose your race date'),
+    raceDate: z.string().min(1, 'race_date_required'),
     trainingDays: z
       .array(z.number().int().min(1).max(7))
-      .min(3, 'Pick at least 3 training days')
+      .min(3, 'training_days_min')
       .max(7),
     preferredTime: z.enum([
       'early-morning',
@@ -131,28 +113,28 @@ export const raceFormSchema = z
     ]),
     experienceLevel: z.enum(EXPERIENCE_LEVELS),
     currentWeeklyVolumeHours: z
-      .number({ error: 'Enter your current weekly volume' })
-      .positive('Enter your current weekly volume')
-      .max(40, 'That seems too high'),
+      .number({ error: 'current_volume_required' })
+      .positive('current_volume_required')
+      .max(40, 'volume_too_high'),
     hoursPerWeek: z
-      .number({ error: 'Enter your weekly availability' })
-      .positive('Enter your weekly availability')
-      .max(40, 'That seems too high'),
+      .number({ error: 'weekly_hours_required' })
+      .positive('weekly_hours_required')
+      .max(40, 'volume_too_high'),
     longestRecentSessionHours: z
-      .number({ error: 'Enter your longest recent session' })
-      .positive('Enter your longest recent session')
-      .max(12, 'That seems too long'),
+      .number({ error: 'longest_session_required' })
+      .positive('longest_session_required')
+      .max(12, 'longest_session_too_long'),
     hrMax: z
       .number()
       .int()
-      .min(120, 'HR max looks too low')
-      .max(230, 'HR max looks too high')
+      .min(120, 'hr_max_too_low')
+      .max(230, 'hr_max_too_high')
       .nullable(),
     ftp: z
       .number()
       .int()
-      .min(50, 'FTP looks too low')
-      .max(600, 'FTP looks too high')
+      .min(50, 'ftp_too_low')
+      .max(600, 'ftp_too_high')
       .nullable(),
   })
   .refine(
@@ -163,7 +145,7 @@ export const raceFormSchema = z
       const race = new Date(`${d.raceDate}T00:00:00`);
       return !Number.isNaN(race.getTime()) && race >= today;
     },
-    { message: 'Race date must be in the future', path: ['raceDate'] },
+    { message: 'race_date_future', path: ['raceDate'] },
   )
   .refine(
     (d) => {
@@ -175,7 +157,7 @@ export const raceFormSchema = z
       }
       return true; // triathlon — no surface
     },
-    { message: 'Choose a terrain', path: ['surface'] },
+    { message: 'surface_required', path: ['surface'] },
   );
 
 export type RaceFormValues = z.infer<typeof raceFormSchema>;

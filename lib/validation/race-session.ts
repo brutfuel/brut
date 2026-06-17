@@ -21,13 +21,13 @@ export const skipSessionSchema = z.object({
 export type SkipSessionValues = z.infer<typeof skipSessionSchema>;
 
 export const rescheduleSessionSchema = z.object({
-  newDate: z.string().min(1, 'Pick a new date'),
+  newDate: z.string().min(1, 'new_date_required'),
   newDayOfWeek: z.number().int().min(1).max(7),
 });
 export type RescheduleSessionValues = z.infer<typeof rescheduleSessionSchema>;
 
 export const postponeRaceSchema = z.object({
-  newRaceDate: z.string().min(1, 'Pick a new race date'),
+  newRaceDate: z.string().min(1, 'new_race_date_required'),
   regenerate: z.boolean(),
 });
 export type PostponeRaceValues = z.infer<typeof postponeRaceSchema>;

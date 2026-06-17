@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -10,11 +11,12 @@ import { createRacePlan } from '@/app/[locale]/brut-race/actions';
 import {
   DISTANCE_PRESETS,
   EXPERIENCE_LEVELS,
-  PREFERRED_TIMES,
+  PREFERRED_TIME_VALUES,
   RACE_SPORTS,
   SURFACES_BY_SPORT,
-  WEEKDAYS,
+  WEEKDAY_VALUES,
   raceFormSchema,
+  type ExperienceLevel,
   type RaceFormValues,
   type RaceSport,
 } from '@/lib/validation/race';
@@ -28,17 +30,6 @@ interface Props {
   /** Whether a user session exists — decides the Generate behaviour. */
   isAuthed: boolean;
 }
-
-const SPORT_OPTIONS: ReadonlyArray<{ value: RaceSport; label: string }> = [
-  { value: 'running', label: 'Running' },
-  { value: 'cycling', label: 'Cycling' },
-  { value: 'triathlon', label: 'Triathlon' },
-];
-
-const EXPERIENCE_OPTIONS = EXPERIENCE_LEVELS.map((value) => ({
-  value,
-  label: value.charAt(0).toUpperCase() + value.slice(1),
-}));
 
 const TOTAL_ROWS = '12';
 
@@ -56,13 +47,23 @@ function todayIso(): string {
   return now.toISOString().slice(0, 10);
 }
 
-/** '' → null, otherwise Number — used for optional numeric inputs. */
 function nullableNumber(v: unknown): number | null {
   return v === '' || v == null ? null : Number(v);
 }
 
 export default function RaceForm({ isAuthed }: Props) {
   const router = useRouter();
+  const tForm = useTranslations('brut_race.form');
+  const tStrava = useTranslations('brut_race.strava');
+  const tSubmit = useTranslations('brut_race.submit');
+  const tExp = useTranslations('brut_race.experience');
+  const tWk = useTranslations('brut_race.weekday_short');
+  const tSurface = useTranslations('brut_race.surface');
+  const tSports = useTranslations('sports');
+  const tTime = useTranslations('brut_train.time_of_day_options');
+  const tUnits = useTranslations('common.units');
+  const tV = useTranslations('common.validation');
+
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
@@ -117,28 +118,50 @@ export default function RaceForm({ isAuthed }: Props) {
       return;
     }
     const result = await createRacePlan(values);
-    // On success the action redirects to the plan page; only errors return.
     if (result?.error) {
       setFormError(result.error);
     }
   }
 
-  const surfaceOptions = SURFACES_BY_SPORT[sport];
+  const SPORT_OPTIONS = RACE_SPORTS.map((v) => ({ value: v, label: tSports(v) }));
+  const EXPERIENCE_OPTIONS = EXPERIENCE_LEVELS.map((value) => ({
+    value,
+    label: tExp(value),
+  }));
+  const PREFERRED_TIMES = PREFERRED_TIME_VALUES.map((v) => ({
+    value: v,
+    label: tTime(v),
+  }));
+
+  const surfaceOptions = SURFACES_BY_SPORT[sport].map((v) => ({
+    value: v,
+    label: tSurface(v),
+  }));
+
+  /** Translate a Zod error code; fall back to the raw message when missing. */
+  function err(code: string | undefined): string | null {
+    if (!code) return null;
+    try {
+      return tV(code);
+    } catch {
+      return code;
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full" noValidate>
       {/* 01 — Sport */}
-      <FieldRow index="01" total={TOTAL_ROWS} label="Sport">
+      <FieldRow index="01" total={TOTAL_ROWS} label={tForm('sport')}>
         <Segmented
           options={SPORT_OPTIONS}
           value={sport}
           onChange={changeSport}
-          ariaLabel="Sport"
+          ariaLabel={tForm('sport')}
         />
       </FieldRow>
 
       {/* 02 — Distance */}
-      <FieldRow index="02" total={TOTAL_ROWS} label="Distance">
+      <FieldRow index="02" total={TOTAL_ROWS} label={tForm('distance')}>
         <div className="flex flex-col gap-4">
           <div className="flex items-baseline gap-3">
             <input
@@ -146,12 +169,12 @@ export default function RaceForm({ isAuthed }: Props) {
               min={0}
               step={0.1}
               placeholder="—"
-              aria-label="Race distance in kilometres"
+              aria-label={tForm('distance')}
               className={numberInput}
               {...register('distanceKm', { valueAsNumber: true })}
             />
             <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-              km
+              {tUnits('km')}
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -177,16 +200,16 @@ export default function RaceForm({ isAuthed }: Props) {
             })}
           </div>
           {errors.distanceKm ? (
-            <p className={fieldError}>{errors.distanceKm.message}</p>
+            <p className={fieldError}>{err(errors.distanceKm.message)}</p>
           ) : null}
         </div>
       </FieldRow>
 
       {/* 03 — Terrain */}
-      <FieldRow index="03" total={TOTAL_ROWS} label="Terrain">
+      <FieldRow index="03" total={TOTAL_ROWS} label={tForm('terrain')}>
         {sport === 'triathlon' ? (
           <p className="text-sm font-normal text-brut-muted">
-            Not applicable for triathlon.
+            {tForm('terrain_na')}
           </p>
         ) : (
           <div className="flex flex-col gap-3">
@@ -199,35 +222,45 @@ export default function RaceForm({ isAuthed }: Props) {
                 | RunningSurface
                 | CyclingSurface}
               onChange={(v) => setValue('surface', v, { shouldValidate: true })}
-              ariaLabel="Terrain"
+              ariaLabel={tForm('terrain')}
             />
             {errors.surface ? (
-              <p className={fieldError}>{errors.surface.message}</p>
+              <p className={fieldError}>{err(errors.surface.message)}</p>
             ) : null}
           </div>
         )}
       </FieldRow>
 
       {/* 04 — Elevation gain */}
-      <FieldRow index="04" total={TOTAL_ROWS} label="Race elevation gain" optional>
+      <FieldRow
+        index="04"
+        total={TOTAL_ROWS}
+        label={tForm('race_elevation_gain')}
+        optional
+      >
         <div className="flex items-baseline gap-3">
           <input
             type="number"
             min={0}
             step={50}
             placeholder="—"
-            aria-label="Race elevation gain in metres"
+            aria-label={tForm('race_elevation_gain')}
             className={numberInput}
             {...register('elevationGainM', { setValueAs: nullableNumber })}
           />
           <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-            m
+            {tUnits('m')}
           </span>
         </div>
       </FieldRow>
 
       {/* 05 — Objective time */}
-      <FieldRow index="05" total={TOTAL_ROWS} label="Objective time" optional>
+      <FieldRow
+        index="05"
+        total={TOTAL_ROWS}
+        label={tForm('objective_time')}
+        optional
+      >
         <div className="flex flex-col gap-3">
           <div className="flex items-baseline gap-3">
             <input
@@ -235,7 +268,7 @@ export default function RaceForm({ isAuthed }: Props) {
               min={0}
               max={99}
               placeholder="00"
-              aria-label="Objective hours"
+              aria-label={tForm('objective_time')}
               className={`${numberInput} w-20`}
               {...register('objectiveHours', { setValueAs: nullableNumber })}
             />
@@ -247,44 +280,44 @@ export default function RaceForm({ isAuthed }: Props) {
               min={0}
               max={59}
               placeholder="00"
-              aria-label="Objective minutes"
+              aria-label={tForm('objective_time')}
               className={`${numberInput} w-20`}
               {...register('objectiveMinutes', { setValueAs: nullableNumber })}
             />
           </div>
           <p className="text-xs font-normal text-brut-muted">
-            Optional — we&rsquo;ll estimate if left blank.
+            {tForm('objective_hint')}
           </p>
         </div>
       </FieldRow>
 
       {/* 06 — Race date */}
-      <FieldRow index="06" total={TOTAL_ROWS} label="Race date">
+      <FieldRow index="06" total={TOTAL_ROWS} label={tForm('race_date')}>
         <div className="flex flex-col gap-2">
           <input
             type="date"
             min={todayIso()}
-            aria-label="Race date"
+            aria-label={tForm('race_date')}
             className="w-full max-w-xs bg-transparent border-b border-brut-line py-2 text-base font-normal text-brut-black focus:outline-none focus:border-brut-black transition-colors"
             {...register('raceDate')}
           />
           {errors.raceDate ? (
-            <p className={fieldError}>{errors.raceDate.message}</p>
+            <p className={fieldError}>{err(errors.raceDate.message)}</p>
           ) : null}
         </div>
       </FieldRow>
 
       {/* 07 — Training days */}
-      <FieldRow index="07" total={TOTAL_ROWS} label="Training days">
+      <FieldRow index="07" total={TOTAL_ROWS} label={tForm('training_days')}>
         <div className="flex flex-col gap-3">
           <div className="grid grid-cols-7 gap-px bg-brut-line border border-brut-line">
-            {WEEKDAYS.map((day) => {
-              const active = (trainingDays ?? []).includes(day.value);
+            {WEEKDAY_VALUES.map((day) => {
+              const active = (trainingDays ?? []).includes(day);
               return (
                 <button
-                  key={day.value}
+                  key={day}
                   type="button"
-                  onClick={() => toggleDay(day.value)}
+                  onClick={() => toggleDay(day)}
                   aria-pressed={active}
                   className={`py-3 text-[10px] font-semibold tracking-brut-wide uppercase transition-colors ${
                     active
@@ -292,19 +325,23 @@ export default function RaceForm({ isAuthed }: Props) {
                       : 'bg-white text-brut-ink hover:bg-brut-bg-soft'
                   }`}
                 >
-                  {day.label}
+                  {tWk(String(day))}
                 </button>
               );
             })}
           </div>
           {errors.trainingDays ? (
-            <p className={fieldError}>{errors.trainingDays.message}</p>
+            <p className={fieldError}>{err(errors.trainingDays.message)}</p>
           ) : null}
         </div>
       </FieldRow>
 
       {/* 08 — Preferred time of day */}
-      <FieldRow index="08" total={TOTAL_ROWS} label="Preferred time of day">
+      <FieldRow
+        index="08"
+        total={TOTAL_ROWS}
+        label={tForm('preferred_time')}
+      >
         <Segmented
           options={PREFERRED_TIMES}
           value={preferredTime}
@@ -313,69 +350,73 @@ export default function RaceForm({ isAuthed }: Props) {
           }
           columns={3}
           size="sm"
-          ariaLabel="Preferred time of day"
+          ariaLabel={tForm('preferred_time')}
         />
       </FieldRow>
 
       {/* 09 — Experience level */}
-      <FieldRow index="09" total={TOTAL_ROWS} label="Experience level">
+      <FieldRow
+        index="09"
+        total={TOTAL_ROWS}
+        label={tForm('experience_level')}
+      >
         <Segmented
           options={EXPERIENCE_OPTIONS}
           value={experienceLevel}
-          onChange={(v) =>
+          onChange={(v: ExperienceLevel) =>
             setValue('experienceLevel', v, { shouldValidate: true })
           }
-          ariaLabel="Experience level"
+          ariaLabel={tForm('experience_level')}
         />
       </FieldRow>
 
       {/* 10 — Weekly hours */}
-      <FieldRow index="10" total={TOTAL_ROWS} label="Weekly hours">
+      <FieldRow index="10" total={TOTAL_ROWS} label={tForm('weekly_hours')}>
         <div className="flex flex-wrap gap-x-10 gap-y-4">
           <div className="flex flex-col gap-1">
-            <span className={subLabel}>Current volume</span>
+            <span className={subLabel}>{tForm('current_volume')}</span>
             <div className="flex items-baseline gap-2">
               <input
                 type="number"
                 min={0}
                 step={0.5}
                 placeholder="—"
-                aria-label="Current weekly training hours"
+                aria-label={tForm('current_volume')}
                 className={`${numberInput} w-24`}
                 {...register('currentWeeklyVolumeHours', {
                   valueAsNumber: true,
                 })}
               />
               <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-                h
+                {tUnits('h')}
               </span>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className={subLabel}>Available / week</span>
+            <span className={subLabel}>{tForm('available_per_week')}</span>
             <div className="flex items-baseline gap-2">
               <input
                 type="number"
                 min={0}
                 step={0.5}
                 placeholder="—"
-                aria-label="Hours available to train per week"
+                aria-label={tForm('available_per_week')}
                 className={`${numberInput} w-24`}
                 {...register('hoursPerWeek', { valueAsNumber: true })}
               />
               <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-                h
+                {tUnits('h')}
               </span>
             </div>
           </div>
         </div>
         {errors.currentWeeklyVolumeHours ? (
           <p className={fieldError}>
-            {errors.currentWeeklyVolumeHours.message}
+            {err(errors.currentWeeklyVolumeHours.message)}
           </p>
         ) : null}
         {errors.hoursPerWeek ? (
-          <p className={fieldError}>{errors.hoursPerWeek.message}</p>
+          <p className={fieldError}>{err(errors.hoursPerWeek.message)}</p>
         ) : null}
       </FieldRow>
 
@@ -383,7 +424,7 @@ export default function RaceForm({ isAuthed }: Props) {
       <FieldRow
         index="11"
         total={TOTAL_ROWS}
-        label="Longest recent session"
+        label={tForm('longest_recent_session')}
       >
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline gap-3">
@@ -392,19 +433,19 @@ export default function RaceForm({ isAuthed }: Props) {
               min={0}
               step={0.25}
               placeholder="—"
-              aria-label="Longest recent session in hours"
+              aria-label={tForm('longest_recent_session')}
               className={numberInput}
               {...register('longestRecentSessionHours', {
                 valueAsNumber: true,
               })}
             />
             <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-              hours
+              {tUnits('hours')}
             </span>
           </div>
           {errors.longestRecentSessionHours ? (
             <p className={fieldError}>
-              {errors.longestRecentSessionHours.message}
+              {err(errors.longestRecentSessionHours.message)}
             </p>
           ) : null}
         </div>
@@ -414,42 +455,42 @@ export default function RaceForm({ isAuthed }: Props) {
       <FieldRow
         index="12"
         total={TOTAL_ROWS}
-        label="Heart rate & power"
+        label={tForm('hr_and_power')}
         optional
       >
         <div className="flex flex-wrap gap-x-10 gap-y-4">
           <div className="flex flex-col gap-1">
-            <span className={subLabel}>HR max</span>
+            <span className={subLabel}>{tForm('hr_max')}</span>
             <div className="flex items-baseline gap-2">
               <input
                 type="number"
                 min={120}
                 max={230}
                 placeholder="—"
-                aria-label="Maximum heart rate"
+                aria-label={tForm('hr_max')}
                 className={`${numberInput} w-24`}
                 {...register('hrMax', { setValueAs: nullableNumber })}
               />
               <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-                bpm
+                {tUnits('bpm')}
               </span>
             </div>
           </div>
           {sport === 'cycling' ? (
             <div className="flex flex-col gap-1">
-              <span className={subLabel}>FTP</span>
+              <span className={subLabel}>{tForm('ftp')}</span>
               <div className="flex items-baseline gap-2">
                 <input
                   type="number"
                   min={50}
                   max={600}
                   placeholder="—"
-                  aria-label="Functional threshold power"
+                  aria-label={tForm('ftp')}
                   className={`${numberInput} w-24`}
                   {...register('ftp', { setValueAs: nullableNumber })}
                 />
                 <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-                  W
+                  {tUnits('watts')}
                 </span>
               </div>
             </div>
@@ -461,26 +502,25 @@ export default function RaceForm({ isAuthed }: Props) {
       <section className="border-t border-brut-line py-8 md:py-10">
         <div className="flex items-baseline justify-between mb-5">
           <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-muted">
-            Strava
+            {tStrava('label')}
           </span>
           <span className="text-xs font-medium tracking-brut-wide uppercase text-brut-ink">
-            Connect
+            {tStrava('connect')}
             <span className="ml-2 text-brut-muted normal-case font-normal tracking-normal">
-              optional
+              {tStrava('optional')}
             </span>
           </span>
         </div>
         <p className="max-w-md text-sm font-normal text-brut-ink leading-relaxed">
-          We can read your last 3 months of activities to calibrate your plan
-          based on your actual fitness level.
+          {tStrava('description')}
         </p>
         <button
           type="button"
           disabled
-          title="Coming soon"
+          title={tStrava('coming_soon')}
           className="mt-5 inline-flex items-center justify-center px-6 py-3 text-xs font-semibold tracking-brut-wide uppercase border border-brut-line text-brut-muted cursor-not-allowed"
         >
-          Connect Strava
+          {tStrava('connect_button')}
         </button>
       </section>
 
@@ -496,11 +536,11 @@ export default function RaceForm({ isAuthed }: Props) {
           disabled={isSubmitting}
           className="block w-full text-center py-5 bg-brut-black text-white text-xs font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? 'Generating…' : 'Generate plan'}
+          {isSubmitting ? tSubmit('generating') : tSubmit('generate')}
         </button>
         {!isAuthed ? (
           <p className="mt-4 text-xs font-normal text-brut-muted text-center">
-            You&rsquo;ll be asked to sign in to save your plan.
+            {tSubmit('signin_hint')}
           </p>
         ) : null}
       </div>

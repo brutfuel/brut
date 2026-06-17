@@ -97,7 +97,15 @@
       "new_date_required": "Pick a new date",
       "new_race_date_required": "Pick a new race date",
       "delete_confirm_required": "Confirm that this is permanent.",
-      "delete_type_required": "Type DELETE to confirm."
+      "delete_type_required": "Type DELETE to confirm.",
+      "hours_invalid": "Check the hours value",
+      "minutes_invalid": "Minutes must be 0–59",
+      "current_volume_required": "Enter your current weekly volume",
+      "volume_too_high": "That seems too high",
+      "hr_max_too_low": "HR max looks too low",
+      "hr_max_too_high": "HR max looks too high",
+      "ftp_too_low": "FTP looks too low",
+      "ftp_too_high": "FTP looks too high"
     },
     "status": {
       "completed": "Completed",
@@ -489,6 +497,87 @@
       "water": "Water",
       "carbs": "Carbs",
       "brut": "BRUT"
+    }
+  },
+  "brut_race": {
+    "eyebrow": "02 — Race",
+    "intro": "Set your race goal and build a complete 12 to 24 week programme — periodised training, nutrition guidelines and a session-by-session fuelling strategy.",
+    "form": {
+      "sport": "Sport",
+      "distance": "Distance",
+      "terrain": "Terrain",
+      "terrain_na": "Not applicable for triathlon.",
+      "race_elevation_gain": "Race elevation gain",
+      "objective_time": "Objective time",
+      "objective_hint": "Optional — we’ll estimate if left blank.",
+      "race_date": "Race date",
+      "training_days": "Training days",
+      "preferred_time": "Preferred time of day",
+      "experience_level": "Experience level",
+      "weekly_hours": "Weekly hours",
+      "current_volume": "Current volume",
+      "available_per_week": "Available / week",
+      "longest_recent_session": "Longest recent session",
+      "hr_and_power": "Heart rate & power",
+      "hr_max": "HR max",
+      "ftp": "FTP"
+    },
+    "strava": {
+      "label": "Strava",
+      "connect": "Connect",
+      "optional": "optional",
+      "description": "We can read your last 3 months of activities to calibrate your plan based on your actual fitness level.",
+      "connect_button": "Connect Strava",
+      "coming_soon": "Coming soon"
+    },
+    "submit": {
+      "generate": "Generate plan",
+      "generating": "Generating…",
+      "signin_hint": "You’ll be asked to sign in to save your plan."
+    },
+    "experience": {
+      "beginner": "Beginner",
+      "amateur": "Amateur",
+      "pro": "Pro"
+    },
+    "weekday_short": {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun"
+    },
+    "surface": {
+      "track-road": "Road / Track",
+      "trail": "Trail",
+      "road": "Road",
+      "gravel": "Gravel",
+      "mtb": "MTB"
+    },
+    "action_errors": {
+      "invalid_plan": "Invalid plan details.",
+      "could_not_create_plan": "Could not create your race plan. Please try again.",
+      "could_not_insert_phases": "Could not insert phases.",
+      "could_not_insert_nutrition": "Could not insert nutrition guidelines.",
+      "could_not_insert_sessions": "Could not insert sessions.",
+      "session_not_found": "Session not found.",
+      "sign_in_required": "Sign in required.",
+      "could_not_save": "Could not save. Please try again.",
+      "could_not_move_session": "Could not move the session.",
+      "plan_not_found": "Plan not found.",
+      "invalid_new_date": "Invalid new date.",
+      "new_date_same": "New race date must differ from the current one.",
+      "new_date_earlier": "New race date must be later than the current one.",
+      "regenerate_required": "Postponing by more than four weeks regenerates the full plan. Please confirm.",
+      "could_not_reset_programme": "Could not reset the existing programme.",
+      "could_not_update_plan": "Could not update the plan.",
+      "could_not_load_sessions": "Could not load the sessions to move.",
+      "could_not_shift_sessions": "Could not shift some sessions.",
+      "invalid_feedback": "Invalid feedback.",
+      "invalid_input": "Invalid input.",
+      "invalid_date": "Invalid date."
     }
   }
 }

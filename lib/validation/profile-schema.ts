@@ -11,8 +11,7 @@ import { EXPERIENCE_LEVELS, type ExperienceLevel } from '@/lib/validation/race';
  * Zod schema for the editable user profile. Shared by the client form
  * (React Hook Form resolver) and the server action (boundary check).
  *
- * Form values are camelCase; the action translates to the snake_case
- * column names when writing to Supabase.
+ * Error messages are stable codes — UI maps them via `common.validation`.
  */
 
 export { GENDERS };
@@ -51,12 +50,6 @@ export const TERRAIN_OPTIONS = [
 ] as const;
 export type Terrain = (typeof TERRAIN_OPTIONS)[number];
 
-/**
- * Personal records — flexible per sport. All fields independently
- * optional so changing sports does not erase records.
- *   - *_minutes are decimal minutes (e.g. 22:30 → 22.5)
- *   - *_watts are integer watts
- */
 export const prsSchema = z.object({
   fiveKMinutes: z.number().positive().max(120).nullable(),
   tenKMinutes: z.number().positive().max(180).nullable(),
@@ -82,23 +75,23 @@ export const EMPTY_PRS: ProfilePrs = {
 
 export const profileSchema = z.object({
   // Identity
-  fullName: z.string().trim().min(1, 'Enter your name').max(80),
+  fullName: z.string().trim().min(1, 'name_required').max(80, 'name_too_long'),
   age: z
     .number()
     .int()
-    .min(14, 'Age must be at least 14')
-    .max(90, 'Age must be 90 or below')
+    .min(14, 'age_too_low')
+    .max(90, 'age_too_high')
     .nullable(),
   gender: z.enum(GENDERS).nullable(),
   heightCm: z
     .number()
-    .min(100, 'Height looks too low')
-    .max(230, 'Height looks too high')
+    .min(100, 'height_too_low')
+    .max(230, 'height_too_high')
     .nullable(),
   weightKg: z
     .number()
-    .min(30, 'Weight must be at least 30 kg')
-    .max(200, 'Weight must be below 200 kg'),
+    .min(30, 'weight_too_low')
+    .max(200, 'weight_too_high'),
 
   // Experience
   level: z.enum(EXPERIENCE_LEVELS),
@@ -125,8 +118,8 @@ export const profileSchema = z.object({
   sodiumDiet: z.enum(SODIUM_DIETS),
   knownSweatRateLh: z
     .number()
-    .min(0.2, 'Sweat rate looks too low')
-    .max(4, 'Sweat rate looks too high')
+    .min(0.2, 'sweat_rate_too_low')
+    .max(4, 'sweat_rate_too_high')
     .nullable(),
 
   // Logistics

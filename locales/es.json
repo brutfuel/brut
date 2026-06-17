@@ -147,7 +147,8 @@
       "caps": "cáps",
       "hours": "horas",
       "years": "años",
-      "weeks": "semanas"
+      "weeks": "semanas",
+      "cm": "cm"
     },
     "feedback": {
       "rest_day_message": "Aprovéchalo. La recuperación también es entrenamiento.",
@@ -834,6 +835,116 @@
         "low_fiber": "Baja en fibra",
         "hydration_priority": "Prioridad de hidratación"
       }
+    }
+  },
+  "profile": {
+    "eyebrow": "Cuenta",
+    "title": "Perfil",
+    "intro": "Personaliza tus planes y la nutrición de cada sesión. Todo es opcional — rellena solo lo que nos ayude a afinar tu entrenamiento.",
+    "toast_updated": "Perfil actualizado",
+    "form": {
+      "identity": "Identidad",
+      "experience": "Experiencia",
+      "personal_records": "Marcas personales",
+      "physiology": "Fisiología",
+      "health": "Salud",
+      "hydration_profile": "Perfil de hidratación",
+      "logistics": "Logística",
+      "full_name": "Nombre completo",
+      "age": "Edad",
+      "height": "Altura",
+      "body_weight": "Peso corporal",
+      "gender": "Género",
+      "level": "Nivel",
+      "primary_sport": "Deporte principal",
+      "years_training": "Años entrenando",
+      "weekly_volume": "Volumen semanal",
+      "longest_recent": "Más larga reciente",
+      "hr_max": "FC máx",
+      "hr_rest": "FC reposo",
+      "vo2max": "VO2max",
+      "injuries": "Lesiones actuales o pasadas",
+      "injuries_placeholder": "Describe cualquier lesión que deberíamos saber…",
+      "dietary_restrictions": "Restricciones dietéticas",
+      "medically_cleared": "Apto médicamente para entrenar",
+      "heat_acclimated": "Aclimatado al calor",
+      "habitual_sodium_diet": "Dieta habitual de sodio",
+      "known_sweat_rate": "Tasa de sudor conocida",
+      "known_sweat_rate_hint": "Opcional — rellénalo solo si la has medido.",
+      "typical_training_time": "Hora habitual de entrenamiento",
+      "typical_terrain": "Terreno habitual",
+      "ftp": "FTP",
+      "twenty_min_power": "Potencia 20 min",
+      "pr_5k": "5 km",
+      "pr_10k": "10 km",
+      "pr_half": "Media maratón",
+      "pr_marathon": "Maratón",
+      "pr_olympic_swim": "Natación olímpica",
+      "pr_sprint_bike": "Bici sprint",
+      "time_separator_ms": "min : seg",
+      "time_separator_hm": "h : min"
+    },
+    "save": "Guardar cambios",
+    "saving": "Guardando…",
+    "level": {
+      "beginner": "Principiante",
+      "amateur": "Amateur",
+      "pro": "Pro"
+    },
+    "sodium_diet": {
+      "low": "Baja",
+      "normal": "Normal",
+      "high": "Alta"
+    },
+    "training_time": {
+      "early_morning": "Madrugada",
+      "morning": "Mañana",
+      "afternoon": "Tarde",
+      "evening": "Tarde-noche",
+      "night": "Noche"
+    },
+    "dietary": {
+      "vegetarian": "Vegetariana",
+      "vegan": "Vegana",
+      "pescatarian": "Pescetariana",
+      "lactose_free": "Sin lactosa",
+      "gluten_free": "Sin gluten",
+      "halal": "Halal",
+      "kosher": "Kosher",
+      "none": "Ninguna"
+    },
+    "terrain": {
+      "road": "Carretera",
+      "trail": "Trail",
+      "track": "Pista",
+      "gravel": "Gravel",
+      "mtb": "BTT"
+    },
+    "actions": {
+      "unsupported_locale": "Idioma no compatible.",
+      "could_not_save_locale": "No se pudo guardar tu preferencia de idioma.",
+      "invalid_details": "Detalles del perfil no válidos.",
+      "sign_in_required": "Debes iniciar sesión para editar tu perfil.",
+      "could_not_save": "No se pudo guardar el perfil. Inténtalo de nuevo.",
+      "confirm_to_continue": "Confirma para continuar.",
+      "sign_in_required_delete": "Debes iniciar sesión para eliminar tu cuenta.",
+      "not_configured": "El servidor no está configurado para eliminar cuentas.",
+      "could_not_delete": "No se pudo eliminar la cuenta. Inténtalo de nuevo."
+    },
+    "delete": {
+      "danger_zone": "Zona peligrosa",
+      "title": "Eliminar cuenta",
+      "description": "Elimina permanentemente tu cuenta, perfil y todos los planes de carrera que has generado. Esta acción no se puede deshacer.",
+      "trigger": "Eliminar mi cuenta",
+      "modal_title": "Eliminar cuenta",
+      "modal_body": "Esto borrará tu cuenta, perfil y todos los planes de carrera que has generado. No hay vuelta atrás.",
+      "i_understand": "Entiendo que esta acción es permanente.",
+      "type_to_confirm": "Escribe ELIMINAR para confirmar",
+      "delete_word": "ELIMINAR",
+      "cancel": "Cancelar",
+      "delete_button": "Eliminar cuenta",
+      "deleting": "Eliminando…",
+      "confirm_error": "Marca la casilla y escribe ELIMINAR para confirmar."
     }
   }
 }

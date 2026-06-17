@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient as createAdminClient } from '@supabase/supabase-js';
+import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import {
   profileSchema,
@@ -22,8 +23,9 @@ type ActionResult = { ok: true } | { ok: false; error: string };
  * `NEXT_LOCALE` cookie set by next-intl's router.
  */
 export async function updateLocale(locale: string): Promise<ActionResult> {
+  const tE = await getTranslations('profile.actions');
   if (!(routing.locales as ReadonlyArray<string>).includes(locale)) {
-    return { ok: false, error: 'Unsupported locale.' };
+    return { ok: false, error: tE('unsupported_locale') };
   }
 
   const supabase = await createClient();
@@ -31,8 +33,6 @@ export async function updateLocale(locale: string): Promise<ActionResult> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    // Anonymous switch — handled entirely by the cookie set by the
-    // next-intl router. Treat as success so the client UI proceeds.
     return { ok: true };
   }
 
@@ -42,7 +42,7 @@ export async function updateLocale(locale: string): Promise<ActionResult> {
     .eq('id', user.id);
 
   if (error) {
-    return { ok: false, error: 'Could not save your language preference.' };
+    return { ok: false, error: tE('could_not_save_locale') };
   }
   return { ok: true };
 }
@@ -51,12 +51,12 @@ export async function updateLocale(locale: string): Promise<ActionResult> {
 export async function updateProfile(
   values: ProfileFormValues,
 ): Promise<ActionResult> {
+  const tE = await getTranslations('profile.actions');
+  const tV = await getTranslations('common.validation');
   const parsed = profileSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid profile details.',
-    };
+    const code = parsed.error.issues[0]?.message;
+    return { ok: false, error: code ? tV(code) : tE('invalid_details') };
   }
 
   const supabase = await createClient();
@@ -65,14 +65,11 @@ export async function updateProfile(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { ok: false, error: 'You must be signed in to edit your profile.' };
+    return { ok: false, error: tE('sign_in_required') };
   }
 
   const v = parsed.data;
 
-  // `ftp` lives both inside the PRs JSON and as a top-level column kept
-  // from the original schema. Mirror so any consumer reading the column
-  // directly stays in sync with the PRs panel.
   const ftpFromPrs = v.prs.ftpWatts;
 
   const { error } = await supabase
@@ -112,7 +109,7 @@ export async function updateProfile(
     .eq('id', user.id);
 
   if (error) {
-    return { ok: false, error: 'Could not save your profile. Please try again.' };
+    return { ok: false, error: tE('could_not_save') };
   }
 
   return { ok: true };
@@ -122,24 +119,15 @@ export async function updateProfile(
 // Delete account (GDPR)
 // ----------------------------------------------------------------
 
-/**
- * Permanently delete the signed-in user's account. Uses the Supabase
- * Admin API (service role key, server-only) to remove the auth.users
- * row — `profiles`, `race_plans`, `race_day_plans` and every other
- * child row cascade away via the schema's ON DELETE CASCADE FKs.
- *
- * On success the user's session cookie is cleared and they are
- * redirected to the home page.
- */
 export async function deleteAccount(
   values: DeleteAccountValues,
 ): Promise<ActionResult> {
+  const tE = await getTranslations('profile.actions');
+  const tV = await getTranslations('common.validation');
   const parsed = deleteAccountSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Confirm to continue.',
-    };
+    const code = parsed.error.issues[0]?.message;
+    return { ok: false, error: code ? tV(code) : tE('confirm_to_continue') };
   }
 
   const supabase = await createClient();
@@ -147,19 +135,13 @@ export async function deleteAccount(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return {
-      ok: false,
-      error: 'You must be signed in to delete your account.',
-    };
+    return { ok: false, error: tE('sign_in_required_delete') };
   }
 
   const adminUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!adminUrl || !serviceKey) {
-    return {
-      ok: false,
-      error: 'Server is not configured to delete accounts.',
-    };
+    return { ok: false, error: tE('not_configured') };
   }
 
   const admin = createAdminClient(adminUrl, serviceKey, {
@@ -168,10 +150,9 @@ export async function deleteAccount(
 
   const { error: deleteError } = await admin.auth.admin.deleteUser(user.id);
   if (deleteError) {
-    return { ok: false, error: 'Could not delete your account. Try again.' };
+    return { ok: false, error: tE('could_not_delete') };
   }
 
-  // Clear the current session cookie — best-effort. Client navigates.
   await supabase.auth.signOut();
   return { ok: true };
 }

@@ -147,7 +147,8 @@
       "caps": "càps",
       "hours": "hores",
       "years": "anys",
-      "weeks": "setmanes"
+      "weeks": "setmanes",
+      "cm": "cm"
     },
     "feedback": {
       "rest_day_message": "Aprofita'l. La recuperació també és entrenament.",
@@ -834,6 +835,116 @@
         "low_fiber": "Baixa en fibra",
         "hydration_priority": "Prioritat d'hidratació"
       }
+    }
+  },
+  "profile": {
+    "eyebrow": "Compte",
+    "title": "Perfil",
+    "intro": "Personalitza els teus plans i la nutrició de cada sessió. Tot és opcional — emplena només el que ens ajudi a afinar el teu entrenament.",
+    "toast_updated": "Perfil actualitzat",
+    "form": {
+      "identity": "Identitat",
+      "experience": "Experiència",
+      "personal_records": "Marques personals",
+      "physiology": "Fisiologia",
+      "health": "Salut",
+      "hydration_profile": "Perfil d'hidratació",
+      "logistics": "Logística",
+      "full_name": "Nom complet",
+      "age": "Edat",
+      "height": "Alçada",
+      "body_weight": "Pes corporal",
+      "gender": "Gènere",
+      "level": "Nivell",
+      "primary_sport": "Esport principal",
+      "years_training": "Anys entrenant",
+      "weekly_volume": "Volum setmanal",
+      "longest_recent": "Més llarga recent",
+      "hr_max": "FC màx",
+      "hr_rest": "FC repòs",
+      "vo2max": "VO2max",
+      "injuries": "Lesions actuals o passades",
+      "injuries_placeholder": "Descriu qualsevol lesió que hauríem de saber…",
+      "dietary_restrictions": "Restriccions dietètiques",
+      "medically_cleared": "Apte mèdicament per entrenar",
+      "heat_acclimated": "Aclimatat a la calor",
+      "habitual_sodium_diet": "Dieta habitual de sodi",
+      "known_sweat_rate": "Taxa de suor coneguda",
+      "known_sweat_rate_hint": "Opcional — emplena només si l'has mesurada.",
+      "typical_training_time": "Hora habitual d'entrenament",
+      "typical_terrain": "Terreny habitual",
+      "ftp": "FTP",
+      "twenty_min_power": "Potència 20 min",
+      "pr_5k": "5 km",
+      "pr_10k": "10 km",
+      "pr_half": "Mitja marató",
+      "pr_marathon": "Marató",
+      "pr_olympic_swim": "Natació olímpica",
+      "pr_sprint_bike": "Bici sprint",
+      "time_separator_ms": "min : seg",
+      "time_separator_hm": "h : min"
+    },
+    "save": "Desa els canvis",
+    "saving": "Desant…",
+    "level": {
+      "beginner": "Principiant",
+      "amateur": "Amateur",
+      "pro": "Pro"
+    },
+    "sodium_diet": {
+      "low": "Baixa",
+      "normal": "Normal",
+      "high": "Alta"
+    },
+    "training_time": {
+      "early_morning": "Matinada",
+      "morning": "Matí",
+      "afternoon": "Tarda",
+      "evening": "Vespre",
+      "night": "Nit"
+    },
+    "dietary": {
+      "vegetarian": "Vegetariana",
+      "vegan": "Vegana",
+      "pescatarian": "Pescetariana",
+      "lactose_free": "Sense lactosa",
+      "gluten_free": "Sense gluten",
+      "halal": "Halal",
+      "kosher": "Kosher",
+      "none": "Cap"
+    },
+    "terrain": {
+      "road": "Carretera",
+      "trail": "Trail",
+      "track": "Pista",
+      "gravel": "Gravel",
+      "mtb": "BTT"
+    },
+    "actions": {
+      "unsupported_locale": "Idioma no compatible.",
+      "could_not_save_locale": "No s'ha pogut desar la teva preferència d'idioma.",
+      "invalid_details": "Detalls del perfil no vàlids.",
+      "sign_in_required": "Has d'iniciar sessió per editar el teu perfil.",
+      "could_not_save": "No s'ha pogut desar el perfil. Torna-ho a provar.",
+      "confirm_to_continue": "Confirma per continuar.",
+      "sign_in_required_delete": "Has d'iniciar sessió per eliminar el teu compte.",
+      "not_configured": "El servidor no està configurat per eliminar comptes.",
+      "could_not_delete": "No s'ha pogut eliminar el compte. Torna-ho a provar."
+    },
+    "delete": {
+      "danger_zone": "Zona perillosa",
+      "title": "Elimina el compte",
+      "description": "Elimina permanentment el teu compte, perfil i tots els plans de cursa que has generat. Aquesta acció no es pot desfer.",
+      "trigger": "Elimina el meu compte",
+      "modal_title": "Elimina el compte",
+      "modal_body": "Això esborrarà el teu compte, perfil i tots els plans de cursa que has generat. No hi ha marxa enrere.",
+      "i_understand": "Entenc que aquesta acció és permanent.",
+      "type_to_confirm": "Escriu ELIMINA per confirmar",
+      "delete_word": "ELIMINA",
+      "cancel": "Cancel·la",
+      "delete_button": "Elimina el compte",
+      "deleting": "Eliminant…",
+      "confirm_error": "Marca la casella i escriu ELIMINA per confirmar."
     }
   }
 }

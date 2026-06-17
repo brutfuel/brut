@@ -147,7 +147,8 @@
       "caps": "caps",
       "hours": "hours",
       "years": "years",
-      "weeks": "weeks"
+      "weeks": "weeks",
+      "cm": "cm"
     },
     "feedback": {
       "rest_day_message": "Use it. Recovery is training.",
@@ -834,6 +835,116 @@
         "low_fiber": "Low fibre",
         "hydration_priority": "Hydration priority"
       }
+    }
+  },
+  "profile": {
+    "eyebrow": "Account",
+    "title": "Profile",
+    "intro": "Personalise your plans and per-session fuelling. Everything here is optional — fill in only what helps us tune your training.",
+    "toast_updated": "Profile updated",
+    "form": {
+      "identity": "Identity",
+      "experience": "Experience",
+      "personal_records": "Personal records",
+      "physiology": "Physiology",
+      "health": "Health",
+      "hydration_profile": "Hydration profile",
+      "logistics": "Logistics",
+      "full_name": "Full name",
+      "age": "Age",
+      "height": "Height",
+      "body_weight": "Body weight",
+      "gender": "Gender",
+      "level": "Level",
+      "primary_sport": "Primary sport",
+      "years_training": "Years training",
+      "weekly_volume": "Weekly volume",
+      "longest_recent": "Longest recent",
+      "hr_max": "HR max",
+      "hr_rest": "HR rest",
+      "vo2max": "VO2max",
+      "injuries": "Current or past injuries",
+      "injuries_placeholder": "Describe any injuries we should know about…",
+      "dietary_restrictions": "Dietary restrictions",
+      "medically_cleared": "Medically cleared for training",
+      "heat_acclimated": "Heat acclimated",
+      "habitual_sodium_diet": "Habitual sodium diet",
+      "known_sweat_rate": "Known sweat rate",
+      "known_sweat_rate_hint": "Optional — fill in only if you’ve measured it.",
+      "typical_training_time": "Typical training time",
+      "typical_terrain": "Typical terrain",
+      "ftp": "FTP",
+      "twenty_min_power": "20-min power",
+      "pr_5k": "5 km",
+      "pr_10k": "10 km",
+      "pr_half": "Half marathon",
+      "pr_marathon": "Marathon",
+      "pr_olympic_swim": "Olympic swim",
+      "pr_sprint_bike": "Sprint bike",
+      "time_separator_ms": "min : sec",
+      "time_separator_hm": "h : min"
+    },
+    "save": "Save changes",
+    "saving": "Saving…",
+    "level": {
+      "beginner": "Beginner",
+      "amateur": "Amateur",
+      "pro": "Pro"
+    },
+    "sodium_diet": {
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High"
+    },
+    "training_time": {
+      "early_morning": "Early morning",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "night": "Night"
+    },
+    "dietary": {
+      "vegetarian": "Vegetarian",
+      "vegan": "Vegan",
+      "pescatarian": "Pescatarian",
+      "lactose_free": "Lactose free",
+      "gluten_free": "Gluten free",
+      "halal": "Halal",
+      "kosher": "Kosher",
+      "none": "None"
+    },
+    "terrain": {
+      "road": "Road",
+      "trail": "Trail",
+      "track": "Track",
+      "gravel": "Gravel",
+      "mtb": "MTB"
+    },
+    "actions": {
+      "unsupported_locale": "Unsupported locale.",
+      "could_not_save_locale": "Could not save your language preference.",
+      "invalid_details": "Invalid profile details.",
+      "sign_in_required": "You must be signed in to edit your profile.",
+      "could_not_save": "Could not save your profile. Please try again.",
+      "confirm_to_continue": "Confirm to continue.",
+      "sign_in_required_delete": "You must be signed in to delete your account.",
+      "not_configured": "Server is not configured to delete accounts.",
+      "could_not_delete": "Could not delete your account. Try again."
+    },
+    "delete": {
+      "danger_zone": "Danger zone",
+      "title": "Delete account",
+      "description": "Permanently remove your account, profile and every race plan you have generated. This cannot be undone.",
+      "trigger": "Delete my account",
+      "modal_title": "Delete account",
+      "modal_body": "This will erase your account, profile and every race plan you have generated. There is no undo.",
+      "i_understand": "I understand this is permanent.",
+      "type_to_confirm": "Type DELETE to confirm",
+      "delete_word": "DELETE",
+      "cancel": "Cancel",
+      "delete_button": "Delete account",
+      "deleting": "Deleting…",
+      "confirm_error": "Tick the box and type DELETE to confirm."
     }
   }
 }

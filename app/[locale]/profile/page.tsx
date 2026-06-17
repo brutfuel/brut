@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProfileEditor from '@/app/[locale]/profile/ProfileEditor';
@@ -21,6 +22,7 @@ const DIETARY_SET = new Set<string>(DIETARY_RESTRICTION_OPTIONS);
 const TERRAIN_SET = new Set<string>(TERRAIN_OPTIONS);
 
 export default async function ProfilePage() {
+  const t = await getTranslations('profile');
   const supabase = await createClient();
   const {
     data: { user },
@@ -39,40 +41,32 @@ export default async function ProfilePage() {
   const profile = data as Profile | null;
 
   if (!profile) {
-    // Profile row missing — onboarding never ran. Send the user there.
     redirect('/register/onboarding');
   }
 
   const initialValues: ProfileFormValues = {
-    // Identity
     fullName: profile.full_name ?? '',
     age: profile.age,
     gender: profile.gender,
     heightCm: profile.height_cm,
     weightKg: profile.weight_kg ?? 70,
-    // Experience
     primarySport: profile.primary_sport ?? 'running',
     level: (profile.level as ExperienceLevel | null) ?? 'amateur',
     yearsTraining: profile.years_training,
     weeklyVolumeHours: profile.weekly_volume_hours,
     longestRecentSessionKm: profile.longest_recent_session_km,
-    // PRs
     prs: profile.prs ? prsFromDb(profile.prs) : { ...EMPTY_PRS },
-    // Physiology
     fcmax: profile.fcmax,
     fcrest: profile.fcrest,
     vo2max: profile.vo2max,
-    // Health
     injuries: profile.injuries ?? '',
     dietaryRestrictions: (profile.dietary_restrictions ?? []).filter((v) =>
       DIETARY_SET.has(v),
     ) as DietaryRestriction[],
     medicallyCleared: profile.medically_cleared ?? false,
-    // Hydration
     acclimated: profile.acclimated ?? false,
     sodiumDiet: (profile.sodium_diet as SodiumDietValue | null) ?? 'normal',
     knownSweatRateLh: profile.known_sweat_rate_lh,
-    // Logistics
     typicalTrainingTime: profile.typical_training_time,
     typicalTerrain: (profile.typical_terrain ?? []).filter((v) =>
       TERRAIN_SET.has(v),
@@ -85,14 +79,13 @@ export default async function ProfilePage() {
 
       <main className="mx-auto max-w-[720px] px-6 md:px-10 pt-16 md:pt-24 pb-12 min-h-[70vh]">
         <span className="text-xs font-semibold tracking-brut-wide uppercase text-brut-muted">
-          Account
+          {t('eyebrow')}
         </span>
         <h1 className="mt-6 text-[40px] md:text-[56px] leading-[1.0] font-thin tracking-brut text-brut-black">
-          Profile
+          {t('title')}
         </h1>
         <p className="mt-4 text-sm font-normal text-brut-muted">
-          Personalise your plans and per-session fuelling. Everything here is
-          optional — fill in only what helps us tune your training.
+          {t('intro')}
         </p>
 
         <div className="mt-12">

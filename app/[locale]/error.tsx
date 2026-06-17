@@ -1,20 +1,19 @@
 'use client';
 
 import { useEffect } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Link } from '@/lib/i18n/routing';
 
 interface Props {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
-/**
- * Route-level error boundary. Caught errors in any segment land here.
- * The user gets an editorial fallback with a recoverable action.
- */
 export default function RouteError({ error, reset }: Props) {
+  const t = useTranslations('errors');
+
   useEffect(() => {
     console.error('[BRUT] route error', error);
   }, [error]);
@@ -25,24 +24,25 @@ export default function RouteError({ error, reset }: Props) {
 
       <main className="mx-auto max-w-3xl px-6 md:px-10 pt-16 md:pt-24 pb-24 min-h-[70vh]">
         <span className="text-xs font-semibold tracking-brut-wide uppercase text-brut-muted">
-          Error
+          {t('eyebrow_error')}
         </span>
         <h1 className="mt-6 text-[40px] md:text-[56px] leading-[1.0] font-thin tracking-brut text-brut-black">
-          Something broke
+          {t('title_broke')}
         </h1>
         <p className="mt-4 text-base font-normal text-brut-ink leading-relaxed">
-          The page failed to load. Try again — if it keeps happening, write to{' '}
+          {t('body_route_error_prefix')}
           <a
             href="mailto:hello@brutfuel.com"
             className="text-brut-black border-b border-brut-black pb-0.5 hover:opacity-60 transition-opacity"
           >
             hello@brutfuel.com
           </a>
-          .
+          {t('body_route_error_suffix')}
         </p>
         {error.digest ? (
           <p className="mt-4 text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-            Reference: {error.digest}
+            {t('reference_prefix')}
+            {error.digest}
           </p>
         ) : null}
 
@@ -52,13 +52,13 @@ export default function RouteError({ error, reset }: Props) {
             onClick={reset}
             className="inline-flex items-center justify-center px-5 py-3 bg-brut-black text-white text-[10px] font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors"
           >
-            Try again
+            {t('try_again')}
           </button>
           <Link
             href="/dashboard"
             className="inline-flex items-center justify-center px-5 py-3 border border-brut-black text-brut-black text-[10px] font-semibold tracking-brut-wide uppercase hover:bg-brut-black hover:text-white transition-colors"
           >
-            Back to dashboard
+            {t('back_to_dashboard')}
           </Link>
         </div>
       </main>

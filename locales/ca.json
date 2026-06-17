@@ -946,5 +946,20 @@
       "deleting": "Eliminant…",
       "confirm_error": "Marca la casella i escriu ELIMINA per confirmar."
     }
+  },
+  "errors": {
+    "eyebrow_error": "Error",
+    "eyebrow_404": "404",
+    "title_broke": "Alguna cosa s'ha trencat",
+    "title_404": "Pàgina no trobada",
+    "body_route_error_prefix": "La pàgina no s'ha carregat. Torna-ho a provar — si segueix passant, escriu a ",
+    "body_route_error_suffix": ".",
+    "body_404": "La pàgina que busques no existeix o s'ha mogut.",
+    "reference_prefix": "Referència: ",
+    "try_again": "Torna-ho a provar",
+    "back_to_dashboard": "Tornar al tauler",
+    "go_to_dashboard": "Vés al tauler",
+    "back_to_home": "Tornar a l'inici",
+    "loading": "Carregant…"
   }
 }

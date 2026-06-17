@@ -946,5 +946,20 @@
       "deleting": "Eliminando…",
       "confirm_error": "Marca la casilla y escribe ELIMINAR para confirmar."
     }
+  },
+  "errors": {
+    "eyebrow_error": "Error",
+    "eyebrow_404": "404",
+    "title_broke": "Algo ha fallado",
+    "title_404": "Página no encontrada",
+    "body_route_error_prefix": "La página no se ha cargado. Inténtalo de nuevo — si sigue pasando, escribe a ",
+    "body_route_error_suffix": ".",
+    "body_404": "La página que buscas no existe o se ha movido.",
+    "reference_prefix": "Referencia: ",
+    "try_again": "Reintentar",
+    "back_to_dashboard": "Volver al panel",
+    "go_to_dashboard": "Ir al panel",
+    "back_to_home": "Volver al inicio",
+    "loading": "Cargando…"
   }
 }

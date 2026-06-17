@@ -946,5 +946,20 @@
       "deleting": "Deleting…",
       "confirm_error": "Tick the box and type DELETE to confirm."
     }
+  },
+  "errors": {
+    "eyebrow_error": "Error",
+    "eyebrow_404": "404",
+    "title_broke": "Something broke",
+    "title_404": "Page not found",
+    "body_route_error_prefix": "The page failed to load. Try again — if it keeps happening, write to ",
+    "body_route_error_suffix": ".",
+    "body_404": "The page you’re looking for doesn’t exist or has been moved.",
+    "reference_prefix": "Reference: ",
+    "try_again": "Try again",
+    "back_to_dashboard": "Back to dashboard",
+    "go_to_dashboard": "Go to dashboard",
+    "back_to_home": "Back to home",
+    "loading": "Loading…"
   }
 }

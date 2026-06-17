@@ -249,14 +249,18 @@
       "title": "Sign in",
       "redirect_note": "Sign in to save your plan.",
       "error_auth": "Sign-in could not be completed. Please try again.",
+      "email_label": "Email",
       "email_placeholder": "you@example.com",
+      "password_label": "Password",
       "password_placeholder": "••••••••",
       "incorrect": "Incorrect email or password.",
-      "google_redirecting": "Redirecting…"
+      "google_redirecting": "Redirecting…",
+      "google_failed": "Could not start Google sign-in. Try again."
     },
     "register": {
       "title": "Create your account",
       "password_hint_placeholder": "At least 8 characters",
+      "confirm_password_label": "Confirm password",
       "confirm_password_placeholder": "Re-enter your password"
     },
     "onboarding": {

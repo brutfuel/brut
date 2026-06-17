@@ -2,7 +2,7 @@
 
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { loginSchema, type LoginValues } from '@/lib/validation/auth';
 import {
@@ -67,7 +67,9 @@ export async function signInWithEmail(
 ): Promise<ActionResult | void> {
   const parsed = loginSchema.safeParse(values);
   if (!parsed.success) {
-    return { error: 'Enter a valid email and password.' };
+    const code = parsed.error.issues[0]?.message ?? 'email_invalid';
+    const tV = await getTranslations('common.validation');
+    return { error: tV(code) };
   }
 
   const supabase = await createClient();
@@ -77,7 +79,8 @@ export async function signInWithEmail(
   });
 
   if (error || !data.user) {
-    return { error: 'Incorrect email or password.' };
+    const tL = await getTranslations('auth.login');
+    return { error: tL('incorrect') };
   }
 
   const locale = await resolvePostSignInLocale(supabase, data.user.id);
@@ -106,7 +109,8 @@ export async function signInWithGoogle(
   });
 
   if (error || !data.url) {
-    return { error: 'Could not start Google sign-in. Try again.' };
+    const tL = await getTranslations('auth.login');
+    return { error: tL('google_failed') };
   }
 
   redirect(data.url);
@@ -134,10 +138,9 @@ export async function requestPasswordReset(
 ): Promise<OkResult> {
   const parsed = requestPasswordResetSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid email.',
-    };
+    const code = parsed.error.issues[0]?.message ?? 'email_invalid';
+    const tV = await getTranslations('common.validation');
+    return { ok: false, error: tV(code) };
   }
 
   const supabase = await createClient();
@@ -165,28 +168,25 @@ export async function updatePassword(
 ): Promise<OkResult> {
   const parsed = updatePasswordSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid password.',
-    };
+    const code = parsed.error.issues[0]?.message ?? 'password_too_short';
+    const tV = await getTranslations('common.validation');
+    return { ok: false, error: tV(code) };
   }
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const tR = await getTranslations('auth.reset_password');
   if (!user) {
-    return {
-      ok: false,
-      error: 'Your reset link has expired. Request a new one.',
-    };
+    return { ok: false, error: tR('expired_error') };
   }
 
   const { error } = await supabase.auth.updateUser({
     password: parsed.data.password,
   });
   if (error) {
-    return { ok: false, error: 'Could not update password. Try again.' };
+    return { ok: false, error: tR('update_failed') };
   }
   return { ok: true };
 }
@@ -199,10 +199,9 @@ export async function resendVerificationEmail(
 ): Promise<OkResult> {
   const parsed = resendVerificationSchema.safeParse(values);
   if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? 'Invalid email.',
-    };
+    const code = parsed.error.issues[0]?.message ?? 'email_invalid';
+    const tV = await getTranslations('common.validation');
+    return { ok: false, error: tV(code) };
   }
 
   const supabase = await createClient();

@@ -249,14 +249,18 @@
       "title": "Inicia sessió",
       "redirect_note": "Inicia sessió per desar el teu pla.",
       "error_auth": "No s'ha pogut iniciar sessió. Torna-ho a provar.",
+      "email_label": "Correu electrònic",
       "email_placeholder": "tu@exemple.com",
+      "password_label": "Contrasenya",
       "password_placeholder": "••••••••",
       "incorrect": "Correu o contrasenya incorrectes.",
-      "google_redirecting": "Redirigint…"
+      "google_redirecting": "Redirigint…",
+      "google_failed": "No s'ha pogut iniciar sessió amb Google. Torna-ho a provar."
     },
     "register": {
       "title": "Crea el teu compte",
       "password_hint_placeholder": "Com a mínim 8 caràcters",
+      "confirm_password_label": "Confirma la contrasenya",
       "confirm_password_placeholder": "Torna a escriure la contrasenya"
     },
     "onboarding": {

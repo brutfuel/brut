@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/lib/i18n/routing';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/ui/Input';
@@ -16,6 +17,8 @@ const blackButton =
 const fieldError = 'mt-2 text-xs font-medium text-brut-ink';
 
 export default function ResetPasswordForm() {
+  const t = useTranslations('auth.reset_password');
+  const tV = useTranslations('common.validation');
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -42,32 +45,36 @@ export default function ResetPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col gap-6"
+      noValidate
+    >
       <div>
         <Input
           id="password"
-          label="New password"
+          label={t('new_password_label')}
           type="password"
           autoComplete="new-password"
-          placeholder="At least 8 characters"
+          placeholder={t('new_password_placeholder')}
           {...register('password')}
         />
-        {errors.password ? (
-          <p className={fieldError}>{errors.password.message}</p>
+        {errors.password?.message ? (
+          <p className={fieldError}>{tV(errors.password.message)}</p>
         ) : null}
       </div>
 
       <div>
         <Input
           id="confirmPassword"
-          label="Confirm new password"
+          label={t('confirm_new_password_label')}
           type="password"
           autoComplete="new-password"
-          placeholder="Re-enter your password"
+          placeholder={t('confirm_new_password_placeholder')}
           {...register('confirmPassword')}
         />
-        {errors.confirmPassword ? (
-          <p className={fieldError}>{errors.confirmPassword.message}</p>
+        {errors.confirmPassword?.message ? (
+          <p className={fieldError}>{tV(errors.confirmPassword.message)}</p>
         ) : null}
       </div>
 
@@ -78,7 +85,7 @@ export default function ResetPasswordForm() {
       ) : null}
 
       <button type="submit" disabled={pending} className={blackButton}>
-        {pending ? 'Updating…' : 'Update password'}
+        {pending ? t('submitting') : t('submit')}
       </button>
     </form>
   );

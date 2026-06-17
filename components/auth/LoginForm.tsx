@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/ui/Input';
+import { Link } from '@/lib/i18n/routing';
 import { signInWithEmail, signInWithGoogle } from '@/app/[locale]/login/actions';
 import { loginSchema, type LoginValues } from '@/lib/validation/auth';
 
@@ -19,6 +20,10 @@ const blackButton =
 const fieldError = 'mt-2 text-xs font-medium text-brut-ink';
 
 export default function LoginForm({ next }: Props) {
+  const tAuth = useTranslations('common.auth_actions');
+  const tCommon = useTranslations('common.actions');
+  const tLogin = useTranslations('auth.login');
+  const tV = useTranslations('common.validation');
   const [formError, setFormError] = useState<string | null>(null);
   const [googlePending, startGoogle] = useTransition();
 
@@ -58,48 +63,54 @@ export default function LoginForm({ next }: Props) {
         disabled={googlePending || isSubmitting}
         className={blackButton}
       >
-        {googlePending ? 'Redirecting…' : 'Continue with Google'}
+        {googlePending ? tCommon('redirecting') : tAuth('continue_with_google')}
       </button>
 
       {/* Editorial divider */}
       <div className="flex items-center gap-4">
         <span className="h-px flex-1 bg-brut-line" />
         <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-          or
+          {tAuth('or')}
         </span>
         <span className="h-px flex-1 bg-brut-line" />
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-6"
+        noValidate
+      >
         <div>
           <Input
             id="email"
-            label="Email"
+            label={tLogin('email_label')}
             type="email"
             autoComplete="email"
-            placeholder="you@example.com"
+            placeholder={tLogin('email_placeholder')}
             {...register('email')}
           />
-          {errors.email ? <p className={fieldError}>{errors.email.message}</p> : null}
+          {errors.email?.message ? (
+            <p className={fieldError}>{tV(errors.email.message)}</p>
+          ) : null}
         </div>
 
         <div>
           <Input
             id="password"
-            label="Password"
+            label={tLogin('password_label')}
             type="password"
             autoComplete="current-password"
-            placeholder="••••••••"
+            placeholder={tLogin('password_placeholder')}
             {...register('password')}
           />
-          {errors.password ? (
-            <p className={fieldError}>{errors.password.message}</p>
+          {errors.password?.message ? (
+            <p className={fieldError}>{tV(errors.password.message)}</p>
           ) : null}
           <Link
             href="/forgot-password"
             className="mt-2 inline-block text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted hover:text-brut-black transition-colors underline underline-offset-4 decoration-brut-line hover:decoration-brut-black"
           >
-            Forgot password?
+            {tAuth('forgot_password')}
           </Link>
         </div>
 
@@ -109,8 +120,12 @@ export default function LoginForm({ next }: Props) {
           </p>
         ) : null}
 
-        <button type="submit" disabled={isSubmitting || googlePending} className={blackButton}>
-          {isSubmitting ? 'Signing in…' : 'Sign in'}
+        <button
+          type="submit"
+          disabled={isSubmitting || googlePending}
+          className={blackButton}
+        >
+          {isSubmitting ? tAuth('signing_in') : tAuth('sign_in')}
         </button>
       </form>
     </div>

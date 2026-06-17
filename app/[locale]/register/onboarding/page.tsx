@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import OnboardingFlow from '@/components/auth/OnboardingFlow';
@@ -6,6 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 import type { Profile } from '@/lib/types/db';
 
 export default async function OnboardingPage() {
+  const t = await getTranslations('auth.onboarding');
   const supabase = await createClient();
   const {
     data: { user },
@@ -45,7 +47,7 @@ export default async function OnboardingPage() {
       <main className="mx-auto max-w-7xl px-6 md:px-10 pt-16 md:pt-24 pb-24 min-h-[70vh]">
         <div className="mx-auto w-full max-w-md">
           <span className="text-xs font-semibold tracking-brut-wide uppercase text-brut-muted">
-            Set up your profile
+            {t('section_eyebrow')}
           </span>
           <div className="mt-10">
             <OnboardingFlow initialName={initialName} />

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import Input from '@/components/ui/Input';
 import Slider from '@/components/ui/Slider';
 import { completeOnboarding } from '@/app/[locale]/register/actions';
@@ -17,19 +18,6 @@ interface Props {
   initialName?: string;
 }
 
-const SPORT_LABELS: Record<PrimarySport, string> = {
-  running: 'Running',
-  cycling: 'Cycling',
-  triathlon: 'Triathlon',
-};
-
-const GENDER_LABELS: Record<Gender, string> = {
-  male: 'Male',
-  female: 'Female',
-  other: 'Other',
-  prefer_not_to_say: 'Prefer not to say',
-};
-
 const blackButton =
   'py-4 px-8 bg-brut-black text-white text-xs font-semibold tracking-brut-wide uppercase hover:bg-brut-ink transition-colors disabled:opacity-40 disabled:cursor-not-allowed';
 
@@ -45,6 +33,10 @@ const ageInput =
 const TOTAL_STEPS = 4;
 
 export default function OnboardingFlow({ initialName = '' }: Props) {
+  const t = useTranslations('auth.onboarding');
+  const tCommon = useTranslations('common.actions');
+  const tV = useTranslations('common.validation');
+  const tU = useTranslations('common.units');
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -87,14 +79,14 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
       weightKg,
     });
     if (!parsed.success) {
-      setFormError(parsed.error.issues[0]?.message ?? 'Please check your answers.');
+      const code = parsed.error.issues[0]?.message;
+      setFormError(code ? tV(code) : t('default_error'));
       return;
     }
 
     setSubmitting(true);
     setFormError(null);
     const result = await completeOnboarding(parsed.data);
-    // On success the action redirects to the dashboard.
     if (result?.error) {
       setFormError(result.error);
       setSubmitting(false);
@@ -112,14 +104,14 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
       {step === 0 ? (
         <div className="flex flex-col gap-8">
           <h2 className="text-[32px] md:text-[40px] leading-[1.05] font-thin tracking-brut text-brut-black">
-            What&rsquo;s your name?
+            {t('step_name_question')}
           </h2>
           <Input
             id="fullName"
-            label="Full name"
+            label={t('step_name_label')}
             type="text"
             autoComplete="name"
-            placeholder="Your name"
+            placeholder={t('step_name_placeholder')}
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
@@ -130,11 +122,11 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
       {step === 1 ? (
         <div className="flex flex-col gap-8">
           <h2 className="text-[32px] md:text-[40px] leading-[1.05] font-thin tracking-brut text-brut-black">
-            How old are you and what&rsquo;s your gender?
+            {t('step_age_gender_question')}
           </h2>
 
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>Age</span>
+            <span className={subLabel}>{t('step_age_label')}</span>
             <div className="flex items-baseline gap-3">
               <input
                 type="number"
@@ -146,15 +138,15 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
                   const v = e.target.value;
                   setAge(v === '' ? null : Number(v));
                 }}
-                aria-label="Age in years"
+                aria-label={t('step_age_label')}
                 className={ageInput}
               />
-              <span className={subLabel}>years</span>
+              <span className={subLabel}>{tU('years')}</span>
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className={subLabel}>Gender</span>
+            <span className={subLabel}>{t('step_gender_label')}</span>
             <div className="grid grid-cols-2 gap-px bg-brut-line border border-brut-line">
               {GENDERS.map((value) => {
                 const active = gender === value;
@@ -170,7 +162,7 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
                         : 'bg-white text-brut-ink hover:bg-brut-bg-soft'
                     }`}
                   >
-                    {GENDER_LABELS[value]}
+                    {t(`gender.${value}`)}
                   </button>
                 );
               })}
@@ -183,7 +175,7 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
       {step === 2 ? (
         <div className="flex flex-col gap-8">
           <h2 className="text-[32px] md:text-[40px] leading-[1.05] font-thin tracking-brut text-brut-black">
-            What&rsquo;s your primary sport?
+            {t('step_sport_question')}
           </h2>
           <div className="flex flex-col gap-px bg-brut-line border border-brut-line">
             {PRIMARY_SPORTS.map((sport) => {
@@ -200,7 +192,7 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
                       : 'bg-white text-brut-ink hover:bg-brut-bg-soft'
                   }`}
                 >
-                  {SPORT_LABELS[sport]}
+                  {t(`sport.${sport}`)}
                 </button>
               );
             })}
@@ -212,7 +204,7 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
       {step === 3 ? (
         <div className="flex flex-col gap-8">
           <h2 className="text-[32px] md:text-[40px] leading-[1.05] font-thin tracking-brut text-brut-black">
-            What&rsquo;s your body weight?
+            {t('step_weight_question')}
           </h2>
           <Slider
             min={40}
@@ -220,8 +212,8 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
             step={1}
             value={weightKg}
             onChange={setWeightKg}
-            formatValue={(v) => `${v} kg`}
-            ariaLabel="Body weight in kilograms"
+            formatValue={(v) => `${v} ${tU('kg')}`}
+            ariaLabel={t('step_weight_question')}
           />
         </div>
       ) : null}
@@ -240,7 +232,7 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
           disabled={step === 0 || submitting}
           className={`${ghostButton} ${step === 0 ? 'invisible' : ''}`}
         >
-          Back
+          {tCommon('back')}
         </button>
         <button
           type="button"
@@ -250,9 +242,9 @@ export default function OnboardingFlow({ initialName = '' }: Props) {
         >
           {step === TOTAL_STEPS - 1
             ? submitting
-              ? 'Saving…'
-              : 'Finish'
-            : 'Continue'}
+              ? tCommon('saving')
+              : tCommon('finish')
+            : tCommon('continue')}
         </button>
       </div>
     </div>

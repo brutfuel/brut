@@ -4,23 +4,34 @@ import { z } from 'zod';
  * Shared Zod schemas for the auth flows. Used both for client-side
  * validation (React Hook Form resolver) and as the server-side boundary
  * check inside the Server Actions.
+ *
+ * Messages are stable error codes that map 1:1 onto keys under
+ * `common.validation.*` in the locale files. Forms translate via
+ * `useTranslations('common.validation')`; server actions via
+ * `getTranslations('common.validation')`.
  */
 
 export const loginSchema = z.object({
-  email: z.string().min(1, 'Enter your email address').email('Enter a valid email address'),
-  password: z.string().min(1, 'Enter your password'),
+  email: z
+    .string()
+    .min(1, 'email_required')
+    .email('email_invalid'),
+  password: z.string().min(1, 'password_required'),
 });
 
 export type LoginValues = z.infer<typeof loginSchema>;
 
 export const registerSchema = z
   .object({
-    email: z.string().min(1, 'Enter your email address').email('Enter a valid email address'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-    confirmPassword: z.string().min(1, 'Confirm your password'),
+    email: z
+      .string()
+      .min(1, 'email_required')
+      .email('email_invalid'),
+    password: z.string().min(8, 'password_too_short'),
+    confirmPassword: z.string().min(1, 'confirm_password_required'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: 'passwords_no_match',
     path: ['confirmPassword'],
   });
 
@@ -33,18 +44,18 @@ export const GENDERS = ['male', 'female', 'other', 'prefer_not_to_say'] as const
 export type Gender = (typeof GENDERS)[number];
 
 export const onboardingSchema = z.object({
-  fullName: z.string().trim().min(1, 'Enter your name').max(80, 'Name is too long'),
+  fullName: z.string().trim().min(1, 'name_required').max(80, 'name_too_long'),
   age: z
-    .number({ error: 'Enter your age' })
+    .number({ error: 'age_required' })
     .int()
-    .min(14, 'Age must be at least 14')
-    .max(90, 'Age must be 90 or below'),
+    .min(14, 'age_too_low')
+    .max(90, 'age_too_high'),
   gender: z.enum(GENDERS),
   primarySport: z.enum(PRIMARY_SPORTS),
   weightKg: z
-    .number({ error: 'Enter your body weight' })
-    .min(30, 'Weight must be at least 30 kg')
-    .max(200, 'Weight must be below 200 kg'),
+    .number({ error: 'weight_required' })
+    .min(30, 'weight_too_low')
+    .max(200, 'weight_too_high'),
 });
 
 export type OnboardingValues = z.infer<typeof onboardingSchema>;

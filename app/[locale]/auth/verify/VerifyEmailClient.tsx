@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { resendVerificationEmail } from '@/app/[locale]/login/actions';
 
 interface Props {
@@ -11,6 +12,9 @@ const ghostButton =
   'inline-flex items-center justify-center px-5 py-3 border border-brut-black text-brut-black text-[10px] font-semibold tracking-brut-wide uppercase hover:bg-brut-black hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed';
 
 export default function VerifyEmailClient({ initialEmail }: Props) {
+  const t = useTranslations('auth.verify_email');
+  const tLogin = useTranslations('auth.login');
+  const tCommon = useTranslations('common.actions');
   const [email, setEmail] = useState(initialEmail);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +23,7 @@ export default function VerifyEmailClient({ initialEmail }: Props) {
   function resend() {
     setError(null);
     if (!email.trim()) {
-      setError('Enter your email to resend.');
+      setError(t('missing_email_error'));
       return;
     }
     startTransition(async () => {
@@ -36,7 +40,7 @@ export default function VerifyEmailClient({ initialEmail }: Props) {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-          Email
+          {t('email_label')}
         </span>
         <input
           type="email"
@@ -46,7 +50,7 @@ export default function VerifyEmailClient({ initialEmail }: Props) {
             setSent(false);
             setError(null);
           }}
-          placeholder="you@example.com"
+          placeholder={tLogin('email_placeholder')}
           className="w-full bg-transparent border-b border-brut-line py-2 text-base font-normal text-brut-black placeholder:text-brut-muted focus:outline-none focus:border-brut-black transition-colors"
         />
       </div>
@@ -57,13 +61,12 @@ export default function VerifyEmailClient({ initialEmail }: Props) {
         disabled={pending}
         className={ghostButton}
       >
-        {pending ? 'Sending…' : 'Resend verification email'}
+        {pending ? tCommon('sending') : t('resend')}
       </button>
 
       {sent ? (
         <p className="text-sm font-normal text-brut-ink leading-relaxed border-l-2 border-brut-black pl-3">
-          If an account exists for that email, a fresh verification link is on
-          its way.
+          {t('success')}
         </p>
       ) : null}
       {error ? (

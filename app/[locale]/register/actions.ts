@@ -2,7 +2,7 @@
 
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { sendWelcomeEmail } from '@/lib/email/send';
 import {
@@ -42,7 +42,9 @@ export async function signUpWithEmail(
 ): Promise<ActionResult | void> {
   const parsed = registerSchema.safeParse(values);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? 'Invalid details.' };
+    const code = parsed.error.issues[0]?.message ?? 'email_invalid';
+    const tV = await getTranslations('common.validation');
+    return { error: tV(code) };
   }
 
   const supabase = await createClient();
@@ -74,7 +76,9 @@ export async function completeOnboarding(
 ): Promise<ActionResult | void> {
   const parsed = onboardingSchema.safeParse(values);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? 'Invalid details.' };
+    const code = parsed.error.issues[0]?.message ?? 'name_required';
+    const tV = await getTranslations('common.validation');
+    return { error: tV(code) };
   }
 
   const supabase = await createClient();
@@ -104,7 +108,8 @@ export async function completeOnboarding(
 
   if (error) {
     console.error('completeOnboarding profile update failed', error);
-    return { error: 'Could not save your profile. Try again.' };
+    const tO = await getTranslations('auth.onboarding');
+    return { error: tO('save_error') };
   }
 
   // Fire the welcome email once, after the profile is in place. We do

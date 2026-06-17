@@ -249,14 +249,18 @@
       "title": "Iniciar sesión",
       "redirect_note": "Inicia sesión para guardar tu plan.",
       "error_auth": "No se ha podido iniciar sesión. Vuelve a intentarlo.",
+      "email_label": "Correo electrónico",
       "email_placeholder": "tu@ejemplo.com",
+      "password_label": "Contraseña",
       "password_placeholder": "••••••••",
       "incorrect": "Correo o contraseña incorrectos.",
-      "google_redirecting": "Redirigiendo…"
+      "google_redirecting": "Redirigiendo…",
+      "google_failed": "No se ha podido iniciar sesión con Google. Vuelve a intentarlo."
     },
     "register": {
       "title": "Crea tu cuenta",
       "password_hint_placeholder": "Como mínimo 8 caracteres",
+      "confirm_password_label": "Confirma la contraseña",
       "confirm_password_placeholder": "Vuelve a escribir la contraseña"
     },
     "onboarding": {

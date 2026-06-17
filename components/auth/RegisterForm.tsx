@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/ui/Input';
@@ -14,6 +15,11 @@ const blackButton =
 const fieldError = 'mt-2 text-xs font-medium text-brut-ink';
 
 export default function RegisterForm() {
+  const tAuth = useTranslations('common.auth_actions');
+  const tCommon = useTranslations('common.actions');
+  const tLogin = useTranslations('auth.login');
+  const tReg = useTranslations('auth.register');
+  const tV = useTranslations('common.validation');
   const [formError, setFormError] = useState<string | null>(null);
   const [googlePending, startGoogle] = useTransition();
 
@@ -29,7 +35,6 @@ export default function RegisterForm() {
   async function onSubmit(values: RegisterValues) {
     setFormError(null);
     const result = await signUpWithEmail(values);
-    // On success the action redirects to onboarding; only errors return.
     if (result?.error) {
       setFormError(result.error);
     }
@@ -53,56 +58,61 @@ export default function RegisterForm() {
         disabled={googlePending || isSubmitting}
         className={blackButton}
       >
-        {googlePending ? 'Redirecting…' : 'Continue with Google'}
+        {googlePending ? tCommon('redirecting') : tAuth('continue_with_google')}
       </button>
 
-      {/* Editorial divider */}
       <div className="flex items-center gap-4">
         <span className="h-px flex-1 bg-brut-line" />
         <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-          or
+          {tAuth('or')}
         </span>
         <span className="h-px flex-1 bg-brut-line" />
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-6"
+        noValidate
+      >
         <div>
           <Input
             id="email"
-            label="Email"
+            label={tLogin('email_label')}
             type="email"
             autoComplete="email"
-            placeholder="you@example.com"
+            placeholder={tLogin('email_placeholder')}
             {...register('email')}
           />
-          {errors.email ? <p className={fieldError}>{errors.email.message}</p> : null}
+          {errors.email?.message ? (
+            <p className={fieldError}>{tV(errors.email.message)}</p>
+          ) : null}
         </div>
 
         <div>
           <Input
             id="password"
-            label="Password"
+            label={tLogin('password_label')}
             type="password"
             autoComplete="new-password"
-            placeholder="At least 8 characters"
+            placeholder={tReg('password_hint_placeholder')}
             {...register('password')}
           />
-          {errors.password ? (
-            <p className={fieldError}>{errors.password.message}</p>
+          {errors.password?.message ? (
+            <p className={fieldError}>{tV(errors.password.message)}</p>
           ) : null}
         </div>
 
         <div>
           <Input
             id="confirmPassword"
-            label="Confirm password"
+            label={tReg('confirm_password_label')}
             type="password"
             autoComplete="new-password"
-            placeholder="Re-enter your password"
+            placeholder={tReg('confirm_password_placeholder')}
             {...register('confirmPassword')}
           />
-          {errors.confirmPassword ? (
-            <p className={fieldError}>{errors.confirmPassword.message}</p>
+          {errors.confirmPassword?.message ? (
+            <p className={fieldError}>{tV(errors.confirmPassword.message)}</p>
           ) : null}
         </div>
 
@@ -112,8 +122,12 @@ export default function RegisterForm() {
           </p>
         ) : null}
 
-        <button type="submit" disabled={isSubmitting || googlePending} className={blackButton}>
-          {isSubmitting ? 'Creating account…' : 'Sign up'}
+        <button
+          type="submit"
+          disabled={isSubmitting || googlePending}
+          className={blackButton}
+        >
+          {isSubmitting ? tAuth('creating_account') : tAuth('sign_up')}
         </button>
       </form>
     </div>

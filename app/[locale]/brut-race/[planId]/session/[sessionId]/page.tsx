@@ -122,7 +122,8 @@ export default async function SessionDetailPage({ params }: Props) {
       sodiumDiet: (profile?.sodium_diet as SodiumDiet | null) ?? 'normal',
       knownSweatRate: profile?.known_sweat_rate_lh ?? null,
     };
-    const computed = buildPlan(sessionInput);
+    const tCalc = await getTranslations('calc');
+    const computed = buildPlan(sessionInput, tCalc);
     pre = pre ?? computed.preSession;
     during =
       during ?? {

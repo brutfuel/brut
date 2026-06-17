@@ -58,9 +58,10 @@ export default function BrutTrainClient({ initialInput }: Props) {
   );
   const resultRef = useRef<HTMLElement>(null);
 
+  const tCalc = useTranslations('calc');
   const plan = useMemo(
-    () => (committedInput ? buildPlan(committedInput) : null),
-    [committedInput],
+    () => (committedInput ? buildPlan(committedInput, tCalc) : null),
+    [committedInput, tCalc],
   );
 
   const hasResult = committedInput !== null;

@@ -1,3 +1,4 @@
+import { englishCalc, type CalcTranslator } from './translator';
 import type {
   SessionInput,
   SessionType,
@@ -85,7 +86,6 @@ export interface SweatMetrics {
 }
 
 export function calculateSweat(input: SessionInput): SweatMetrics {
-  // A user-measured sweat rate overrides the physiological formula.
   const raw =
     input.knownSweatRate !== null && input.knownSweatRate > 0
       ? input.knownSweatRate
@@ -98,12 +98,10 @@ export function calculateSweat(input: SessionInput): SweatMetrics {
         elevationFactor(input) *
         acclimationFactor(input.heatAcclimated);
 
-  // Physiological clamp — Baker 2017 reports extremes between 0.3 and 3.5 L/h.
   const sweatRate = Math.min(3.5, Math.max(0.3, raw));
   const totalLoss = sweatRate * input.duration;
   const dehydrationPct = (totalLoss / input.weight) * 100;
 
-  // Sodium concentration in sweat (mg/L). Acclimated athletes lose less Na.
   const sodiumBase = input.heatAcclimated ? 850 : 1150;
   const dietMod = { low: 0.85, normal: 1.0, high: 1.15 }[input.sodiumDiet];
   const sodiumConcentration = sodiumBase * dietMod;
@@ -121,60 +119,41 @@ export function calculateSweat(input: SessionInput): SweatMetrics {
 // Discrete bucketing of session-wide replacement need.
 export function calculateReplacementLevel(
   input: SessionInput,
-  metrics: SweatMetrics
+  metrics: SweatMetrics,
+  t: CalcTranslator = englishCalc,
 ): { level: ReplacementLevel; message: string; score: number } {
   let score = 0;
 
-  // duration band
   if (input.duration < 1) score += 0;
   else if (input.duration < 1.5) score += 1;
   else if (input.duration < 3) score += 2;
   else score += 3;
 
-  // dehydration band (% body weight)
   if (metrics.dehydrationPct < 1) score += 0;
   else if (metrics.dehydrationPct < 2) score += 1;
   else if (metrics.dehydrationPct < 4) score += 2;
   else score += 3;
 
-  // sodium band
   if (metrics.sodiumTotalMg < 500) score += 0;
   else if (metrics.sodiumTotalMg < 1000) score += 1;
   else if (metrics.sodiumTotalMg < 2000) score += 2;
   else score += 3;
 
-  // temperature bonus
   if (input.temperature > 30) score += 2;
   else if (input.temperature > 25) score += 1;
 
-  if (score <= 2) {
-    return {
-      score,
-      level: 'not-necessary',
-      message:
-        'Body reserves are sufficient for this session. Drink to thirst, no supplementation needed.',
-    };
-  }
-  if (score <= 5) {
-    return {
-      score,
-      level: 'optional',
-      message:
-        'Light hydration improves comfort. You can finish without electrolytes if you’ve eaten well today.',
-    };
-  }
-  if (score <= 8) {
-    return {
-      score,
-      level: 'recommended',
-      message:
-        'Significant losses expected. Supplementing maintains performance and prevents fatigue.',
-    };
-  }
+  const level: ReplacementLevel =
+    score <= 2
+      ? 'not-necessary'
+      : score <= 5
+        ? 'optional'
+        : score <= 8
+          ? 'recommended'
+          : 'essential';
+
   return {
     score,
-    level: 'essential',
-    message:
-      'Critical losses ahead. Without proper hydration and sodium, performance and health are at real risk.',
+    level,
+    message: t(`replacement_messages.${level}`),
   };
 }

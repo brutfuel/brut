@@ -1,3 +1,4 @@
+import { englishCalc, type CalcTranslator } from './translator';
 import type { PaceInfo, SessionInput, SessionPlan } from './types';
 import { calculateReplacementLevel, calculateSweat } from './sweat';
 import {
@@ -8,7 +9,7 @@ import {
 } from './nutrition';
 import { buildSessionStructure } from './session-structure';
 
-function calculatePace(input: SessionInput): PaceInfo | null {
+function calculatePace(input: SessionInput, t: CalcTranslator): PaceInfo | null {
   if (!input.distance || input.distance <= 0 || input.duration <= 0) {
     return null;
   }
@@ -17,36 +18,39 @@ function calculatePace(input: SessionInput): PaceInfo | null {
     const whole = Math.floor(minPerKm);
     const sec = Math.round((minPerKm - whole) * 60);
     return {
-      label: 'Estimated pace',
+      label: t('pace_estimated'),
       value: `${whole}:${String(sec).padStart(2, '0')} / km`,
     };
   }
   const speed = input.distance / input.duration;
-  return { label: 'Average speed', value: `${speed.toFixed(1)} km/h` };
+  return {
+    label: t('pace_average'),
+    value: `${speed.toFixed(1)} km/h`,
+  };
 }
 
 // Compose every sub-calculation into a single deterministic plan.
-// Pure function — same input always produces the same plan.
-export function buildPlan(input: SessionInput): SessionPlan {
+// The translator argument is optional — when omitted the generators
+// fall back to the English copy bundled in `locales/en.json`.
+export function buildPlan(
+  input: SessionInput,
+  t: CalcTranslator = englishCalc,
+): SessionPlan {
   const metrics = calculateSweat(input);
-  const replacement = calculateReplacementLevel(input, metrics);
+  const replacement = calculateReplacementLevel(input, metrics, t);
 
   const carbsH = carbsPerHour(input);
   const schedule = buildSchedule(input, metrics);
 
-  // Totals computed from the schedule itself so the visible plan and the
-  // headline numbers always agree.
   const totals = schedule.reduce(
     (acc, row) => ({
       capsules: acc.capsules + row.capsules,
       waterMl: acc.waterMl + row.waterMl,
       carbsG: acc.carbsG + row.carbsG,
     }),
-    { capsules: 0, waterMl: 0, carbsG: 0 }
+    { capsules: 0, waterMl: 0, carbsG: 0 },
   );
 
-  // Capsule rate displayed in the header is derived from the actual
-  // schedule so it always matches the per-row counts.
   const capsH =
     input.duration > 0
       ? Math.round(totals.capsules / input.duration)
@@ -58,14 +62,14 @@ export function buildPlan(input: SessionInput): SessionPlan {
     dehydrationPct: metrics.dehydrationPct,
     sodiumConcentration: metrics.sodiumConcentration,
     sodiumTotalMg: metrics.sodiumTotalMg,
-    pace: calculatePace(input),
+    pace: calculatePace(input, t),
 
     replacementLevel: replacement.level,
     replacementMessage: replacement.message,
 
-    structure: buildSessionStructure(input),
-    preSession: preSession(input.lastMeal, input.timeOfDay),
-    postSession: postSession(input, metrics),
+    structure: buildSessionStructure(input, t),
+    preSession: preSession(input.lastMeal, input.timeOfDay, t),
+    postSession: postSession(input, metrics, t),
 
     carbsPerHour: carbsH,
     capsulesPerHour: capsH,

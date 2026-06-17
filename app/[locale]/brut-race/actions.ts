@@ -76,6 +76,7 @@ async function generateAndPersistProgramme(
   raceDate: string,
   tE: (key: string) => string,
 ): Promise<ActionResult> {
+  const tCalc = await getTranslations('calc');
   const { phases, weeks } = generateRacePlan(input);
   const nutritionPhases = buildNutritionPhases(input.weightKg, phases);
 
@@ -149,7 +150,7 @@ async function generateAndPersistProgramme(
         sodiumDiet: 'normal',
         knownSweatRate: null,
       };
-      const plan = buildPlan(sessionInput);
+      const plan = buildPlan(sessionInput, tCalc);
 
       const date = new Date(week1Monday);
       date.setDate(

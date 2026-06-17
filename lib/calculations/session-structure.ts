@@ -1,12 +1,14 @@
+import { englishCalc, type CalcTranslator } from './translator';
 import type {
   SessionInput,
   SessionStructure,
   SessionType,
 } from './types';
 
-// Each builder receives the full session duration in minutes and returns
-// a three-block plan (warm-up, main set, cool-down).
-type StructureBuilder = (totalMinutes: number) => SessionStructure;
+type StructureBuilder = (
+  totalMinutes: number,
+  t: CalcTranslator,
+) => SessionStructure;
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -23,242 +25,212 @@ function approxRepCount(mainMinutes: number, perRepMin: number): number {
 
 const BUILDERS: Record<SessionType, StructureBuilder> = {
   // ---------- running ----------
-  'easy-run': (d) => {
+  'easy-run': (d, t) => {
     const wu = 10;
     const cd = 10;
     const main = Math.max(10, d - wu - cd);
     return {
-      warmup: block(wu, 'Very easy jog in Z1, build into low Z2.'),
-      mainSet: block(
-        main,
-        'Steady aerobic running in Z2 — conversational pace, smooth breathing.'
-      ),
-      cooldown: block(cd, 'Easy jog, then a few minutes of mobility work.'),
+      warmup: block(wu, t('structure.easy-run.warmup')),
+      mainSet: block(main, t('structure.easy-run.main')),
+      cooldown: block(cd, t('structure.easy-run.cooldown')),
     };
   },
-  'long-run': (d) => {
+  'long-run': (d, t) => {
     const wu = 10;
     const cd = 10;
     const main = Math.max(20, d - wu - cd);
     return {
-      warmup: block(wu, 'Easy build from walking to low Z2 jogging.'),
-      mainSet: block(
-        main,
-        'Steady aerobic effort in mid Z2. Hold form, fuel and hydrate from the start.'
-      ),
-      cooldown: block(cd, 'Easy jog and walk to bring HR down.'),
+      warmup: block(wu, t('structure.long-run.warmup')),
+      mainSet: block(main, t('structure.long-run.main')),
+      cooldown: block(cd, t('structure.long-run.cooldown')),
     };
   },
-  tempo: (d) => {
+  tempo: (d, t) => {
     const wu = 15;
     const cd = 10;
     const main = Math.max(15, d - wu - cd);
     return {
-      warmup: block(wu, 'Easy jog Z1 to Z2, finish with 4 × 20 s strides.'),
-      mainSet: block(
-        main,
-        `${main} min continuous tempo at Z3 to low Z4 — comfortably hard, controlled breathing.`
-      ),
-      cooldown: block(cd, 'Easy jog Z1 then walk.'),
+      warmup: block(wu, t('structure.tempo.warmup')),
+      mainSet: block(main, t('structure.tempo.main', { minutes: main })),
+      cooldown: block(cd, t('structure.tempo.cooldown')),
     };
   },
-  intervals: (d) => {
+  intervals: (d, t) => {
     const wu = 15;
     const cd = 10;
     const main = Math.max(15, d - wu - cd);
     const reps = approxRepCount(main, 5);
     return {
-      warmup: block(wu, 'Z1 to Z2 jog, then 4 × 20 s strides at goal pace.'),
-      mainSet: block(
-        main,
-        `${reps} × 800 m at Z4 to Z5 with 2–3 min easy jog recovery between reps.`
-      ),
-      cooldown: block(cd, 'Easy jog Z1 then walk.'),
+      warmup: block(wu, t('structure.intervals.warmup')),
+      mainSet: block(main, t('structure.intervals.main', { reps })),
+      cooldown: block(cd, t('structure.intervals.cooldown')),
     };
   },
-  'hill-repeats': (d) => {
+  'hill-repeats': (d, t) => {
     const wu = 15;
     const cd = 10;
     const main = Math.max(15, d - wu - cd);
     const reps = approxRepCount(main, 4);
     return {
-      warmup: block(wu, 'Easy jog Z2 on flat ground, finish near the climb.'),
-      mainSet: block(
-        main,
-        `${reps} × 60–90 s uphill at Z4 to Z5, strong arm drive. Jog down for recovery.`
-      ),
-      cooldown: block(cd, 'Easy jog on flat ground, walk to finish.'),
+      warmup: block(wu, t('structure.hill-repeats.warmup')),
+      mainSet: block(main, t('structure.hill-repeats.main', { reps })),
+      cooldown: block(cd, t('structure.hill-repeats.cooldown')),
     };
   },
-  recovery: (d) => {
+  recovery: (d, t) => {
     const wu = 5;
     const cd = 5;
     const main = Math.max(10, d - wu - cd);
     return {
-      warmup: block(wu, 'Walk into a very gentle jog.'),
-      mainSet: block(main, 'Easy Z1 jogging — short and conversational.'),
-      cooldown: block(cd, 'Walk, mobility work, foam roll.'),
+      warmup: block(wu, t('structure.recovery.warmup')),
+      mainSet: block(main, t('structure.recovery.main')),
+      cooldown: block(cd, t('structure.recovery.cooldown')),
     };
   },
-  'race-simulation': (d) => {
+  'race-simulation': (d, t) => {
     const wu = 20;
     const cd = 15;
     const main = Math.max(20, d - wu - cd);
     return {
-      warmup: block(wu, 'Z1 to Z2 jog with 6 × 30 s race-pace strides.'),
+      warmup: block(wu, t('structure.race-simulation.warmup')),
       mainSet: block(
         main,
-        `${main} min continuous at goal race pace. Rehearse fuel and hydration timings.`
+        t('structure.race-simulation.main', { minutes: main }),
       ),
-      cooldown: block(cd, 'Easy jog and walk.'),
+      cooldown: block(cd, t('structure.race-simulation.cooldown')),
     };
   },
 
   // ---------- cycling ----------
-  endurance: (d) => {
+  endurance: (d, t) => {
     const wu = 10;
     const cd = 10;
     const main = Math.max(20, d - wu - cd);
     return {
-      warmup: block(wu, 'Spin in Z1 to Z2, light cadence build.'),
-      mainSet: block(main, 'Steady Z2 — cadence 85–95 rpm, controlled effort.'),
-      cooldown: block(cd, 'Easy spin Z1.'),
+      warmup: block(wu, t('structure.endurance.warmup')),
+      mainSet: block(main, t('structure.endurance.main')),
+      cooldown: block(cd, t('structure.endurance.cooldown')),
     };
   },
-  'long-ride': (d) => {
+  'long-ride': (d, t) => {
     const wu = 15;
     const cd = 10;
     const main = Math.max(30, d - wu - cd);
     return {
-      warmup: block(wu, 'Z1 to Z2 spin, smooth into ride pace.'),
-      mainSet: block(
-        main,
-        'Mid Z2 endurance. Fuel and hydrate from the first hour.'
-      ),
-      cooldown: block(cd, 'Easy spin Z1.'),
+      warmup: block(wu, t('structure.long-ride.warmup')),
+      mainSet: block(main, t('structure.long-ride.main')),
+      cooldown: block(cd, t('structure.long-ride.cooldown')),
     };
   },
-  'sweet-spot': (d) => {
+  'sweet-spot': (d, t) => {
     const wu = 15;
     const cd = 10;
     const main = Math.max(15, d - wu - cd);
     const reps = clamp(approxRepCount(main, 20), 2, 4);
     return {
-      warmup: block(wu, 'Z1 to Z2 spin, 2 × 1 min openers near threshold.'),
-      mainSet: block(
-        main,
-        `${reps} × 20 min at 88–94% FTP with 5 min Z1 recovery between efforts.`
-      ),
-      cooldown: block(cd, 'Easy spin Z1.'),
+      warmup: block(wu, t('structure.sweet-spot.warmup')),
+      mainSet: block(main, t('structure.sweet-spot.main', { reps })),
+      cooldown: block(cd, t('structure.sweet-spot.cooldown')),
     };
   },
-  threshold: (d) => {
+  threshold: (d, t) => {
     const wu = 20;
     const cd = 15;
     const main = Math.max(15, d - wu - cd);
     const reps = clamp(approxRepCount(main, 18), 2, 4);
     return {
-      warmup: block(wu, 'Z1 to Z2 spin, 3 × 1 min openers approaching FTP.'),
-      mainSet: block(
-        main,
-        `${reps} × 15 min at 95–105% FTP with 5 min Z1 recovery between efforts.`
-      ),
-      cooldown: block(cd, 'Easy spin Z1.'),
+      warmup: block(wu, t('structure.threshold.warmup')),
+      mainSet: block(main, t('structure.threshold.main', { reps })),
+      cooldown: block(cd, t('structure.threshold.cooldown')),
     };
   },
-  'hill-repeats-bike': (d) => {
+  'hill-repeats-bike': (d, t) => {
     const wu = 15;
     const cd = 10;
     const main = Math.max(15, d - wu - cd);
     const reps = approxRepCount(main, 7);
     return {
-      warmup: block(wu, 'Z1 to Z2 spin to the climb base.'),
-      mainSet: block(
-        main,
-        `${reps} × 5 min seated climb at threshold, descend or spin easy for recovery.`
-      ),
-      cooldown: block(cd, 'Easy spin Z1 back home.'),
+      warmup: block(wu, t('structure.hill-repeats-bike.warmup')),
+      mainSet: block(main, t('structure.hill-repeats-bike.main', { reps })),
+      cooldown: block(cd, t('structure.hill-repeats-bike.cooldown')),
     };
   },
-  'recovery-bike': (d) => {
+  'recovery-bike': (d, t) => {
     const wu = 5;
     const cd = 5;
     const main = Math.max(10, d - wu - cd);
     return {
-      warmup: block(wu, 'Easy spin Z1, high cadence.'),
-      mainSet: block(main, 'Z1 only — flat terrain, light gears, 90+ rpm.'),
-      cooldown: block(cd, 'Easy spin Z1, off-bike mobility.'),
+      warmup: block(wu, t('structure.recovery-bike.warmup')),
+      mainSet: block(main, t('structure.recovery-bike.main')),
+      cooldown: block(cd, t('structure.recovery-bike.cooldown')),
     };
   },
-  'race-simulation-bike': (d) => {
+  'race-simulation-bike': (d, t) => {
     const wu = 20;
     const cd = 10;
     const main = Math.max(20, d - wu - cd);
     return {
-      warmup: block(wu, 'Z1 to Z2 spin with 3 × 1 min openers at goal effort.'),
+      warmup: block(wu, t('structure.race-simulation-bike.warmup')),
       mainSet: block(
         main,
-        `${main} min at goal race power. Rehearse fuelling and bottle hand-offs.`
+        t('structure.race-simulation-bike.main', { minutes: main }),
       ),
-      cooldown: block(cd, 'Easy spin Z1.'),
+      cooldown: block(cd, t('structure.race-simulation-bike.cooldown')),
     };
   },
 
   // ---------- triathlon ----------
-  swim: (d) => {
+  swim: (d, t) => {
     const wu = 10;
     const cd = 5;
     const main = Math.max(15, d - wu - cd);
     return {
-      warmup: block(wu, '400 m easy mixed strokes, 4 × 50 m build.'),
-      mainSet: block(
-        main,
-        `${main} min main set — pull buoy or open water, sustained moderate effort with form focus.`
-      ),
-      cooldown: block(cd, '200 m easy choice — stretch shoulders.'),
+      warmup: block(wu, t('structure.swim.warmup')),
+      mainSet: block(main, t('structure.swim.main', { minutes: main })),
+      cooldown: block(cd, t('structure.swim.cooldown')),
     };
   },
-  brick: (d) => {
+  brick: (d, t) => {
     const wu = 5;
     const ride = Math.max(20, Math.round((d - wu - 5) * 0.65));
     const run = Math.max(15, d - wu - 5 - ride);
     return {
-      warmup: block(wu, 'Easy spin Z1 on the trainer or flat road.'),
+      warmup: block(wu, t('structure.brick.warmup')),
       mainSet: block(
         ride + run,
-        `${ride} min bike at race effort, transition under 90 s, then ${run} min run at goal pace.`
+        t('structure.brick.main', { ride, run }),
       ),
-      cooldown: block(5, 'Easy walk and mobility.'),
+      cooldown: block(5, t('structure.brick.cooldown')),
     };
   },
-  'long-combined': (d) => {
+  'long-combined': (d, t) => {
     const wu = 10;
     const cd = 10;
     const main = Math.max(30, d - wu - cd);
     return {
-      warmup: block(wu, 'Easy aerobic warm-up in chosen discipline.'),
-      mainSet: block(
-        main,
-        'Continuous Z2 across two disciplines — fuel and hydrate from the first hour.'
-      ),
-      cooldown: block(cd, 'Easy spin or jog and mobility.'),
+      warmup: block(wu, t('structure.long-combined.warmup')),
+      mainSet: block(main, t('structure.long-combined.main')),
+      cooldown: block(cd, t('structure.long-combined.cooldown')),
     };
   },
-  'recovery-tri': (d) => {
+  'recovery-tri': (d, t) => {
     const wu = 5;
     const cd = 5;
     const main = Math.max(10, d - wu - cd);
     return {
-      warmup: block(wu, 'Walk or very easy spin.'),
-      mainSet: block(main, 'Light Z1 movement — pick the discipline that feels best.'),
-      cooldown: block(cd, 'Mobility, foam roll, stretch.'),
+      warmup: block(wu, t('structure.recovery-tri.warmup')),
+      mainSet: block(main, t('structure.recovery-tri.main')),
+      cooldown: block(cd, t('structure.recovery-tri.cooldown')),
     };
   },
 };
 
-export function buildSessionStructure(input: SessionInput): SessionStructure {
+export function buildSessionStructure(
+  input: SessionInput,
+  t: CalcTranslator = englishCalc,
+): SessionStructure {
   const totalMinutes = Math.round(input.duration * 60);
-  return BUILDERS[input.sessionType](totalMinutes);
+  return BUILDERS[input.sessionType](totalMinutes, t);
 }
 
 // Session-type catalogue per sport, exposed for the form UI.

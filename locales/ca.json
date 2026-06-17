@@ -1065,5 +1065,122 @@
     "about_description": "Nutrició esportiva editorial, dissenyada per a atletes de resistència.",
     "contact_title": "Contacte — BRUT",
     "contact_description": "Posa't en contacte amb l'equip de BRUT."
+  },
+  "calc": {
+    "pace_estimated": "Ritme estimat",
+    "pace_average": "Velocitat mitjana",
+    "replacement_messages": {
+      "not-necessary": "Les reserves del cos són suficients per a aquesta sessió. Beu segons la set, no cal suplementació.",
+      "optional": "Una hidratació lleugera millora el confort. Pots acabar sense electròlits si has menjat bé avui.",
+      "recommended": "S'esperen pèrdues significatives. Suplementar manté el rendiment i prevé la fatiga.",
+      "essential": "Pèrdues crítiques a la vista. Sense una hidratació i sodi adequats, el rendiment i la salut estan en risc real."
+    },
+    "pre_session": {
+      "food_under_1h": "Evita un àpat copiós previ. 30 g de carbohidrats ràpids (plàtan o gel) amb 200 ml d'aigua són suficients.",
+      "food_1_2h": "Snack lleuger: un plàtan amb un grapat de dàtils, o una llesca de pa amb mel.",
+      "food_2_4h": "Àpat ric en carbohidrats 2–3 h abans: civada amb plàtan i mel, o pasta amb una salsa lleugera.",
+      "food_over_4h_default": "Cal un àpat substancial. Apunta a 60–90 g de carbohidrats 3 h abans, o 30–50 g de carbohidrats ràpids 30–60 min abans.",
+      "food_over_4h_early_morning": "En dejú o inici matiner — menja 30–60 min abans amb 30–50 g de carbohidrats ràpids (torrades, plàtan, farinetes de civada).",
+      "hydration": "Afegeix 300–500 ml d'aigua amb una mica de sal 60 min abans de la sessió."
+    },
+    "post_session": {
+      "protein_grams": "20–30 g",
+      "carbs_grams": "{low}–{high} g (0,8–1,2 g per kg)",
+      "water_replacement": "{ml} ml (150% del líquid perdut) en 1 h",
+      "water_minimum": "500–750 ml durant la primera hora",
+      "example_meal": "Batut: 200 ml de llet semidesnatada, 1 plàtan, 30 g de whey, 50 g de civada, 1 cullerada de mel, una mica de sal."
+    },
+    "structure": {
+      "easy-run": {
+        "warmup": "Trot molt suau a Z1, construint cap a Z2 baix.",
+        "main": "Carrera aeròbica constant a Z2 — ritme conversacional, respiració fluida.",
+        "cooldown": "Trot suau i uns minuts de mobilitat."
+      },
+      "long-run": {
+        "warmup": "Transició suau de caminar a trotar a Z2 baix.",
+        "main": "Esforç aeròbic constant a Z2 mitjà. Mantén la tècnica, alimenta't i hidrata't des de l'inici.",
+        "cooldown": "Trot suau i caminar per baixar les pulsacions."
+      },
+      "tempo": {
+        "warmup": "Trot suau Z1 a Z2, acaba amb 4 × 20 s progressions.",
+        "main": "{minutes} min de tempo continu a Z3 fins a Z4 baix — còmode-dur, respiració controlada.",
+        "cooldown": "Trot suau Z1, després camina."
+      },
+      "intervals": {
+        "warmup": "Trot Z1 a Z2, després 4 × 20 s progressions a ritme objectiu.",
+        "main": "{reps} × 800 m a Z4 fins a Z5 amb 2–3 min de trot suau de recuperació entre repeticions.",
+        "cooldown": "Trot suau Z1, després camina."
+      },
+      "hill-repeats": {
+        "warmup": "Trot suau Z2 en terreny pla, acaba prop de la pujada.",
+        "main": "{reps} × 60–90 s pujant a Z4 fins a Z5, braços actius. Baixa trotant per recuperar.",
+        "cooldown": "Trot suau en pla, acaba caminant."
+      },
+      "recovery": {
+        "warmup": "Camina i passa a un trot molt suau.",
+        "main": "Trot suau a Z1 — curt i conversacional.",
+        "cooldown": "Camina, mobilitat, foam roll."
+      },
+      "race-simulation": {
+        "warmup": "Trot Z1 a Z2 amb 6 × 30 s progressions a ritme de cursa.",
+        "main": "{minutes} min continus a ritme objectiu de cursa. Assaja els temps de nutrició i hidratació.",
+        "cooldown": "Trot suau i camina."
+      },
+      "endurance": {
+        "warmup": "Roda a Z1 fins a Z2, construeix la cadència suaument.",
+        "main": "Z2 constant — cadència 85–95 rpm, esforç controlat.",
+        "cooldown": "Roda suau a Z1."
+      },
+      "long-ride": {
+        "warmup": "Z1 a Z2 rodant suau, entra al ritme de sortida.",
+        "main": "Endurance a Z2 mitjà. Alimenta't i hidrata't des de la primera hora.",
+        "cooldown": "Roda suau a Z1."
+      },
+      "sweet-spot": {
+        "warmup": "Z1 a Z2 rodant, 2 × 1 min activadors prop del llindar.",
+        "main": "{reps} × 20 min al 88–94% de l'FTP amb 5 min de recuperació Z1 entre esforços.",
+        "cooldown": "Roda suau a Z1."
+      },
+      "threshold": {
+        "warmup": "Z1 a Z2 rodant, 3 × 1 min activadors apropant-se a l'FTP.",
+        "main": "{reps} × 15 min al 95–105% de l'FTP amb 5 min de recuperació Z1 entre esforços.",
+        "cooldown": "Roda suau a Z1."
+      },
+      "hill-repeats-bike": {
+        "warmup": "Z1 a Z2 rodant fins al peu de la pujada.",
+        "main": "{reps} × 5 min pujada asseguda al llindar, baixa o roda suau per recuperar.",
+        "cooldown": "Z1 suau cap a casa."
+      },
+      "recovery-bike": {
+        "warmup": "Roda suau a Z1, cadència alta.",
+        "main": "Només Z1 — terreny pla, marxes lleugeres, 90+ rpm.",
+        "cooldown": "Z1 suau, mobilitat fora de la bici."
+      },
+      "race-simulation-bike": {
+        "warmup": "Z1 a Z2 rodant amb 3 × 1 min activadors a esforç objectiu.",
+        "main": "{minutes} min a la potència objectiu de cursa. Assaja la nutrició i el canvi de bidons.",
+        "cooldown": "Roda suau a Z1."
+      },
+      "swim": {
+        "warmup": "400 m suaus amb estils variats, 4 × 50 m progressius.",
+        "main": "{minutes} min de sèrie principal — pull buoy o aigües obertes, esforç moderat sostingut amb focus en la tècnica.",
+        "cooldown": "200 m suaus a elecció — estira espatlles."
+      },
+      "brick": {
+        "warmup": "Z1 suau al rodet o en pla.",
+        "main": "{ride} min de bici a esforç de cursa, transició en menys de 90 s, després {run} min de carrera a ritme objectiu.",
+        "cooldown": "Camina suau i mobilitat."
+      },
+      "long-combined": {
+        "warmup": "Escalfament aeròbic suau en la disciplina escollida.",
+        "main": "Z2 continu en dues disciplines — alimenta't i hidrata't des de la primera hora.",
+        "cooldown": "Pedalada o trot suau i mobilitat."
+      },
+      "recovery-tri": {
+        "warmup": "Camina o pedala molt suau.",
+        "main": "Moviment lleuger a Z1 — tria la disciplina que et vagi millor.",
+        "cooldown": "Mobilitat, foam roll, estirar."
+      }
+    }
   }
 }

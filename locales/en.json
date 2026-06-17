@@ -1065,5 +1065,122 @@
     "about_description": "Editorial sports nutrition, built for endurance athletes.",
     "contact_title": "Contact — BRUT",
     "contact_description": "Get in touch with the BRUT team."
+  },
+  "calc": {
+    "pace_estimated": "Estimated pace",
+    "pace_average": "Average speed",
+    "replacement_messages": {
+      "not-necessary": "Body reserves are sufficient for this session. Drink to thirst, no supplementation needed.",
+      "optional": "Light hydration improves comfort. You can finish without electrolytes if you’ve eaten well today.",
+      "recommended": "Significant losses expected. Supplementing maintains performance and prevents fatigue.",
+      "essential": "Critical losses ahead. Without proper hydration and sodium, performance and health are at real risk."
+    },
+    "pre_session": {
+      "food_under_1h": "Skip a heavy pre-feed. 30 g of fast carbs (banana or gel) with 200 ml of water is enough.",
+      "food_1_2h": "Light snack: a banana with a handful of dates, or a slice of toast with honey.",
+      "food_2_4h": "Carb-rich meal 2–3 h before: oatmeal with banana and honey, or pasta with a light sauce.",
+      "food_over_4h_default": "Substantial meal needed. Aim for 60–90 g of carbs 3 h out, or 30–50 g of fast carbs 30–60 min before.",
+      "food_over_4h_early_morning": "Fasted or early start — eat 30–60 min before with 30–50 g of fast carbs (toast, banana, oat porridge).",
+      "hydration": "Add 300–500 ml of water with a pinch of salt 60 min before the session."
+    },
+    "post_session": {
+      "protein_grams": "20–30 g",
+      "carbs_grams": "{low}–{high} g (0.8–1.2 g per kg)",
+      "water_replacement": "{ml} ml (150% of fluid lost) within 1 h",
+      "water_minimum": "500–750 ml within the first hour",
+      "example_meal": "Smoothie: 200 ml semi-skimmed milk, 1 banana, 30 g whey, 50 g oats, 1 tsp honey, pinch of salt."
+    },
+    "structure": {
+      "easy-run": {
+        "warmup": "Very easy jog in Z1, build into low Z2.",
+        "main": "Steady aerobic running in Z2 — conversational pace, smooth breathing.",
+        "cooldown": "Easy jog, then a few minutes of mobility work."
+      },
+      "long-run": {
+        "warmup": "Easy build from walking to low Z2 jogging.",
+        "main": "Steady aerobic effort in mid Z2. Hold form, fuel and hydrate from the start.",
+        "cooldown": "Easy jog and walk to bring HR down."
+      },
+      "tempo": {
+        "warmup": "Easy jog Z1 to Z2, finish with 4 × 20 s strides.",
+        "main": "{minutes} min continuous tempo at Z3 to low Z4 — comfortably hard, controlled breathing.",
+        "cooldown": "Easy jog Z1 then walk."
+      },
+      "intervals": {
+        "warmup": "Z1 to Z2 jog, then 4 × 20 s strides at goal pace.",
+        "main": "{reps} × 800 m at Z4 to Z5 with 2–3 min easy jog recovery between reps.",
+        "cooldown": "Easy jog Z1 then walk."
+      },
+      "hill-repeats": {
+        "warmup": "Easy jog Z2 on flat ground, finish near the climb.",
+        "main": "{reps} × 60–90 s uphill at Z4 to Z5, strong arm drive. Jog down for recovery.",
+        "cooldown": "Easy jog on flat ground, walk to finish."
+      },
+      "recovery": {
+        "warmup": "Walk into a very gentle jog.",
+        "main": "Easy Z1 jogging — short and conversational.",
+        "cooldown": "Walk, mobility work, foam roll."
+      },
+      "race-simulation": {
+        "warmup": "Z1 to Z2 jog with 6 × 30 s race-pace strides.",
+        "main": "{minutes} min continuous at goal race pace. Rehearse fuel and hydration timings.",
+        "cooldown": "Easy jog and walk."
+      },
+      "endurance": {
+        "warmup": "Spin in Z1 to Z2, light cadence build.",
+        "main": "Steady Z2 — cadence 85–95 rpm, controlled effort.",
+        "cooldown": "Easy spin Z1."
+      },
+      "long-ride": {
+        "warmup": "Z1 to Z2 spin, smooth into ride pace.",
+        "main": "Mid Z2 endurance. Fuel and hydrate from the first hour.",
+        "cooldown": "Easy spin Z1."
+      },
+      "sweet-spot": {
+        "warmup": "Z1 to Z2 spin, 2 × 1 min openers near threshold.",
+        "main": "{reps} × 20 min at 88–94% FTP with 5 min Z1 recovery between efforts.",
+        "cooldown": "Easy spin Z1."
+      },
+      "threshold": {
+        "warmup": "Z1 to Z2 spin, 3 × 1 min openers approaching FTP.",
+        "main": "{reps} × 15 min at 95–105% FTP with 5 min Z1 recovery between efforts.",
+        "cooldown": "Easy spin Z1."
+      },
+      "hill-repeats-bike": {
+        "warmup": "Z1 to Z2 spin to the climb base.",
+        "main": "{reps} × 5 min seated climb at threshold, descend or spin easy for recovery.",
+        "cooldown": "Easy spin Z1 back home."
+      },
+      "recovery-bike": {
+        "warmup": "Easy spin Z1, high cadence.",
+        "main": "Z1 only — flat terrain, light gears, 90+ rpm.",
+        "cooldown": "Easy spin Z1, off-bike mobility."
+      },
+      "race-simulation-bike": {
+        "warmup": "Z1 to Z2 spin with 3 × 1 min openers at goal effort.",
+        "main": "{minutes} min at goal race power. Rehearse fuelling and bottle hand-offs.",
+        "cooldown": "Easy spin Z1."
+      },
+      "swim": {
+        "warmup": "400 m easy mixed strokes, 4 × 50 m build.",
+        "main": "{minutes} min main set — pull buoy or open water, sustained moderate effort with form focus.",
+        "cooldown": "200 m easy choice — stretch shoulders."
+      },
+      "brick": {
+        "warmup": "Easy spin Z1 on the trainer or flat road.",
+        "main": "{ride} min bike at race effort, transition under 90 s, then {run} min run at goal pace.",
+        "cooldown": "Easy walk and mobility."
+      },
+      "long-combined": {
+        "warmup": "Easy aerobic warm-up in chosen discipline.",
+        "main": "Continuous Z2 across two disciplines — fuel and hydrate from the first hour.",
+        "cooldown": "Easy spin or jog and mobility."
+      },
+      "recovery-tri": {
+        "warmup": "Walk or very easy spin.",
+        "main": "Light Z1 movement — pick the discipline that feels best.",
+        "cooldown": "Mobility, foam roll, stretch."
+      }
+    }
   }
 }

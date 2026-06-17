@@ -1,3 +1,4 @@
+import { englishCalc, type CalcTranslator } from './translator';
 import type {
   LastMeal,
   PostSessionPlan,
@@ -31,9 +32,6 @@ export function carbsPerHour(input: SessionInput): number {
   return easy ? 70 : 90;
 }
 
-// Hourly sodium-based capsule rate. Kept as the baseline used by the
-// schedule once a session is long enough that loss outpaces the
-// duration-based protocol below.
 export function capsulesPerHour(metrics: SweatMetrics): number {
   const sodiumLow = metrics.sweatRate * metrics.sodiumConcentration * 0.75;
   return Math.max(0, Math.ceil(sodiumLow / BRUT_CAPSULE_SODIUM_MG));
@@ -45,15 +43,6 @@ function formatTime(hours: number): string {
   return `${h}:${String(m).padStart(2, '0')}`;
 }
 
-/**
- * Intake times (in hours from start) following the BRUT protocol:
- *   - < 1 h          → none
- *   - 1 – 1.5 h      → 1 at 1:00
- *   - 1.5 – 2 h      → 1 at 0:45, 1 at 1:30
- *   - ≥ 2 h          → one every 45 min from 0:45 onward
- *   - ≥ 3 h          → if the sodium-based total exceeds the 45-min count,
- *                      use the larger total, spread evenly from 0:45.
- */
 function capsuleTimes(
   durationHours: number,
   sodiumHourly: number,
@@ -69,14 +58,10 @@ function capsuleTimes(
 
   if (durationHours < 3) return baseline;
 
-  // ≥ 3 h: scale with sodium loss but never more than twice the every-45-min
-  // baseline. Keeps the count realistic when sweat rates are high without a
-  // jarring discontinuity at the 3 h boundary.
   const sodiumTotal = Math.max(0, Math.round(sodiumHourly * durationHours));
   const target = Math.min(sodiumTotal, baseline.length * 2);
   if (target <= baseline.length) return baseline;
 
-  // Spread `target` capsules evenly between 0:45 and the session end.
   const span = durationHours - 0.75;
   const times: number[] = [];
   for (let i = 0; i < target; i += 1) {
@@ -87,11 +72,6 @@ function capsuleTimes(
   return times;
 }
 
-/**
- * Build a 30-minute schedule of water / carbs / capsules to take.
- * Water and carbs are constant per row; capsule slots are derived from
- * `capsuleTimes` and snapped to the row that ends just after each time.
- */
 export function buildSchedule(
   input: SessionInput,
   metrics: SweatMetrics,
@@ -101,14 +81,11 @@ export function buildSchedule(
   const intervals = Math.max(1, Math.round(input.duration * 2));
   const carbsH = carbsPerHour(input);
 
-  // Replace ~80% of sweat per hour; round to nearest 50 ml per 30-min row.
   const mlPerInterval =
     Math.round((metrics.sweatRate * 0.8 * 0.5 * 1000) / 50) * 50;
   const carbsPerInterval =
     carbsH > 0 ? Math.max(5, Math.round((carbsH * 0.5) / 5) * 5) : 0;
 
-  // Distribute capsules into 30-minute slots. A capsule taken at e.g.
-  // 0:45 lives in the 1:00 row (intake during the previous 30 min).
   const capsPerRow = new Array<number>(intervals).fill(0);
   const sodiumHourly = capsulesPerHour(metrics);
   const times = capsuleTimes(input.duration, sodiumHourly);
@@ -131,57 +108,56 @@ export function buildSchedule(
 
 export function preSession(
   lastMeal: LastMeal,
-  timeOfDay: TimeOfDay
+  timeOfDay: TimeOfDay,
+  t: CalcTranslator = englishCalc,
 ): PreSessionPlan {
   let food: string;
   switch (lastMeal) {
     case '<1h':
-      food =
-        'Skip a heavy pre-feed. 30 g of fast carbs (banana or gel) with 200 ml of water is enough.';
+      food = t('pre_session.food_under_1h');
       break;
     case '1-2h':
-      food =
-        'Light snack: a banana with a handful of dates, or a slice of toast with honey.';
+      food = t('pre_session.food_1_2h');
       break;
     case '2-4h':
-      food =
-        'Carb-rich meal 2–3 h before: oatmeal with banana and honey, or pasta with a light sauce.';
+      food = t('pre_session.food_2_4h');
       break;
     case '>4h':
     default:
       food =
         timeOfDay === 'early-morning'
-          ? 'Fasted or early start — eat 30–60 min before with 30–50 g of fast carbs (toast, banana, oat porridge).'
-          : 'Substantial meal needed. Aim for 60–90 g of carbs 3 h out, or 30–50 g of fast carbs 30–60 min before.';
+          ? t('pre_session.food_over_4h_early_morning')
+          : t('pre_session.food_over_4h_default');
       break;
   }
   return {
     food,
-    hydration:
-      'Add 300–500 ml of water with a pinch of salt 60 min before the session.',
+    hydration: t('pre_session.hydration'),
   };
 }
 
 export function postSession(
   input: SessionInput,
-  metrics: SweatMetrics
+  metrics: SweatMetrics,
+  t: CalcTranslator = englishCalc,
 ): PostSessionPlan {
   const carbsLow = Math.round(input.weight * 0.8);
   const carbsHigh = Math.round(input.weight * 1.2);
 
-  // Replace 150% of fluid lost, but always recommend 500–750 ml at minimum.
   const replaceMl = Math.round(metrics.totalLoss * 1500);
   const waterMl =
     replaceMl >= 750
-      ? `${replaceMl} ml (150% of fluid lost) within 1 h`
-      : '500–750 ml within the first hour';
+      ? t('post_session.water_replacement', { ml: replaceMl })
+      : t('post_session.water_minimum');
 
   return {
-    proteinGrams: '20–30 g',
-    carbsGrams: `${carbsLow}–${carbsHigh} g (0.8–1.2 g per kg)`,
+    proteinGrams: t('post_session.protein_grams'),
+    carbsGrams: t('post_session.carbs_grams', {
+      low: carbsLow,
+      high: carbsHigh,
+    }),
     waterMl,
     capsules: 1,
-    exampleMeal:
-      'Smoothie: 200 ml semi-skimmed milk, 1 banana, 30 g whey, 50 g oats, 1 tsp honey, pinch of salt.',
+    exampleMeal: t('post_session.example_meal'),
   };
 }

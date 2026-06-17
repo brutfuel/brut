@@ -1065,5 +1065,122 @@
     "about_description": "Nutrición deportiva editorial, diseñada para atletas de resistencia.",
     "contact_title": "Contacto — BRUT",
     "contact_description": "Ponte en contacto con el equipo de BRUT."
+  },
+  "calc": {
+    "pace_estimated": "Ritmo estimado",
+    "pace_average": "Velocidad media",
+    "replacement_messages": {
+      "not-necessary": "Las reservas del cuerpo son suficientes para esta sesión. Bebe según la sed, no hace falta suplementación.",
+      "optional": "Una hidratación ligera mejora el confort. Puedes terminar sin electrolitos si has comido bien hoy.",
+      "recommended": "Se esperan pérdidas significativas. Suplementar mantiene el rendimiento y previene la fatiga.",
+      "essential": "Pérdidas críticas a la vista. Sin una hidratación y sodio adecuados, el rendimiento y la salud están en riesgo real."
+    },
+    "pre_session": {
+      "food_under_1h": "Evita una comida copiosa previa. 30 g de carbohidratos rápidos (plátano o gel) con 200 ml de agua son suficientes.",
+      "food_1_2h": "Snack ligero: un plátano con un puñado de dátiles, o una rebanada de pan con miel.",
+      "food_2_4h": "Comida rica en carbohidratos 2–3 h antes: avena con plátano y miel, o pasta con una salsa ligera.",
+      "food_over_4h_default": "Hace falta una comida sustancial. Apunta a 60–90 g de carbohidratos 3 h antes, o 30–50 g de carbohidratos rápidos 30–60 min antes.",
+      "food_over_4h_early_morning": "En ayunas o salida temprana — come 30–60 min antes con 30–50 g de carbohidratos rápidos (tostada, plátano, gachas de avena).",
+      "hydration": "Añade 300–500 ml de agua con una pizca de sal 60 min antes de la sesión."
+    },
+    "post_session": {
+      "protein_grams": "20–30 g",
+      "carbs_grams": "{low}–{high} g (0,8–1,2 g por kg)",
+      "water_replacement": "{ml} ml (150% del líquido perdido) en 1 h",
+      "water_minimum": "500–750 ml durante la primera hora",
+      "example_meal": "Batido: 200 ml de leche semidesnatada, 1 plátano, 30 g de whey, 50 g de avena, 1 cucharada de miel, una pizca de sal."
+    },
+    "structure": {
+      "easy-run": {
+        "warmup": "Trote muy suave a Z1, construyendo hacia Z2 bajo.",
+        "main": "Carrera aeróbica constante a Z2 — ritmo conversacional, respiración fluida.",
+        "cooldown": "Trote suave y unos minutos de movilidad."
+      },
+      "long-run": {
+        "warmup": "Transición suave de caminar a trotar a Z2 bajo.",
+        "main": "Esfuerzo aeróbico constante a Z2 medio. Mantén la técnica, aliméntate e hidrátate desde el inicio.",
+        "cooldown": "Trote suave y caminar para bajar las pulsaciones."
+      },
+      "tempo": {
+        "warmup": "Trote suave Z1 a Z2, termina con 4 × 20 s progresiones.",
+        "main": "{minutes} min de tempo continuo a Z3 hasta Z4 bajo — cómodo-duro, respiración controlada.",
+        "cooldown": "Trote suave Z1, luego camina."
+      },
+      "intervals": {
+        "warmup": "Trote Z1 a Z2, luego 4 × 20 s progresiones a ritmo objetivo.",
+        "main": "{reps} × 800 m a Z4 hasta Z5 con 2–3 min de trote suave de recuperación entre repeticiones.",
+        "cooldown": "Trote suave Z1, luego camina."
+      },
+      "hill-repeats": {
+        "warmup": "Trote suave Z2 en terreno llano, termina cerca de la cuesta.",
+        "main": "{reps} × 60–90 s subiendo a Z4 hasta Z5, brazos activos. Baja trotando para recuperar.",
+        "cooldown": "Trote suave en llano, termina caminando."
+      },
+      "recovery": {
+        "warmup": "Camina y pasa a un trote muy suave.",
+        "main": "Trote suave a Z1 — corto y conversacional.",
+        "cooldown": "Camina, movilidad, foam roll."
+      },
+      "race-simulation": {
+        "warmup": "Trote Z1 a Z2 con 6 × 30 s progresiones a ritmo de carrera.",
+        "main": "{minutes} min continuos a ritmo objetivo de carrera. Ensaya los tiempos de nutrición e hidratación.",
+        "cooldown": "Trote suave y camina."
+      },
+      "endurance": {
+        "warmup": "Rueda a Z1 hasta Z2, construye la cadencia suavemente.",
+        "main": "Z2 constante — cadencia 85–95 rpm, esfuerzo controlado.",
+        "cooldown": "Rueda suave a Z1."
+      },
+      "long-ride": {
+        "warmup": "Z1 a Z2 rodando suave, entra al ritmo de salida.",
+        "main": "Endurance a Z2 medio. Aliméntate e hidrátate desde la primera hora.",
+        "cooldown": "Rueda suave a Z1."
+      },
+      "sweet-spot": {
+        "warmup": "Z1 a Z2 rodando, 2 × 1 min activadores cerca del umbral.",
+        "main": "{reps} × 20 min al 88–94% del FTP con 5 min de recuperación Z1 entre esfuerzos.",
+        "cooldown": "Rueda suave a Z1."
+      },
+      "threshold": {
+        "warmup": "Z1 a Z2 rodando, 3 × 1 min activadores acercándose al FTP.",
+        "main": "{reps} × 15 min al 95–105% del FTP con 5 min de recuperación Z1 entre esfuerzos.",
+        "cooldown": "Rueda suave a Z1."
+      },
+      "hill-repeats-bike": {
+        "warmup": "Z1 a Z2 rodando hasta el pie de la cuesta.",
+        "main": "{reps} × 5 min subida sentado al umbral, baja o rueda suave para recuperar.",
+        "cooldown": "Z1 suave de vuelta a casa."
+      },
+      "recovery-bike": {
+        "warmup": "Rueda suave a Z1, cadencia alta.",
+        "main": "Solo Z1 — terreno llano, marchas ligeras, 90+ rpm.",
+        "cooldown": "Z1 suave, movilidad fuera de la bici."
+      },
+      "race-simulation-bike": {
+        "warmup": "Z1 a Z2 rodando con 3 × 1 min activadores a esfuerzo objetivo.",
+        "main": "{minutes} min a la potencia objetivo de carrera. Ensaya la nutrición y el cambio de bidones.",
+        "cooldown": "Rueda suave a Z1."
+      },
+      "swim": {
+        "warmup": "400 m suaves con estilos variados, 4 × 50 m progresivos.",
+        "main": "{minutes} min de serie principal — pull buoy o aguas abiertas, esfuerzo moderado sostenido con foco en la técnica.",
+        "cooldown": "200 m suaves a elección — estira hombros."
+      },
+      "brick": {
+        "warmup": "Z1 suave en el rodillo o en llano.",
+        "main": "{ride} min de bici a esfuerzo de carrera, transición en menos de 90 s, luego {run} min de carrera a ritmo objetivo.",
+        "cooldown": "Camina suave y movilidad."
+      },
+      "long-combined": {
+        "warmup": "Calentamiento aeróbico suave en la disciplina elegida.",
+        "main": "Z2 continuo en dos disciplinas — aliméntate e hidrátate desde la primera hora.",
+        "cooldown": "Pedaleo o trote suave y movilidad."
+      },
+      "recovery-tri": {
+        "warmup": "Camina o pedalea muy suave.",
+        "main": "Movimiento ligero a Z1 — elige la disciplina que te siente mejor.",
+        "cooldown": "Movilidad, foam roll, estirar."
+      }
+    }
   }
 }

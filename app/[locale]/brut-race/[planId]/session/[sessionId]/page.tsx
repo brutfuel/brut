@@ -1,10 +1,12 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { getLocale, getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SessionTable from '@/components/brut-train/SessionTable';
 import { SectionHeader } from '@/components/brut-train/SessionResult';
 import SessionDetailActions from '@/components/brut-race/SessionDetailActions';
+import { Link } from '@/lib/i18n/routing';
+import type { AppLocale } from '@/lib/i18n/routing';
 import { createClient } from '@/lib/supabase/server';
 import { buildPlan } from '@/lib/calculations/plan';
 import type {
@@ -20,36 +22,19 @@ import type {
   Session,
   SessionDuringNutrition,
 } from '@/lib/types/db';
-import { SESSION_TYPE_LABELS } from '@/lib/types/db';
 import { formatDuration, formatLongDate } from '@/lib/utils/dates';
 
 interface Props {
   params: { planId: string; sessionId: string };
 }
 
-const PHASE_LABELS: Record<Phase['name'], string> = {
-  base: 'Base',
-  build: 'Build',
-  peak: 'Peak',
-  taper: 'Taper',
-};
-
-function buildTitle(session: Session): string {
-  const typeLabel = SESSION_TYPE_LABELS[session.session_type];
-  if (session.distance_km && session.distance_km > 0) {
-    return `${typeLabel} · ${session.distance_km} km`;
-  }
-  return typeLabel;
-}
-
-function statusBadge(status: Session['status']): string | null {
-  if (status === 'completed') return 'Completed';
-  if (status === 'skipped') return 'Skipped';
-  if (status === 'modified') return 'Moved';
-  return null;
-}
-
 export default async function SessionDetailPage({ params }: Props) {
+  const locale = (await getLocale()) as AppLocale;
+  const t = await getTranslations('brut_race.session_detail');
+  const tPhases = await getTranslations('phases');
+  const tSessionTypes = await getTranslations('session_types');
+  const tUnits = await getTranslations('common.units');
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -75,13 +60,13 @@ export default async function SessionDetailPage({ params }: Props) {
             href={`/brut-race/${params.planId}`}
             className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted hover:text-brut-black transition-colors"
           >
-            &larr; Back to plan
+            {t('back_to_plan')}
           </Link>
           <h1 className="mt-6 text-[40px] md:text-[56px] leading-[1.0] font-thin tracking-brut text-brut-black">
-            Session not found
+            {t('not_found_title')}
           </h1>
           <p className="mt-6 text-base font-normal text-brut-ink leading-relaxed">
-            This session does not exist or is not part of this plan.
+            {t('not_found_body')}
           </p>
         </main>
         <Footer />
@@ -89,7 +74,6 @@ export default async function SessionDetailPage({ params }: Props) {
     );
   }
 
-  // Fetch plan (sport for fallback nutrition) + phase name for the meta line.
   const [{ data: planData }, phaseFetch] = await Promise.all([
     supabase
       .from('race_plans')
@@ -107,7 +91,6 @@ export default async function SessionDetailPage({ params }: Props) {
   const plan = planData as Pick<RacePlan, 'id' | 'sport'> | null;
   const phase = phaseFetch.data as Pick<Phase, 'name'> | null;
 
-  // Use the JSONB payload if present; otherwise compute on demand.
   let pre: PreSessionPlan | null = session.pre_session_nutrition;
   let during: SessionDuringNutrition | null = session.during_nutrition;
   let post: PostSessionPlan | null = session.post_session_nutrition;
@@ -151,10 +134,21 @@ export default async function SessionDetailPage({ params }: Props) {
     post = post ?? computed.postSession;
   }
 
-  const title = buildTitle(session);
-  const phaseLabel = phase ? PHASE_LABELS[phase.name] : null;
-  const dateLabel = formatLongDate(session.scheduled_date);
-  const badge = statusBadge(session.status);
+  const typeLabel = tSessionTypes(session.session_type);
+  const title =
+    session.distance_km && session.distance_km > 0
+      ? `${typeLabel} · ${session.distance_km} km`
+      : typeLabel;
+  const phaseLabel = phase ? tPhases(phase.name) : null;
+  const dateLabel = formatLongDate(session.scheduled_date, locale);
+  const badge =
+    session.status === 'completed'
+      ? t('badge_completed')
+      : session.status === 'skipped'
+        ? t('badge_skipped')
+        : session.status === 'modified'
+          ? t('badge_moved')
+          : null;
 
   return (
     <>
@@ -165,7 +159,7 @@ export default async function SessionDetailPage({ params }: Props) {
           href={`/brut-race/${params.planId}?week=${session.week_number}`}
           className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted hover:text-brut-black transition-colors"
         >
-          &larr; Back to week {session.week_number}
+          {t('back_to_week', { week: session.week_number })}
         </Link>
 
         <h1 className="mt-6 text-[44px] md:text-[64px] leading-[0.98] font-thin tracking-brut text-brut-black">
@@ -173,8 +167,10 @@ export default async function SessionDetailPage({ params }: Props) {
         </h1>
 
         <p className="mt-3 text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-          Week {session.week_number}
-          {phaseLabel ? ` · ${phaseLabel.toUpperCase()} phase` : ''}
+          {t('meta_week', { week: session.week_number })}
+          {phaseLabel
+            ? t('meta_phase_suffix', { phase: phaseLabel.toUpperCase() })
+            : ''}
           {dateLabel ? ` · ${dateLabel}` : ''}
         </p>
 
@@ -190,12 +186,13 @@ export default async function SessionDetailPage({ params }: Props) {
 
         {/* 01 — Session structure */}
         <section className="mt-12 flex flex-col gap-5">
-          <SectionHeader index="01" label="Session structure" />
+          <SectionHeader index="01" label={t('section_structure')} />
           {session.structure ? (
             <div className="flex flex-col gap-5">
               <div>
                 <p className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                  Warm-up · {session.structure.warmup.minutes} min
+                  {t('warm_up')} · {session.structure.warmup.minutes}{' '}
+                  {tUnits('min')}
                 </p>
                 <p className="mt-1 text-sm text-brut-ink leading-relaxed">
                   {session.structure.warmup.description}
@@ -203,7 +200,8 @@ export default async function SessionDetailPage({ params }: Props) {
               </div>
               <div>
                 <p className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                  Main set · {session.structure.mainSet.minutes} min
+                  {t('main_set')} · {session.structure.mainSet.minutes}{' '}
+                  {tUnits('min')}
                 </p>
                 <p className="mt-1 text-sm text-brut-ink leading-relaxed">
                   {session.structure.mainSet.description}
@@ -211,7 +209,8 @@ export default async function SessionDetailPage({ params }: Props) {
               </div>
               <div>
                 <p className="text-[10px] font-semibold tracking-brut-wide uppercase text-brut-muted">
-                  Cool-down · {session.structure.cooldown.minutes} min
+                  {t('cool_down')} · {session.structure.cooldown.minutes}{' '}
+                  {tUnits('min')}
                 </p>
                 <p className="mt-1 text-sm text-brut-ink leading-relaxed">
                   {session.structure.cooldown.description}
@@ -219,15 +218,13 @@ export default async function SessionDetailPage({ params }: Props) {
               </div>
             </div>
           ) : (
-            <p className="text-sm text-brut-muted">
-              Structure unavailable for this session.
-            </p>
+            <p className="text-sm text-brut-muted">{t('structure_unavailable')}</p>
           )}
         </section>
 
         {/* 02 — Pre-session nutrition */}
         <section className="mt-12 flex flex-col gap-4">
-          <SectionHeader index="02" label="Pre-session nutrition" />
+          <SectionHeader index="02" label={t('section_pre')} />
           {pre ? (
             <>
               <p className="text-sm text-brut-ink leading-relaxed">{pre.food}</p>
@@ -236,39 +233,37 @@ export default async function SessionDetailPage({ params }: Props) {
               </p>
             </>
           ) : (
-            <p className="text-sm text-brut-muted">
-              Pre-session guidance unavailable.
-            </p>
+            <p className="text-sm text-brut-muted">{t('pre_unavailable')}</p>
           )}
         </section>
 
         {/* 03 — During session */}
         <section className="mt-12 flex flex-col gap-5">
-          <SectionHeader index="03" label="During session" />
+          <SectionHeader index="03" label={t('section_during')} />
           {during ? (
             <>
               <div className="grid grid-cols-2 gap-x-5 gap-y-6">
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                    Carb target
+                    {t('carb_target')}
                   </span>
                   <span className="text-2xl font-thin tracking-brut text-brut-black tabular-nums">
                     {during.carbsPerHour > 0 ? during.carbsPerHour : '—'}
                     {during.carbsPerHour > 0 ? (
                       <span className="ml-1 text-sm font-normal text-brut-muted">
-                        g / h
+                        {tUnits('g_per_h')}
                       </span>
                     ) : null}
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                    BRUT target
+                    {t('brut_target')}
                   </span>
                   <span className="text-2xl font-thin tracking-brut text-brut-black tabular-nums">
                     {during.capsulesPerHour}
                     <span className="ml-1 text-sm font-normal text-brut-muted">
-                      caps / h
+                      {tUnits('caps_per_h')}
                     </span>
                   </span>
                 </div>
@@ -277,7 +272,7 @@ export default async function SessionDetailPage({ params }: Props) {
               <div className="mt-2 grid grid-cols-3 gap-3 bg-brut-black text-white p-5">
                 <div>
                   <p className="text-[10px] font-medium tracking-brut-wide uppercase text-white/60">
-                    BRUT
+                    {t('brut')}
                   </p>
                   <p className="mt-1 text-3xl font-thin tracking-brut tabular-nums">
                     {during.totals.capsules}
@@ -285,65 +280,63 @@ export default async function SessionDetailPage({ params }: Props) {
                 </div>
                 <div>
                   <p className="text-[10px] font-medium tracking-brut-wide uppercase text-white/60">
-                    Water
+                    {t('water')}
                   </p>
                   <p className="mt-1 text-3xl font-thin tracking-brut tabular-nums">
                     {during.totals.waterMl}
                     <span className="ml-1 text-xs font-normal text-white/60">
-                      ml
+                      {tUnits('ml')}
                     </span>
                   </p>
                 </div>
                 <div>
                   <p className="text-[10px] font-medium tracking-brut-wide uppercase text-white/60">
-                    Carbs
+                    {t('carbs')}
                   </p>
                   <p className="mt-1 text-3xl font-thin tracking-brut tabular-nums">
                     {during.totals.carbsG}
                     <span className="ml-1 text-xs font-normal text-white/60">
-                      g
+                      {tUnits('g')}
                     </span>
                   </p>
                 </div>
               </div>
             </>
           ) : (
-            <p className="text-sm text-brut-muted">
-              During-session guidance unavailable.
-            </p>
+            <p className="text-sm text-brut-muted">{t('during_unavailable')}</p>
           )}
         </section>
 
         {/* 04 — Post-session */}
         <section className="mt-12 flex flex-col gap-4">
-          <SectionHeader index="04" label="Post-session recovery" />
+          <SectionHeader index="04" label={t('section_post')} />
           {post ? (
             <>
               <dl className="grid grid-cols-2 gap-x-5 gap-y-4 text-sm">
                 <div className="col-span-1">
                   <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                    Protein
+                    {t('protein')}
                   </dt>
                   <dd className="text-brut-ink">{post.proteinGrams}</dd>
                 </div>
                 <div className="col-span-1">
                   <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                    Carbs
+                    {t('carbs')}
                   </dt>
                   <dd className="text-brut-ink">{post.carbsGrams}</dd>
                 </div>
                 <div className="col-span-2">
                   <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                    Water
+                    {t('water')}
                   </dt>
                   <dd className="text-brut-ink">{post.waterMl}</dd>
                 </div>
                 <div className="col-span-2">
                   <dt className="text-[10px] font-medium tracking-brut-wide uppercase text-brut-muted">
-                    BRUT
+                    {t('brut')}
                   </dt>
                   <dd className="text-brut-ink">
-                    {post.capsules} capsule with an electrolyte-rich snack.
+                    {t('post_brut_note', { count: post.capsules })}
                   </dd>
                 </div>
               </dl>
@@ -352,16 +345,14 @@ export default async function SessionDetailPage({ params }: Props) {
               </p>
             </>
           ) : (
-            <p className="text-sm text-brut-muted">
-              Post-session guidance unavailable.
-            </p>
+            <p className="text-sm text-brut-muted">{t('post_unavailable')}</p>
           )}
         </section>
 
         {/* Notes if marked done */}
         {session.user_notes ? (
           <section className="mt-12 flex flex-col gap-3">
-            <SectionHeader index="05" label="Your notes" />
+            <SectionHeader index="05" label={t('section_notes')} />
             <p className="text-sm text-brut-ink leading-relaxed">
               {session.user_notes}
             </p>
